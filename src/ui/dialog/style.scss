@@ -1,12 +1,22 @@
-.doneky-ui-dialog{
+.doneky-ui-dialog {
   position: fixed;
-  background: #fff;
 
-  &-head{
-
+  &-inner {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 0 10px #888;
   }
 
-  &-body{
+  &-head {
+    position: relative;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+    height: 60px;
+    line-height: 60px;
+  }
 
+  &-body {
+    //
   }
 }

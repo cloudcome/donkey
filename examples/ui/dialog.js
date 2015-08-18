@@ -12,7 +12,8 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    var abc = require('./abc.js');
+    var Dialog = require('../../src/ui/dialog/index.js');
+    var dialog = new Dialog('#demo');
 
     module.exports = {};
 });

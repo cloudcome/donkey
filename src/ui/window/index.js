@@ -1,5 +1,5 @@
 /*!
- * 文件描述
+ * window
  * @author ydr.me
  * @create 2015-08-18 10:03
  */
@@ -10,6 +10,7 @@ define(function (require, exports, module) {
      * @module ui/window/
      * @requires ui/
      * @requires utils/dato
+     * @requires utils/typeis
      * @requires utils/controller
      * @requires core/dom/modification
      * @requires core/dom/animation
@@ -21,6 +22,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
+    var typeis = require('../../utils/typeis.js');
     var controller = require('../../utils/controller.js');
     var modification = require('../../core/dom/modification.js');
     var animation = require('../../core/dom/animation.js');
@@ -167,7 +169,9 @@ define(function (require, exports, module) {
             the._$parent.css(fromStyle);
             // 焦点聚焦到 window 上
             the._$focus.focus();
-            animation.animate(the._$parent, toStyle, function () {
+            animation.animate(the._$parent, toStyle, {
+                duration: options.duration
+            }, function () {
                 the._$focus.blur();
                 the.emit('aftereopen');
             });
@@ -195,17 +199,33 @@ define(function (require, exports, module) {
 
         /**
          * 关闭 window
+         * @params callback {Function} 回调
          * @returns {Window}
          */
-        close: function () {
+        close: function (callback) {
             var the = this;
+            var options = the._options;
 
             if (!the.visible) {
                 return the;
             }
 
             the.visible = false;
-            the._$parent.hide();
+            the.emit('beforeclose');
+            var translateYStyle1 = ui.translateY(-options.translateY);
+            animation.animate(the._$parent, dato.extend(translateYStyle1, {
+                opacity: 0
+            }), {
+                duration: options.duration
+            }, function () {
+                the._$parent.hide();
+
+                if (typeis.function(callback)) {
+                    callback.call(the);
+                }
+
+                the.emit('afterclose');
+            });
         },
 
 
@@ -224,19 +244,20 @@ define(function (require, exports, module) {
             }
 
             the.destroyed = true;
-            the.close();
-            the._$window.insertAfter(the._$flag);
-            the._$parent.remove();
-            the._$flag.remove();
-            windowMap[the._id] = null;
-            var findIndex = -1;
-            dato.each(windowList, function (index, id) {
-                if (id === the._id) {
-                    findIndex = index;
-                    return false;
-                }
+            the.close(function () {
+                the._$window.insertAfter(the._$flag);
+                the._$parent.remove();
+                the._$flag.remove();
+                windowMap[the._id] = null;
+                var findIndex = -1;
+                dato.each(windowList, function (index, id) {
+                    if (id === the._id) {
+                        findIndex = index;
+                        return false;
+                    }
+                });
+                windowList.splice(findIndex, 1);
             });
-            windowList.splice(findIndex, 1);
         }
     });
 
