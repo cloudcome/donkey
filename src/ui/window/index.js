@@ -228,8 +228,26 @@ define(function (require, exports, module) {
             the._$window.insertAfter(the._$flag);
             the._$parent.remove();
             the._$flag.remove();
+            windowMap[the._id] = null;
+            var findIndex = -1;
+            dato.each(windowList, function (index, id) {
+                if (id === the._id) {
+                    findIndex = index;
+                    return false;
+                }
+            });
+            windowList.splice(findIndex, 1);
         }
     });
+
+
+    /**
+     * 返回最顶层的 window
+     * @returns {Window}
+     */
+    Window.getTopWindow = function () {
+        return windowMap[windowList[0]];
+    };
 
     Window.defaults = defaults;
     ui.importStyle(style);
