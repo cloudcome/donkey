@@ -17,11 +17,16 @@ define(function (require, exports, module) {
     var typeis = require('../utils/typeis.js');
     var dato = require('../utils/dato.js');
     var klass = require('../utils/class.js');
+    var number = require('../utils/number.js');
     var allocation = require('../utils/allocation.js');
     var modification = require('../core/dom/modification.js');
+    var compatible = require('../core/navigator/compatible.js');
     var udf;
     //var warningPropertyList = 'emit on un _eventsPool _eventsLimit'.split(' ');
     var zIndex = 999;
+    var css3Transform = compatible.css3('transform');
+    var REG_NUMBER = /^[+\-]?\d+(\.\d*)?$/;
+    var REG_PERCENT = /%/;
 
     /**
      * 使用 UI 基础类给各个 UI 组件来分配 z-index
@@ -120,7 +125,8 @@ define(function (require, exports, module) {
      * @param [options] {Object} 配置
      * @param [options.x] {String|Number} 水平位置
      * @param [options.y] {String|Number} 垂直位置
-     * @param [options.adapt] {Boolean} 是否调整边界
+     * @param [options.adaptBoundary=true] {Boolean} 是否调整边界
+     * @param [options.returnStyle=false] {Boolean} 是否调整边界
      */
     exports.align = function ($child, $parent, options) {
         $child = $($child);
@@ -142,17 +148,90 @@ define(function (require, exports, module) {
         var left = (parentWidth - childWidth) * options.x;
         var top = (parentHeight - childHeight) * options.y;
 
-        if (options.adapt && left < 0) {
+        if (options.adaptBoundary !== false && left < 0) {
             left = 0;
         }
 
-        if (options.adapt && top < 0) {
+        if (options.adaptBoundary !== false && top < 0) {
             top = 0;
+        }
+
+        if (options.returnStyle) {
+            return {
+                left: left,
+                top: top
+            };
         }
 
         $child.css({
             left: left,
             top: top
         });
+    };
+
+
+    /**
+     * 兼容性的 translate，暂时不支持 %
+     * @param ele
+     * @param translate
+     * @param xy
+     * @returns {{}}
+     */
+    var translate = function (ele, translate, xy) {
+        var style = {};
+
+        if (css3Transform) {
+            if (REG_NUMBER.test(translate)) {
+                translate = translate + 'px';
+            }
+
+            style[css3Transform] = 'translate' + xy + '(' + translate + ')';
+        } else {
+            if (xy === 'X') {
+                style.marginLeft = translate;
+            } else {
+                style.marginTop = translate;
+            }
+        }
+
+        if (ele === null) {
+            return style;
+        }
+
+        $(ele).css(style);
+    };
+
+
+    /**
+     * 兼容性的 translateX
+     * @param [ele] {Object|String|Number} 元素
+     * @param translateX {Number|String} 偏移量
+     * @returns {Object|undefined}
+     */
+    exports.translateX = function (ele, translateX) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 1) {
+            return translate(null, args[0], 'X');
+        }
+
+        translate(ele, translateX, 'X');
+    };
+
+
+    /**
+     * 兼容性的 translateY
+     * @param [ele] {Object|String|Number} 元素
+     * @param translateX {Number|String} 偏移量
+     * @returns {Object|undefined}
+     */
+    exports.translateY = function (ele, translateX) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 1) {
+            return translate(null, args[0], 'Y');
+        }
+
+        translate(ele, translateX, 'Y');
     };
 });

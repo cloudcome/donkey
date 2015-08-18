@@ -8,6 +8,12 @@
 define(function (require, exports, module) {
     /**
      * @module ui/window/
+     * @requires ui/
+     * @requires utils/dato
+     * @requires utils/controller
+     * @requires core/dom/modification
+     * @requires core/dom/animation
+     * @requires libs/template
      */
 
     'use strict';
@@ -15,6 +21,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
+    var controller = require('../../utils/controller.js');
     var modification = require('../../core/dom/modification.js');
     var animation = require('../../core/dom/animation.js');
     var Template = require('../../libs/template.js');
@@ -24,6 +31,8 @@ define(function (require, exports, module) {
     var namespace = 'donkey-ui-window';
     var donekyId = 0;
     var eBody = document.body;
+    var windowList = [];
+    var windowMap = {};
     var defaults = {
         // width 可以等于 height，height 也可以等于 width
         // 当两者都互相相等时，即是一个正方形
@@ -34,7 +43,9 @@ define(function (require, exports, module) {
         maxWidth: 1000,
         maxHeight: 800,
         duration: 567,
-        addClass: ''
+        addClass: '',
+        translateY: 10,
+        autoResize: true
     };
     var Window = ui.create({
         constructor: function ($window, options) {
@@ -43,6 +54,9 @@ define(function (require, exports, module) {
             the._$window = $($window);
             the._options = dato.extend({}, defaults, options);
             the._id = donekyId++;
+            the.destroyed = false;
+            windowMap[the._id] = the;
+            windowList.push(the._id);
             the._initNode();
             the._initEvent();
         },
@@ -56,11 +70,15 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            the._$container = $(tpl.render({
+            the._$flag = $(modification.create('#comment', namespace + '-' + the._id));
+            the._$parent = $(tpl.render({
                 id: the._id
             })).appendTo(eBody);
-            the._$parent = the._$container.children();
-            the._$window.appendTo(the._$parent);
+            var $children = the._$parent.children();
+            the._$focus = $($children[0]);
+            the._$body = $($children[1]);
+            the._$flag.insertAfter(the._$window);
+            the._$window.appendTo(the._$body);
         },
 
 
@@ -72,27 +90,42 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-
+            if (options.autoResize) {
+                $(window).on('resize', the._onresize = controller.debounce(function () {
+                    the.resize();
+                }));
+            }
         },
 
+
+        /**
+         * 打开 window
+         * @returns {Window}
+         */
         open: function () {
             var the = this;
+
+            if (the.visible) {
+                return the;
+            }
+
             var options = the._options;
             var width = options.width;
             var height = options.height;
             var widthEheight = false;
             var heightEWidth = false;
 
-            the._$container.show();
+            the.visible = true;
             the._$parent.css({
                 display: 'block',
-                visibility: 'hidden',
+                opacity: 0,
                 width: 'auto',
                 height: 'auto',
                 minWidth: options.minWidth,
                 minHeight: options.minHeight,
                 maxWidth: options.maxWidth,
-                maxHeight: options.maxHeight
+                maxHeight: options.maxHeight,
+                zIndex: ui.getZindex()
             });
 
             if (width === 'height') {
@@ -120,10 +153,81 @@ define(function (require, exports, module) {
                 the._$parent.width(height);
             }
 
+            var style = ui.align(the._$parent, window, {
+                returnStyle: true
+            });
+            var translateYStyle1 = ui.translateY(options.translateY);
+            var translateYStyle2 = ui.translateY(0);
+            var fromStyle = dato.extend({}, style, translateYStyle1);
+            var toStyle = dato.extend(style, translateYStyle2, {
+                opacity: 1
+            });
+
+            the.emit('beforeopen');
+            the._$parent.css(fromStyle);
+            // 焦点聚焦到 window 上
+            the._$focus.focus();
+            animation.animate(the._$parent, toStyle, function () {
+                the._$focus.blur();
+                the.emit('aftereopen');
+            });
+
+            return the;
+        },
+
+
+        /**
+         * 调整 window 位置
+         * @returns {Window}
+         */
+        resize: function () {
+            var the = this;
+
+            if (!the.visible) {
+                return the;
+            }
 
             ui.align(the._$parent, window);
 
             return the;
+        },
+
+
+        /**
+         * 关闭 window
+         * @returns {Window}
+         */
+        close: function () {
+            var the = this;
+
+            if (!the.visible) {
+                return the;
+            }
+
+            the.visible = false;
+            the._$parent.hide();
+        },
+
+
+        /**
+         * 销毁 window
+         */
+        destroy: function () {
+            var the = this;
+
+            if (the.destroyed) {
+                return;
+            }
+
+            if (the._onresize) {
+                $(window).off('resize', the._onresize);
+            }
+
+            the.destroyed = true;
+            the.close();
+            the._$window.insertAfter(the._$flag);
+            the._$parent.remove();
+            the._$flag.remove();
         }
     });
 

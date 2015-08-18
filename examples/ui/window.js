@@ -25,4 +25,8 @@ define(function (require, exports, module) {
     $('#resize').on('click', function () {
         win.resize();
     });
+
+    $('#destroy').on('click', function () {
+        win.destroy();
+    });
 });
