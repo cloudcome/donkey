@@ -1,0 +1,41 @@
+{
+  "name": "donkey",
+  "version": "0.0.1",
+  "private": true,
+  "description": "donkey description",
+  "scripts": {
+    "docs": "rm -rf ./docs && node ./node_modules/jsdoc/jsdoc.js ./src/ -r -t ./templates/bs3/ -d ./docs/",
+    "docsw": "RD /S /Q .\\docs && node ./node_modules/jsdoc/jsdoc.js ./src/ -r -t ./templates/bs3/ -d ./docs/",
+    "test": "node node_modules/.bin/gulp default",
+    "publish": "cp readme.md ./src & cp -r ./src ./release/donkey && cd ./release/donkey && zip -r ../donkey.zip . && cd .. && rm -rf donkey && alioss upload && rm -rf donkey.zip"
+  },
+  "preferGlobal": false,
+  "bin": {},
+  "engines": {
+    "node": ">= 0.10.0",
+    "iojs": ">= 1.0.0"
+  },
+  "main": "index.js",
+  "keywords": [
+    "cloudcome",
+    "ydr.me"
+  ],
+  "author": {
+    "name": "cloudcome",
+    "email": "cloudcome@163.com",
+    "url": "http://ydr.me"
+  },
+  "contributors": [],
+  "homepage": "https://github.com/cloudcome/donkey",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudcome/donkey"
+  },
+  "bugs": {
+    "url": "https://github.com/cloudcome/donkey/issues"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {},
+  "licenses": "MIT"
+}
