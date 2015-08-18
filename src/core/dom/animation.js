@@ -28,7 +28,7 @@ define(function (require, exports, module) {
         return support;
     }());
 
-    require('../../jquery/jquery-transit.js')($);
+    require('../../jquery-plugins/jquery-transit.js')($);
 
     var defaults = {
         easing: 'linear',

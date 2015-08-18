@@ -15,7 +15,7 @@ define(function (require, exports, module) {
     'use strict';
 
     var $ = window.jQuery;
-    require('../../jquery/jquery-clip.js');
+    require('../../jquery-plugins/jquery-clip.js');
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');

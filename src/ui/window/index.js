@@ -1,65 +1,52 @@
 /*!
- * window
- * @author lumeixi
+ * 文件描述
  * @author ydr.me
- * @create 2015-07-20 09:44
+ * @create 2015-08-18 10:03
  */
 
 
 define(function (require, exports, module) {
+    /**
+     * @module ui/window/
+     */
 
     'use strict';
 
     var $ = window.jQuery;
     var ui = require('../index.js');
-    var style = require('./style.css', 'css');
+    var dato = require('../../utils/dato.js');
+    var modification = require('../../core/dom/modification.js');
+    var animation = require('../../core/dom/animation.js');
     var Template = require('../../libs/template.js');
     var template = require('./template.html', 'html');
     var tpl = new Template(template);
-    var dato = require('../../utils/dato.js');
-    var animation = require('../../core/dom/animation.js');
-    var controller = require('../../utils/controller.js');
-    var Mask = require('../mask/index.js');
+    var style = require('./style.css', 'css');
     var namespace = 'donkey-ui-window';
+    var donekyId = 0;
+    var eBody = document.body;
     var defaults = {
-        width: 600,
-        title: '标题',
-        //是否需要遮罩
-        showMask: true,
-        // 是否可以关闭
-        canClose: true
+        // width 可以等于 height，height 也可以等于 width
+        // 当两者都互相相等时，即是一个正方形
+        width: 'auto',
+        height: 'auto',
+        minWidth: 'none',
+        minHeight: 'none',
+        maxWidth: 1000,
+        maxHeight: 800,
+        duration: 567,
+        addClass: ''
     };
-
     var Window = ui.create({
-        constructor: function (options) {
+        constructor: function ($window, options) {
             var the = this;
 
+            the._$window = $($window);
             the._options = dato.extend({}, defaults, options);
-            the._init();
-            // 当前窗体是否可见
-            the.visible = false;
-        },
-
-        /**
-         * 初始化
-         * @private
-         */
-        _init: function () {
-            var the = this;
-            var options = the._options;
-
-            if (options.showMask) {
-                the._mask = new Mask(document.body, {
-                    style: {
-                        width: 0,
-                        height: 0
-                    }
-                });
-            }
-
+            the._id = donekyId++;
             the._initNode();
             the._initEvent();
         },
+
 
         /**
          * 初始化节点
@@ -68,20 +55,12 @@ define(function (require, exports, module) {
         _initNode: function () {
             var the = this;
             var options = the._options;
-            var html = tpl.render({
-                canClose: options.canClose
-            });
 
-            the._$container = $(html).appendTo(document.body);
-            the._$window = the._$container.children();
-            var nodes = $('.j-flag', the._$window);
-            the._$title = $(nodes[0]);
-            the._$close = $(nodes[1]);
-            the._$body = $(nodes[2]);
-
-            the._$title.html(options.title);
-            the._$window.width(options.width);
-            the._$htmlBody = $('html,body');
+            the._$container = $(tpl.render({
+                id: the._id
+            })).appendTo(eBody);
+            the._$parent = the._$container.children();
+            the._$window.appendTo(the._$parent);
         },
 
 
@@ -93,165 +72,62 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            the._$close.on('click', function () {
-                the.close();
-            });
 
-            $(window).on('resize', the._onresize = controller.debounce(function () {
-                the.resize();
-            }));
         },
 
-
-        /**
-         * 更新窗体位置
-         * @returns {Window}
-         */
-        resize: function () {
-            var the = this;
-
-            if (!the.visible) {
-                return the;
-            }
-
-            var options = the._options;
-            var windowWidth = $(window).width();
-            var windowHeight = $(window).height();
-            var winWidth = the._$window.width();
-            var winHeight = the._$window.height();
-            var left = (windowWidth - winWidth) / 2;
-            var top = (windowHeight - winHeight) / 3;
-
-            if (left < 0) {
-                left = 0;
-            }
-
-            if (top < 0) {
-                top = 0;
-            }
-
-            the._$window.css({
-                left: left,
-                top: top
-            });
-
-            return the;
-        },
-
-
-        /**
-         * 打开窗体
-         * @returns {Window}
-         */
         open: function () {
             var the = this;
             var options = the._options;
+            var width = options.width;
+            var height = options.height;
+            var widthEheight = false;
+            var heightEWidth = false;
 
-            if (the.visible) {
-                return the;
-            }
-
-            if (the._mask) {
-                the._mask.open();
-            }
-
-            the.emit('beforeopen');
-            the._$htmlBody.addClass(namespace + '-overflow');
-            the._$container.css({
-                zIndex: ui.getZindex(),
-                display: 'block'
-            });
-            animation.animate(the._$container, {
-                opacity: 1
-            }, function () {
-                the.emit('afteropen');
+            the._$container.show();
+            the._$parent.css({
+                display: 'block',
+                visibility: 'hidden',
+                width: 'auto',
+                height: 'auto',
+                minWidth: options.minWidth,
+                minHeight: options.minHeight,
+                maxWidth: options.maxWidth,
+                maxHeight: options.maxHeight
             });
 
-            the.visible = true;
-            the.resize();
-
-            return the;
-        },
-
-
-        /**
-         * 关闭窗体
-         * @returns {Window}
-         */
-        close: function () {
-            var the = this;
-
-            if (!the.visible) {
-                return the;
+            if (width === 'height') {
+                width = 'auto';
+                widthEheight = true;
             }
 
-            the.emit('beforeclose');
-            animation.animate(the._$container, {
-                opacity: 0
-            }, function () {
-                the._$container.css('display', 'none');
-                the._$htmlBody.removeClass(namespace + '-overflow');
-                the.emit('afterclose');
-            });
-
-            if (the._mask) {
-                the._mask.close();
+            if (height === 'width') {
+                height = 'auto';
+                heightEWidth = true;
             }
 
-            the.visible = false;
+            the._$parent.width(width).height(height);
 
-            return the;
-        },
-
-
-        /**
-         * 设置窗口内容
-         * @param html
-         * @returns {Window}
-         */
-        setContent: function (html) {
-            var the = this;
-
-            the._$body.html(html);
-            the.resize();
-            return the;
-        },
-
-
-        ///**
-        // * 获取 window 节点
-        // * @returns {*|jQuery}
-        // */
-        //getNodeOfWindow: function () {
-        //    return this._$window;
-        //},
-        //
-        //
-        ///**
-        // * 获取 body 节点
-        // * @returns {*|jQuery}
-        // */
-        //getNodeOfBody: function () {
-        //    return this._$body;
-        //},
-
-
-        /**
-         * 销毁实例
-         */
-        destroy: function () {
-            var the = this;
-
-            if (the._mask) {
-                the._mask.destroy();
+            if (widthEheight && heightEWidth) {
+                width = the._$parent.width();
+                height = the._$parent.height();
+                width = height = Math.max(width, height);
+                the._$parent.width(width).height(height);
+            } else if (widthEheight) {
+                width = height = the._$parent.height();
+                the._$parent.height(height);
+            } else if (heightEWidth) {
+                height = width = the._$parent.width();
+                the._$parent.width(height);
             }
 
-            $(window).off('resize', the._onresize);
-            the._$window.remove();
+
+            ui.align(the._$parent, window);
+
+            return the;
         }
     });
 
     Window.defaults = defaults;
-    module.exports = Window;
     ui.importStyle(style);
+    module.exports = Window;
 });
