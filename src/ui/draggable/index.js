@@ -43,7 +43,7 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            the._$draggable.draggable({
+            the._$draggable.draggable(dato.extend(options, {
                 start: function (event, ui) {
                     the.emit('beforedrag');
                 },
@@ -53,7 +53,7 @@ define(function (require, exports, module) {
                 stop: function (event, ui) {
                     the.emit('afterdrag');
                 }
-            });
+            }));
         },
 
 

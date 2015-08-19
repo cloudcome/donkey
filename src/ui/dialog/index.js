@@ -105,7 +105,7 @@ define(function (require, exports, module) {
 
             if (options.draggable) {
                 the._draggable = new Draggable(the._$window, {
-                    handle: the._$head
+                    handle: the._$head[0]
                 });
                 Emitter.pipe(the._draggable, the);
             }

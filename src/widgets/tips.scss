@@ -1,0 +1,32 @@
+$normal-background: #444;
+$success-background: #69af01;
+$danger-background: #f77e7e;
+$info-background: #5bc0de;
+$warn-background: #f0ad4e;
+
+.donkey-widgets-tips {
+  font-size: 12px;
+  line-height: 20px;
+  padding: 5px 20px;
+  color: #fff;
+
+  &-normal {
+    background: $normal-background;
+  }
+
+  &-success {
+    background: $success-background;
+  }
+
+  &-danger {
+    background: $danger-background;
+  }
+
+  //&-info{
+  //  background: $success-background;
+  //}
+  //
+  //&-warn{
+  //  background: $success-background;
+  //}
+}
