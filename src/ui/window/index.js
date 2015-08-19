@@ -33,7 +33,7 @@ define(function (require, exports, module) {
     var Mask = require('../mask/index.js');
     var namespace = 'donkey-ui-window';
     var donekyId = 0;
-    var eBody = document.body;
+    var elBody = document.body;
     var windowList = [];
     var windowMap = {};
     var defaults = {
@@ -74,19 +74,25 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            if (options.modal) {
-                the._mask = new Mask(window);
-            }
-
             the._$flag = $(modification.create('#comment', namespace + '-' + the._id));
             the._$parent = $(tpl.render({
                 id: the._id
-            })).appendTo(eBody);
+            })).appendTo(elBody);
             var $children = the._$parent.children();
             the._$focus = $($children[0]);
             the._$body = $($children[1]);
             the._$flag.insertAfter(the._$window);
             the._$window.appendTo(the._$body);
+
+            if (options.modal) {
+                the._mask = new Mask(window);
+                the._$modal = $(modification.create('div', {
+                    'class': namespace + '-modal',
+                    id: namespace + '-modal-' + the._id
+                }));
+                the._$modal.appendTo(elBody);
+                the._$parent.appendTo(the._$modal);
+            }
         },
 
 
@@ -128,6 +134,7 @@ define(function (require, exports, module) {
 
             if (the._mask) {
                 the._mask.open();
+                the._$modal.css('zIndex', ui.getZindex()).show();
             }
 
             the._$parent.css({
@@ -240,6 +247,7 @@ define(function (require, exports, module) {
 
                 if (the._mask) {
                     the._mask.close();
+                    the._$modal.hide();
                 }
 
                 if (typeis.function(callback)) {
@@ -274,6 +282,7 @@ define(function (require, exports, module) {
 
                 if (the._mask) {
                     the._mask.destroy();
+                    the._$modal.remove();
                 }
 
                 windowMap[the._id] = null;
