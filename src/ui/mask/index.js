@@ -34,6 +34,8 @@ define(function (require, exports, module) {
             the._$parent = $($parent);
             the._options = dato.extend({}, defaults, options);
             the._id = donkeyIndex++;
+            the.visible = false;
+            the.destroyed = false;
             the._initNode();
         },
 
@@ -86,7 +88,7 @@ define(function (require, exports, module) {
                 id: the._id
             });
 
-            the._$mask = $(innerHTML).appendTo(body || html);
+            the._$mask = $(innerHTML).appendTo(body);
             the._$mask.css(options);
         },
 
@@ -98,10 +100,22 @@ define(function (require, exports, module) {
         open: function () {
             var the = this;
 
+            if (the.visible) {
+                return the;
+            }
+
+            var offset = the._$parent.offset();
+
+            the.emit('beforeopen');
+            the.visible = true;
             the._$mask.css({
-                zIndex: ui.getZindex(),
-                display: 'block'
-            });
+                width: the._$parent.outerWidth(),
+                height: the._$parent.outerHeight(),
+                top: offset ? offset.top : 0,
+                left: offset ? offset.left : 0,
+                zIndex: ui.getZindex()
+            }).show();
+            the.emit('afteropen');
 
             return the;
         },
@@ -114,7 +128,14 @@ define(function (require, exports, module) {
         close: function () {
             var the = this;
 
+            if (!the.visible) {
+                return the;
+            }
+
+            the.emit('beforeclose');
+            the.visible = false;
             the._$mask.hide();
+            the.emit('afterclose');
 
             return the;
         },
@@ -124,6 +145,9 @@ define(function (require, exports, module) {
          * 销毁实例
          */
         destroy: function () {
+            var the = this;
+
+
             this._$mask.remove();
         }
     });

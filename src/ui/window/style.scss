@@ -1,5 +1,5 @@
 .donkey-ui-window {
-  position: fixed;
+  position: absolute;
   display: none;
 
   &-focus {
@@ -22,6 +22,5 @@
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: auto;
   }
 }

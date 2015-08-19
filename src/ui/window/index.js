@@ -30,6 +30,7 @@ define(function (require, exports, module) {
     var template = require('./template.html', 'html');
     var tpl = new Template(template);
     var style = require('./style.css', 'css');
+    var Mask = require('../mask/index.js');
     var namespace = 'donkey-ui-window';
     var donekyId = 0;
     var eBody = document.body;
@@ -44,10 +45,11 @@ define(function (require, exports, module) {
         minHeight: 'none',
         maxWidth: 1000,
         maxHeight: 800,
-        duration: 567,
+        duration: 345,
         addClass: '',
-        translateY: 10,
-        autoResize: true
+        translateY: 25,
+        autoResize: true,
+        modal: true
     };
     var Window = ui.create({
         constructor: function ($window, options) {
@@ -72,6 +74,7 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
+            the._mask = new Mask(window);
             the._$flag = $(modification.create('#comment', namespace + '-' + the._id));
             the._$parent = $(tpl.render({
                 id: the._id
@@ -104,7 +107,7 @@ define(function (require, exports, module) {
          * 打开 window
          * @returns {Window}
          */
-        open: function () {
+        open: function (callback) {
             var the = this;
 
             if (the.visible) {
@@ -117,7 +120,9 @@ define(function (require, exports, module) {
             var widthEheight = false;
             var heightEWidth = false;
 
+            the.emit('beforeopen');
             the.visible = true;
+            the._mask.open();
             the._$parent.css({
                 display: 'block',
                 opacity: 0,
@@ -165,7 +170,6 @@ define(function (require, exports, module) {
                 opacity: 1
             });
 
-            the.emit('beforeopen');
             the._$parent.css(fromStyle);
             // 焦点聚焦到 window 上
             the._$focus.focus();
@@ -173,6 +177,11 @@ define(function (require, exports, module) {
                 duration: options.duration
             }, function () {
                 the._$focus.blur();
+
+                if(typeis.function(callback)){
+                    callback.call(the);
+                }
+
                 the.emit('aftereopen');
             });
 
@@ -191,7 +200,9 @@ define(function (require, exports, module) {
                 return the;
             }
 
+            the.emit('beforeresize');
             ui.align(the._$parent, window);
+            the.emit('afterresize');
 
             return the;
         },
@@ -210,8 +221,8 @@ define(function (require, exports, module) {
                 return the;
             }
 
-            the.visible = false;
             the.emit('beforeclose');
+            the.visible = false;
             var translateYStyle1 = ui.translateY(-options.translateY);
             animation.animate(the._$parent, dato.extend(translateYStyle1, {
                 opacity: 0
@@ -219,6 +230,7 @@ define(function (require, exports, module) {
                 duration: options.duration
             }, function () {
                 the._$parent.hide();
+                the._mask.close();
 
                 if (typeis.function(callback)) {
                     callback.call(the);
@@ -232,7 +244,7 @@ define(function (require, exports, module) {
         /**
          * 销毁 window
          */
-        destroy: function () {
+        destroy: function (callback) {
             var the = this;
 
             if (the.destroyed) {
@@ -243,11 +255,13 @@ define(function (require, exports, module) {
                 $(window).off('resize', the._onresize);
             }
 
+            the.emit('beforedestroy');
             the.destroyed = true;
             the.close(function () {
                 the._$window.insertAfter(the._$flag);
                 the._$parent.remove();
                 the._$flag.remove();
+                the._mask.destroy();
                 windowMap[the._id] = null;
                 var findIndex = -1;
                 dato.each(windowList, function (index, id) {
@@ -257,6 +271,12 @@ define(function (require, exports, module) {
                     }
                 });
                 windowList.splice(findIndex, 1);
+
+                if (typeis.function(callback)) {
+                    callback.call(the);
+                }
+
+                the.emit('afterdestroy');
             });
         }
     });
