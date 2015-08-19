@@ -21,13 +21,13 @@ define(function (require, exports, module) {
     var Window = require('../ui/window/index.js');
     var namespace = 'donkey-widgets-tips';
     var donkeyId = 0;
-    var lastTip = null;
     var defaults = {
         // normal/success/danger
         type: 'normal',
         text: '提示',
         addClass: '',
-        timeout: 2345
+        timeout: 2345,
+        maxWidth: 500
     };
     var Tips = ui.create({
         constructor: function (options) {
@@ -54,7 +54,8 @@ define(function (require, exports, module) {
             div.innerHTML = options.text;
             the._$tips = $(div).appendTo(elBody);
             the._window = new Window(the._$tips, {
-                modal: false
+                modal: false,
+                maxWidth: options.maxWidth
             });
         },
 
@@ -63,11 +64,11 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            //if (options.timeout) {
-            //    the._timeid = setTimeout(function () {
-            //        the.destroy();
-            //    }, options.timeout);
-            //}
+            if (options.timeout) {
+                the._timeid = setTimeout(function () {
+                    the.destroy();
+                }, options.timeout);
+            }
         },
 
 
@@ -113,23 +114,13 @@ define(function (require, exports, module) {
     Tips.defaults = defaults;
 
     var tips = function (options) {
-        if (lastTip) {
-            lastTip.destroy();
-        }
-
         if (typeis.string(options)) {
             options = {
                 text: options
             };
         }
 
-        lastTip = new Tips(options).open();
-
-        lastTip.after('destroy', function () {
-            lastTip = null;
-        });
-
-        return lastTip;
+        return new Tips(options).open();
     };
 
 

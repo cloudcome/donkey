@@ -16,14 +16,14 @@ define(function (require, exports, module) {
     var random = require('../../src/utils/random.js');
 
     $('#openTips0').on('click', function () {
-        tips(random.string(random.number(20, 99)), 'aA0');
+        tips(random.string(random.number(10, 300)), 'aA0');
     });
 
     $('#openTips1').on('click', function () {
-        tips.success(random.string(random.number(20, 99)), 'aA0');
+        tips.success(random.string(random.number(10, 300)), 'aA0');
     });
 
     $('#openTips2').on('click', function () {
-        tips.danger(random.string(random.number(20, 99)), 'aA0');
+        tips.danger(random.string(random.number(10, 300)), 'aA0');
     });
 });
