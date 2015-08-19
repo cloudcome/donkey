@@ -11,6 +11,8 @@
 .doneky-ui-imgclip-holder {
   direction: ltr;
   text-align: left; }
+  .doneky-ui-imgclip-holder input {
+    visibility: hidden; }
 
 /* Selection Border */
 .doneky-ui-imgclip-vline,

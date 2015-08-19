@@ -184,7 +184,6 @@ define(function (require, exports, module) {
 
             the.emit('beforeupdate');
             the._window.update();
-            the.resize();
             the.emit('afterupdate');
 
             return the;

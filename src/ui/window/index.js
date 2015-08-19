@@ -134,12 +134,8 @@ define(function (require, exports, module) {
             }
 
             var options = the._options;
-            var width = options.width;
-            var height = options.height;
-            var widthEheight = false;
-            var heightEWidth = false;
 
-            the.update();
+
 
             the.emit('beforeopen');
             the.visible = true;
@@ -149,42 +145,8 @@ define(function (require, exports, module) {
                 the._$modal.css('zIndex', ui.getZindex()).show();
             }
 
-            the._$parent.css({
-                display: 'block',
-                opacity: 0,
-                width: 'auto',
-                height: 'auto',
-                minWidth: options.minWidth,
-                minHeight: options.minHeight,
-                maxWidth: options.maxWidth,
-                maxHeight: options.maxHeight,
-                zIndex: ui.getZindex()
-            });
-
-            if (width === 'height') {
-                width = 'auto';
-                widthEheight = true;
-            }
-
-            if (height === 'width') {
-                height = 'auto';
-                heightEWidth = true;
-            }
-
-            the._$parent.width(width).height(height);
-
-            if (widthEheight && heightEWidth) {
-                width = the._$parent.width();
-                height = the._$parent.height();
-                width = height = Math.max(width, height);
-                the._$parent.width(width).height(height);
-            } else if (widthEheight) {
-                width = height = the._$parent.height();
-                the._$parent.height(height);
-            } else if (heightEWidth) {
-                height = width = the._$parent.width();
-                the._$parent.width(height);
-            }
+            the._$parent.css('opacity', 0);
+            the.update();
 
             var style = ui.align(the._$parent, window, {
                 returnStyle: true
@@ -221,12 +183,54 @@ define(function (require, exports, module) {
          */
         update: function () {
             var the = this;
+            var options = the._options;
 
             if (!the.visible) {
                 return the;
             }
 
+            var width = options.width;
+            var height = options.height;
+            var widthEheight = false;
+            var heightEWidth = false;
+
             the.emit('beforeupdate');
+            the._$parent.css({
+                display: 'block',
+                width: 'auto',
+                height: 'auto',
+                minWidth: options.minWidth,
+                minHeight: options.minHeight,
+                maxWidth: options.maxWidth,
+                maxHeight: options.maxHeight,
+                zIndex: ui.getZindex()
+            });
+
+            if (width === 'height') {
+                width = 'auto';
+                widthEheight = true;
+            }
+
+            if (height === 'width') {
+                height = 'auto';
+                heightEWidth = true;
+            }
+
+            the._$parent.width(width).height(height);
+
+            if (widthEheight && heightEWidth) {
+                width = the._$parent.width();
+                height = the._$parent.height();
+                width = height = Math.max(width, height);
+                the._$parent.width(width).height(height);
+            } else if (widthEheight) {
+                width = height = the._$parent.height();
+                the._$parent.height(height);
+            } else if (heightEWidth) {
+                height = width = the._$parent.width();
+                the._$parent.width(height);
+            }
+
             the.resize();
             the.emit('afterupdate');
 
@@ -253,18 +257,9 @@ define(function (require, exports, module) {
         },
 
 
-        /**
-         * 关闭 window
-         * @params callback {Function} 回调
-         * @returns {Window}
-         */
-        close: function (callback) {
+        _close: function (callback) {
             var the = this;
             var options = the._options;
-
-            if (!the.visible) {
-                return the;
-            }
 
             the.emit('beforeclose');
             the.visible = false;
@@ -291,6 +286,22 @@ define(function (require, exports, module) {
 
 
         /**
+         * 关闭 window
+         * @params callback {Function} 回调
+         * @returns {Window}
+         */
+        close: function (callback) {
+            var the = this;
+
+            if (!the.visible) {
+                return the;
+            }
+
+            the._close(callback);
+        },
+
+
+        /**
          * 销毁 window
          */
         destroy: function (callback) {
@@ -306,7 +317,7 @@ define(function (require, exports, module) {
 
             the.emit('beforedestroy');
             the.destroyed = true;
-            the.close(function () {
+            the._close(function () {
                 the._$window.insertAfter(the._$flag);
                 the._$parent.remove();
                 the._$flag.remove();
