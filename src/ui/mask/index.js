@@ -147,8 +147,14 @@ define(function (require, exports, module) {
         destroy: function () {
             var the = this;
 
+            if (the.destroyed) {
+                return;
+            }
 
-            this._$mask.remove();
+            the.emit('beforedestroy');
+            the.destroyed = true;
+            the._$mask.remove();
+            the.emit('afterdestroy');
         }
     });
 
