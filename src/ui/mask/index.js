@@ -104,20 +104,33 @@ define(function (require, exports, module) {
                 return the;
             }
 
-            var offset = the._$parent.offset();
 
             the.emit('beforeopen');
             the.visible = true;
-            the._$mask.css({
-                width: the._$parent.outerWidth(),
-                height: the._$parent.outerHeight(),
-                top: offset ? offset.top : 0,
-                left: offset ? offset.left : 0,
-                zIndex: ui.getZindex()
-            }).show();
+
+            if (!_isSameToWindow(the._$parent[0])) {
+                var offset = the._$parent.offset();
+
+                the._$mask.css({
+                    width: the._$parent.outerWidth(),
+                    height: the._$parent.outerHeight(),
+                    right: 'auto',
+                    bottom: 'auto',
+                    top: offset ? offset.top : 0,
+                    left: offset ? offset.left : 0,
+                    zIndex: ui.getZindex()
+                });
+            }
+
+            the._$mask.show();
             the.emit('afteropen');
 
             return the;
+        },
+
+
+        resize: function () {
+
         },
 
 
@@ -161,4 +174,9 @@ define(function (require, exports, module) {
     Mask.defaults = defaults;
     module.exports = Mask;
     ui.importStyle(require('./style.css', 'css'));
+
+
+    function _isSameToWindow(ele) {
+        return ele === window || ele === html || ele === doc || ele === body;
+    }
 });

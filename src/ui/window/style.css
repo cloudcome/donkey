@@ -1,6 +1,7 @@
 .donkey-ui-window {
   position: absolute;
-  display: none; }
+  display: none;
+  overflow: auto; }
   .donkey-ui-window-modal {
     display: none;
     position: fixed;
