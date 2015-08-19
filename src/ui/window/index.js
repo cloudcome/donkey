@@ -74,7 +74,10 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            the._mask = new Mask(window);
+            if (options.modal) {
+                the._mask = new Mask(window);
+            }
+
             the._$flag = $(modification.create('#comment', namespace + '-' + the._id));
             the._$parent = $(tpl.render({
                 id: the._id
@@ -122,7 +125,11 @@ define(function (require, exports, module) {
 
             the.emit('beforeopen');
             the.visible = true;
-            the._mask.open();
+
+            if (the._mask) {
+                the._mask.open();
+            }
+
             the._$parent.css({
                 display: 'block',
                 opacity: 0,
@@ -178,7 +185,7 @@ define(function (require, exports, module) {
             }, function () {
                 the._$focus.blur();
 
-                if(typeis.function(callback)){
+                if (typeis.function(callback)) {
                     callback.call(the);
                 }
 
@@ -230,7 +237,10 @@ define(function (require, exports, module) {
                 duration: options.duration
             }, function () {
                 the._$parent.hide();
-                the._mask.close();
+
+                if (the._mask) {
+                    the._mask.close();
+                }
 
                 if (typeis.function(callback)) {
                     callback.call(the);
@@ -261,7 +271,11 @@ define(function (require, exports, module) {
                 the._$window.insertAfter(the._$flag);
                 the._$parent.remove();
                 the._$flag.remove();
-                the._mask.destroy();
+
+                if (the._mask) {
+                    the._mask.destroy();
+                }
+
                 windowMap[the._id] = null;
                 var findIndex = -1;
                 dato.each(windowList, function (index, id) {
