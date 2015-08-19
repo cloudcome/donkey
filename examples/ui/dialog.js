@@ -14,11 +14,13 @@ define(function (require, exports, module) {
 
     var random = require('../../src/utils/random.js');
     var Dialog = require('../../src/ui/dialog/index.js');
-    var dialog = new Dialog('#demo');
+    var dialog = new Dialog('#demo', {
+        maxHeight: 600
+    });
 
     $('#demo').on('click', function () {
         $(this).width(random.number(200, 900)).height(random.number(200, 900));
-        dialog.resize();
+        dialog.update();
     });
 
     $('#open').on('click', function () {

@@ -1,6 +1,10 @@
 .donkey-ui-dialog {
   height: 100%;
 
+  &-window{
+    overflow: hidden;
+  }
+
   &-inner {
     background: #fff;
     border: 1px solid #ccc;

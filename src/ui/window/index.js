@@ -83,6 +83,7 @@ define(function (require, exports, module) {
             the._$body = $($children[1]);
             the._$flag.insertAfter(the._$window);
             the._$window.appendTo(the._$body);
+            the._$parent.addClass(options.addClass);
 
             if (options.modal) {
                 the._mask = new Mask(window);
@@ -137,6 +138,8 @@ define(function (require, exports, module) {
             var height = options.height;
             var widthEheight = false;
             var heightEWidth = false;
+
+            the.update();
 
             the.emit('beforeopen');
             the.visible = true;
@@ -205,8 +208,27 @@ define(function (require, exports, module) {
                     callback.call(the);
                 }
 
-                the.emit('aftereopen');
+                the.emit('afteropen');
             });
+
+            return the;
+        },
+
+
+        /**
+         * 更新了 window 内容
+         * @returns {Window}
+         */
+        update: function () {
+            var the = this;
+
+            if (!the.visible) {
+                return the;
+            }
+
+            the.emit('beforeupdate');
+            the.resize();
+            the.emit('afterupdate');
 
             return the;
         },

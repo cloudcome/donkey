@@ -46,13 +46,13 @@ define(function (require, exports, module) {
         maxWidth: 1000,
         maxHeight: 800,
         duration: 345,
-        addClass: '',
         // 动画偏移量
         translateY: 25,
         modal: true,
         // 是否自动调整位置
         autoResize: true,
         //-------------------------
+        addClass: '',
         // 标题
         title: '无标题',
         // 是否可以拖动
@@ -91,7 +91,9 @@ define(function (require, exports, module) {
             the._$title = $(nodes[1]);
             the._$close = $(nodes[2]);
             the._$body = $(nodes[3]);
-            the._window = new Window(the._$parent, options);
+            the._window = new Window(the._$parent, dato.extend({}, options, {
+                addClass: namespace + '-window'
+            }));
             the._$window = $(the._window.getNode());
 
             var ndFlag = modification.create('#comment', namespace + '-' + the._id);
@@ -118,9 +120,16 @@ define(function (require, exports, module) {
          */
         _initEvent: function () {
             var the = this;
+            var options = the._options;
 
             the._$close.on('click', function () {
                 the.close();
+            });
+
+            the._window.before('update', function () {
+                the._$body.css('height', 'auto');
+            }).after('update', function () {
+                the._$body.css('height', the._$window.outerHeight() - 2 - (options.title ? 35 : 0));
             });
         },
 
@@ -143,6 +152,7 @@ define(function (require, exports, module) {
                 the._$head.hide();
             }
 
+            the._options.title = title;
             return the.resize();
         },
 
@@ -158,6 +168,26 @@ define(function (require, exports, module) {
             the._$body.html();
 
             return the.resize();
+        },
+
+
+        /**
+         * 更新了 dialog 内容
+         * @returns {Dialog}
+         */
+        update: function () {
+            var the = this;
+
+            if (!the.visible) {
+                return the;
+            }
+
+            the.emit('beforeupdate');
+            the._window.update();
+            the.resize();
+            the.emit('afterupdate');
+
+            return the;
         },
 
 
