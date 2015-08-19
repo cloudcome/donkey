@@ -12,127 +12,89 @@ define(function (require, exports, module) {
      * @requires utils/dato
      */
 
+    require('../../jquery-ui/draggable.js');
     var $ = window.jQuery;
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
-    require('../../3rd/jquery-ui/1.9.2/draggable.js');
     var defaults = {
-        /**
-         * 拖拽方向：x、y，为空表示 xy
-         * @type String
-         */
-        axis: '',
-        /**
-         * 在限定的元素（选择器）内进行拖拽
-         * @type {String|Object|Array|Element}  String->'parent','document','window'
-         */
-        containment: 'parent',
-        /**
-         * 拖拽过程中鼠标样式
-         * @type {String}
-         */
-        cursor: 'auto',
-        /**
-         * 拖拽过程中元素的不透明度
-         * @type {Number}
-         */
-        opacity: 1,
-        /**
-         * 在某元素内（选择器）使拖拽的元素处于最前
-         * @type {Object}
-         */
-        stack: '',
-        /**
-         * 防止指定元素拖动
-         * @type {Object}
-         */
-        cancel: '',
-        /**
-         * 鼠标点击后，延迟拖拽动作（ms）
-         * @type {Number}
-         */
-        delay: 0,
-        /**
-         * 拖拽动效禁用
-         * @type {Boolean}
-         */
-        disabled: false,
-        valueDataKey: 'id'
+        // 触发位，默认为整体
+        handle: false,
+        // 复制位：original、clone
+        helper: 'original',
+        // 是否返回
+        revert: false,
+        // 返回动画时间
+        revertDuration: 345,
+        // 拖拽方向：x、y、false
+        axis: false
     };
-
     var Draggable = ui.create({
-        constructor: function ($content, options) {
+        constructor: function ($draggable, options) {
             var the = this;
-            the._$content = $($content);
+
+            the._$draggable = $($draggable);
             the._options = dato.extend({}, defaults, options);
-            the._step = options.step;
-
-            the._init();
-        },
-
-
-        /**
-         * 初始化
-         * @private
-         */
-        _init: function () {
-            var the = this;
-            var options = the._options;
-
-            the._$content.draggable(options);
-
+            the.destroyed = false;
             the._initEvent();
         },
 
 
-        /**
-         * 初始化事件
-         * @private
-         */
         _initEvent: function () {
             var the = this;
             var options = the._options;
 
-            the._$content.on('dragstop', function (event, ui) {
-                var $pre;
-                var multi;
-                var move = ui.position.left;
-                var index = $(this).index();
-
-                multi = parseInt(move / the._step);
-
-                the._$content = $('.move');
-                $pre = $(the._$content[index + multi - 1]);
-
-                if (move >= 0) {
-                    $pre.after($(this));
-
-                } else {
-                    $pre.before($(this));
+            the._$draggable.draggable({
+                start: function (event, ui) {
+                    the.emit('beforedrag');
+                },
+                drag: function (event, ui) {
+                    the.emit('drag');
+                },
+                stop: function (event, ui) {
+                    the.emit('afterdrag');
                 }
-
-                $(this).css({
-                    left: 0
-                });
             });
-
         },
 
 
         /**
-         * 获取顺序
-         * @returns {Array}
+         * 设置为可拖拽
+         * @returns {Draggable}
          */
-        getValue: function () {
+        enable: function () {
             var the = this;
-            the._list = [];
-            the._$content = $('.move');
 
-            $.each(the._$content, function (index) {
-                the._list.push($(the._$content[index]).data(the._options.valueDataKey));
-            });
+            the._$draggable.draggable('enable');
 
-            return the._list;
+            return the;
+        },
+
+
+        /**
+         * 设置为不可拖拽
+         * @returns {Draggable}
+         */
+        disable: function () {
+            var the = this;
+
+            the._$draggable.draggable('disable');
+
+            return the;
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+
+            if (the.destroyed) {
+                return;
+            }
+
+            the.destroyed = true;
+            the._$draggable.draggable('destroy');
         }
     });
 

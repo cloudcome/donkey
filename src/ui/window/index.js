@@ -113,6 +113,15 @@ define(function (require, exports, module) {
 
 
         /**
+         * 获取当前节点
+         * @returns {Node}
+         */
+        getNode: function () {
+            return this._$parent[0];
+        },
+
+
+        /**
          * 打开 window
          * @returns {Window}
          */

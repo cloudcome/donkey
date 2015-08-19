@@ -7,16 +7,24 @@
 
 define(function (require, exports, module) {
     /**
-     * @module parent/index
+     * @module ui/dialog/
+     * @requires libs/template
+     * @requires utils/dato
+     * @requires utils/typeis
+     * @requires ui/
+     * @requires ui/window/
+     * @requires core/dom/modification
      */
 
     'use strict';
+
 
     var win = window;
     var $ = win.jQuery;
     var doc = win.document;
     var elBody = doc.body;
     var ui = require('../index.js');
+    var Emitter = require('../../libs/emitter.js');
     var Template = require('../../libs/template.js');
     var template = require('./template.html', 'html');
     var tpl = new Template(template);
@@ -24,6 +32,7 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var Window = require('../window/index.js');
+    var Draggable = require('../draggable/index.js');
     var modification = require('../../core/dom/modification.js');
     var namespace = 'donkey-ui-dialog';
     var donkeyId = 0;
@@ -58,6 +67,7 @@ define(function (require, exports, module) {
 
             the._$dialog = $($dialog);
             the._options = dato.extend({}, defaults, options);
+            the.visible = false;
             the.destroyed = false;
             the._id = donkeyId++;
             the._initNode();
@@ -82,6 +92,7 @@ define(function (require, exports, module) {
             the._$close = $(nodes[2]);
             the._$body = $(nodes[3]);
             the._window = new Window(the._$parent, options);
+            the._$window = $(the._window.getNode());
 
             var ndFlag = modification.create('#comment', namespace + '-' + the._id);
             the._$flag = $(ndFlag).insertAfter(the._$dialog);
@@ -90,6 +101,13 @@ define(function (require, exports, module) {
 
             if (!options.canClose) {
                 the._$close.hide();
+            }
+
+            if (options.draggable) {
+                the._draggable = new Draggable(the._$window, {
+                    handle: the._$head
+                });
+                Emitter.pipe(the._draggable, the);
             }
         },
 
@@ -150,7 +168,13 @@ define(function (require, exports, module) {
         resize: function () {
             var the = this;
 
+            if (!the.visible) {
+                return the;
+            }
+
+            the.emit('beforeresize');
             the._window.resize();
+            the.emit('afterresize');
 
             return the;
         },
@@ -164,7 +188,12 @@ define(function (require, exports, module) {
         open: function (callback) {
             var the = this;
 
+            if (the.visible) {
+                return the;
+            }
+
             the.emit('beforeopen');
+            the.visible = true;
             the._window.open(function () {
                 if (typeis.function(callback)) {
                     callback.call(the);
@@ -185,7 +214,12 @@ define(function (require, exports, module) {
         close: function (callback) {
             var the = this;
 
+            if (!the.visible) {
+                return the;
+            }
+
             the.emit('beforeclose');
+            the.visible = false;
             the._window.close(function () {
                 if (typeis.function(callback)) {
                     callback.call(the);
@@ -210,6 +244,11 @@ define(function (require, exports, module) {
 
             the.emit('beforedestroy');
             the.destroyed = true;
+
+            if (the._draggable) {
+                the._draggable.destroy();
+            }
+
             the._window.destroy(function () {
                 the._$dialog.insertAfter(the._$flag);
                 the._$flag.remove();
