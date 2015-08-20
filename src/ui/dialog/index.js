@@ -58,8 +58,9 @@ define(function (require, exports, module) {
         // 是否可以拖动
         draggable: true,
         // 是否可以关闭
-        canClose: true
-        // 是否模态
+        canClose: true,
+        // overflow
+        overflow: 'auto'
     };
     var Dialog = ui.create({
         constructor: function ($dialog, options) {
@@ -99,6 +100,7 @@ define(function (require, exports, module) {
             var ndFlag = modification.create('#comment', namespace + '-' + the._id);
             the._$flag = $(ndFlag).insertAfter(the._$dialog);
             the._$dialog.appendTo(the._$body);
+            the._$body.css('overflow', options.overflow);
             the.setTitle(options.title);
 
             if (!options.canClose) {
@@ -177,13 +179,16 @@ define(function (require, exports, module) {
          */
         update: function () {
             var the = this;
+            var options = the._options;
 
             if (!the.visible) {
                 return the;
             }
 
             the.emit('beforeupdate');
+            the._$body.css('overflow', 'auto');
             the._window.update();
+            the._$body.css('overflow', options.overflow);
             the.emit('afterupdate');
 
             return the;

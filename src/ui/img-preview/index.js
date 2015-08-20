@@ -30,15 +30,25 @@ define(function (require, exports, module) {
     //var supportCanvas = 'getContext' in eleCanvas;
     var REG_IMAGE = /^image\//;
     var REG_HTTP = /^https?:\/\//;
-    var defaults = {};
+    var defaults = {
+        width: 'auto',
+        height: 'auto',
+        maxWidth: 'none',
+        maxHeight: 'none'
+    };
     var ImgPreview = ui.create({
         constructor: function ($parent, options) {
             var the = this;
 
             the._$parent = $($parent);
             the._$parent.html('<img>');
-            the._eleImg = the._$parent.children()[0];
+            the._$img = the._$parent.children();
+            the._eleImg = the._$img[0];
             the._options = dato.extend({}, defaults, options);
+            the._$img.css(the._options);
+            the._eleImg.onload = function () {
+                the.emit('afterload');
+            };
         },
 
 
@@ -55,6 +65,13 @@ define(function (require, exports, module) {
                 url = fileInput;
             } else {
                 fileInput = $(fileInput)[0];
+
+                if (!fileInput.files) {
+                    err = new Error('文件不存在');
+                    err.type = 'empty';
+                    the.emit('error', err);
+                    return the;
+                }
 
                 var file = fileInput.files[0];
                 var err;
@@ -76,6 +93,7 @@ define(function (require, exports, module) {
                 url = URL.createObjectURL(file);
             }
 
+            the.emit('beforeload');
             the._eleImg.src = url;
 
             return url;

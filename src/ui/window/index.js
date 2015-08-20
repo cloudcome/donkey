@@ -83,7 +83,7 @@ define(function (require, exports, module) {
             the._$body = $($children[1]);
             the._$flag.insertAfter(the._$window);
             the._$window.appendTo(the._$body);
-            the._$parent.addClass(options.addClass);
+            the._$parent.addClass(options.addClass).css('position', options.modal ? 'absoluted' : 'fixed');
 
             if (options.modal) {
                 the._mask = new Mask(window);
@@ -134,7 +134,6 @@ define(function (require, exports, module) {
             }
 
             var options = the._options;
-
 
 
             the.emit('beforeopen');
