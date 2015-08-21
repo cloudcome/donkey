@@ -308,7 +308,11 @@ define(function (require, exports, module) {
             }
 
             if (!the._unDispathChange) {
-                $select.trigger('change');
+                the._cleanValues(index + 1);
+
+                if (index + 1 < the._length) {
+                    the.change(index + 1);
+                }
             }
 
             the.emit('afterrender', index);

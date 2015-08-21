@@ -62,6 +62,7 @@ define(function (require, exports, module) {
             the._validateList = [];
             the._validateIndexMap = {};
             the._aliasMap = {};
+            the._msgMap = {};
             the._validationMap = {};
         },
 
@@ -85,6 +86,23 @@ define(function (require, exports, module) {
          */
         getAlias: function (path) {
             return this._aliasMap[path];
+        },
+
+
+        /**
+         * 重设验证消息
+         * @param path
+         * @param ruleName
+         * @param msg
+         * @returns {Validation}
+         */
+        setMsg: function (path, ruleName, msg) {
+            var the = this;
+
+            the._msgMap[path] = the._msgMap[path] || {};
+            the._msgMap[path][ruleName] = msg;
+
+            return the;
         },
 
 
@@ -297,9 +315,10 @@ define(function (require, exports, module) {
                 })
                 .catch(function (err) {
                     if (options.breakOnInvalid) {
-                        err = new Error(string.assign(err || options.defaultMsg, {
-                            path: the._aliasMap[path] || path
-                        }));
+                        //err = new Error(string.assign(err || options.defaultMsg, {
+                        //    path: the._aliasMap[path] || path
+                        //}));
+                        err = new Error(err || options.defaultMsg);
 
                         /**
                          * 验证失败
@@ -339,11 +358,13 @@ define(function (require, exports, module) {
              * @param path {String} 字段
              */
             the.emit('beforevalidate', path);
+            var currentRule;
             howdo
                 // 遍历验证规则
                 .each(rules, function (j, rule, next) {
                     var args = [data[path], next];
 
+                    currentRule = rule;
                     the.emit('validate', path, rule.name);
                     args = args.concat(rule.params);
                     the.path = path;
@@ -369,6 +390,12 @@ define(function (require, exports, module) {
                     }
                 })
                 .catch(function (err) {
+                    var overrideMsg = the._msgMap[path] && the._msgMap[path][currentRule.name];
+                    var args = [overrideMsg || err || options.defaultMsg, the.getAlias(path) || path];
+
+                    args = args.concat(currentRule.params);
+                    err = new Error(string.assign.apply(string, args));
+
                     // 验证失败即断开
                     if (options.breakOnInvalid) {
                         /**
@@ -382,9 +409,9 @@ define(function (require, exports, module) {
                             callback.call(the, err, true);
                         }
                     } else {
-                        err = new Error(string.assign(err || options.defaultMsg, {
-                            path: the._aliasMap[path] || path
-                        }));
+                        //err = new Error(string.assign(err || options.defaultMsg, {
+                        //    path: the._aliasMap[path] || path
+                        //}));
 
                         /**
                          * 验证失败

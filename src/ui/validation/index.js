@@ -25,6 +25,8 @@ define(function (require, exports, module) {
     'use strict';
 
     var $ = window.jQuery;
+    require('../../polyfill/string.js');
+    require('../../polyfill/array.js');
     //var selector = require('../../core/dom/selector.js');
     //var attribute = require('../../core/dom/attribute.js');
     //var modification = require('../../core/dom/modification.js');
@@ -59,6 +61,7 @@ define(function (require, exports, module) {
         // 规则的 data 属性
         dataValidation: 'validation',
         dataAlias: 'alias',
+        dataMsg: 'msg',
         // data 规则分隔符
         dataSep: ',',
         // data 规则等于符
@@ -75,6 +78,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._options = dato.extend({}, defaults, options);
+            the._regDataMsg = new RegExp(string.escapeRegExp('data-' + the._options).dataMsg, 'i');
             the._$form = $($form);
             the._pathMap = {};
             the.update();
@@ -310,9 +314,16 @@ define(function (require, exports, module) {
             var path = eleInput.name;
             var type = the._getType(eleInput);
             var validationStr = $input.data(options.dataValidation);
+            var msgStr = $input.data(options.dataMsg);
             var alias = $input.data(options.dataAlias);
             var validationInfo = the._parseValidation(validationStr);
             var validationList = validationInfo.list;
+            var msgList = the._parseDataStr(msgStr);
+
+            // 重写消息
+            dato.each(msgList, function (index, item) {
+                the._validation.setMsg(path, item.key, item.val);
+            });
 
             // 规则顺序
             // required => type => minLength => maxLength => pattern => data
@@ -392,33 +403,59 @@ define(function (require, exports, module) {
 
 
         /**
-         * 解析 data 验证规则
+         * 解析 a:b,c:d
+         * @param str
+         * @returns {Array}
+         * @private
+         */
+        _parseDataStr: function (str) {
+            if (!str) {
+                return [];
+            }
+
+            var the = this;
+            var options = the._options;
+            var list1 = str.split(options.dataSep);
+            var list2 = [];
+
+            list1.forEach(function (item) {
+                var temp = item.split(options.dataEqual);
+
+                list2.push({
+                    key: temp[0].trim(),
+                    val: temp[1].trim()
+                });
+            });
+
+            return list2;
+        },
+
+
+        /**
+         * 解析 data-validation
          * @param ruleString
          * @returns {Object}
          * @private
          */
         _parseValidation: function (ruleString) {
             var the = this;
-            var options = the._options;
+            var list = the._parseDataStr(ruleString);
+            var hasType = false;
 
-            if (!ruleString) {
+            if (!list.length) {
                 return {
                     list: [],
                     hasType: false
                 };
             }
 
-            var list1 = ruleString.split(options.dataSep);
             var list2 = [];
-            var hasType = false;
+            list.forEach(function (item) {
+                hasType = item.key === 'type';
 
-            list1.forEach(function (item) {
-                var temp = item.split(options.dataEqual);
-
-                hasType = temp[0].trim() === 'type';
                 list2.push({
-                    name: temp[0].trim(),
-                    values: temp[1] ? temp[1].trim().split('|') : true
+                    name: item.key,
+                    values: item.val ? item.val.split('|') : true
                 });
             });
 

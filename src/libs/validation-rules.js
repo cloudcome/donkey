@@ -16,11 +16,16 @@ define(function (require, exports, module) {
 
     var typeis = require('../utils/typeis.js');
     var number = require('../utils/number.js');
+    var string = require('../utils/string.js');
+    var lang = require('./validation-lang.js');
     var REG_NUMBERIC = /^-?[\d.]+$/;
 
     module.exports = function (Validation) {
         Validation.addRule('type', function (val, done, param0) {
-            var isRequired = this.getRuleParams(this.path, 'required');
+            var the = this;
+            var path = the.path;
+            var isRequired = the.getRuleParams(path, 'required');
+            var alias = the.getAlias(path) || path;
 
             // 非必填并且是空值
             if (!isRequired && !val) {
@@ -29,20 +34,25 @@ define(function (require, exports, module) {
 
             switch (param0) {
                 case 'number':
-                    return done(/^-?\d+$/.test(val) ? null : '${path}必须是数值格式');
+                    //return done(/^-?\d+$/.test(val) ? null : '${path}必须是数值格式');
+                    return done(/^-?\d+$/.test(val) ? null : string.assign(lang.get('type', 'number'), alias, param0));
 
                 case 'integer':
                     val = val.replace(/^-/, '');
-                    return done(/^[1-9]*\d$/.test(val) ? null : '${path}必须是整数');
+                    //return done(/^[1-9]*\d$/.test(val) ? null : '${path}必须是整数');
+                    return done(/^[1-9]*\d$/.test(val) ? null : string.assign(lang.get('type', 'integer'), alias, param0));
 
                 case 'mobile':
-                    return done(/^1\d{10}$/.test(val) ? null : '${path}必须是手机号');
+                    //return done(/^1\d{10}$/.test(val) ? null : '${path}必须是手机号');
+                    return done(/^1\d{10}$/.test(val) ? null : string.assign(lang.get('type', 'mobile'), alias, param0));
 
                 case 'email':
-                    return done(typeis.email(val) ? null : '${path}必须是邮箱');
+                    //return done(typeis.email(val) ? null : '${path}必须是邮箱');
+                    return done(typeis.email(val) ? null : string.assign(lang.get('type', 'email'), alias, param0));
 
                 case 'url':
-                    return done(typeis.url(val) ? null : '${path}必须是 url 地址');
+                    //return done(typeis.url(val) ? null : '${path}必须是 url 地址');
+                    return done(typeis.url(val) ? null : string.assign(lang.get('type', 'url'), alias, param0));
             }
         });
 
@@ -52,14 +62,15 @@ define(function (require, exports, module) {
             var boolean = typeis(val) === 'file' ? true :
             (isMultiple ? val : (val || '')).length > 0;
 
-            done(boolean ? null : '${path}不能为空');
+            //done(boolean ? null : '${path}不能为空');
+            done(boolean ? null : lang.get('required'));
         });
 
 
         var _createLength = function (type) {
             var typeMap = {
-                0: ['至少需要', '少于'],
-                1: ['最多只能', '超过']
+                0: 'minLength',
+                1: 'maxLength'
             };
 
             return function (val, done, param0) {
@@ -69,9 +80,19 @@ define(function (require, exports, module) {
                 var length = (isMultiple ? val : (val || '')).length;
                 var boolean = type === 0 ? length >= param0 : length <= param0;
 
-                done(boolean ? null : '${path}' +
-                    (isMultiple ? typeMap[type][0] + '选择' + param0 + '项' : '不能' + typeMap[type][1] + param0 + '个字符')
-                );
+                //done(boolean ? null : '${path}' +
+                //    (isMultiple ? typeMap[type][0] + '选择' + param0 + '项' : '不能' + typeMap[type][1] + param0 + '个字符')
+                //);
+
+                if (isMultiple) {
+                    done(boolean ? null : lang.get(typeMap[type], 'select'));
+                } else {
+                    done(boolean ? null : lang.get(typeMap[type], 'input'));
+                }
+
+                //done(boolean ? null : '${path}' +
+                //    (isMultiple ? typeMap[type][0] + '选择' + param0 + '项' : '不能' + typeMap[type][1] + param0 + '个字符')
+                //);
             };
         };
 
