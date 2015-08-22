@@ -214,9 +214,9 @@ define(function (require, exports, module) {
         setSelection: function (selection) {
             var the = this;
             var options = the._options;
-            var scaleList = the._clip.getScaleFactor();
-            var maxWidth = the._imgWidth * scaleList[0];
-            var maxHeight = the._imgHeight * scaleList[1];
+            //var scaleList = the._clip.getScaleFactor();
+            var maxWidth = the._imgWidth;
+            var maxHeight = the._imgHeight;
 
             // 自动新建选区
             if (!selection) {

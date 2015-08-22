@@ -114,6 +114,10 @@ define(function (require, exports, module) {
     Tips.defaults = defaults;
 
     var tips = function (options) {
+        if (options && options instanceof Error) {
+            options = options.message();
+        }
+
         if (typeis.string(options)) {
             options = {
                 text: options

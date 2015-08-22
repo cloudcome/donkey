@@ -41,14 +41,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._$parent = $($parent);
-            the._$parent.html('<img>');
-            the._$img = the._$parent.children();
-            the._eleImg = the._$img[0];
             the._options = dato.extend({}, defaults, options);
-            the._$img.css(the._options);
-            the._eleImg.onload = function () {
-                the.emit('afterload');
-            };
         },
 
 
@@ -61,9 +54,17 @@ define(function (require, exports, module) {
             var the = this;
             var url;
 
+            the._$parent.html('<img>');
+            the._$img = the._$parent.children();
+            the._$img.css(the._options);
+            the._eleImg = the._$img[0];
+            the._eleImg.onload = function () {
+                the.emit('afterload');
+            };
+
             if (REG_HTTP.test(fileInput)) {
                 url = fileInput;
-            } else {
+            } else if (URL) {
                 fileInput = $(fileInput)[0];
 
                 if (!fileInput.files) {
@@ -91,12 +92,28 @@ define(function (require, exports, module) {
                 }
 
                 url = URL.createObjectURL(file);
+            } else {
+                return the.emit('error', new Error('浏览器不支持图片预览'));
             }
 
             the.emit('beforeload');
             the._eleImg.src = url;
 
             return url;
+        },
+
+
+        /**
+         * 清空预览
+         * @returns {ImgPreview}
+         */
+        empty: function () {
+            var the = this;
+
+            the._$parent.empty();
+            the._eleImg = null;
+
+            return the;
         },
 
 
