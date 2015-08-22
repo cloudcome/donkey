@@ -49,6 +49,10 @@ define(function (require, exports, module) {
             text: '请选择',
             value: ''
         },
+        // 隐藏空 select
+        hideEmpty: false,
+        // 不可用空 select
+        disabledEmpty: true,
         // 数据过滤器
         filter: null
     };
@@ -308,11 +312,26 @@ define(function (require, exports, module) {
             }
 
             var $select = $(the._$selects[index]);
+            var hasNoValue = !list.length || the._hasPlaceholder && list.length === 1;
 
-            if (selectOptions) {
-                $select.prop('disabled', false).html(selectOptions);
+            if (hasNoValue) {
+                if (options.disabledEmpty) {
+                    $select.prop('disabled', true);
+                }
+
+                if (options.hideEmpty) {
+                    $select.hide();
+                }
             } else {
-                $select.prop('disabled', true);
+                if (options.disabledEmpty) {
+                    $select.prop('disabled', false);
+                }
+
+                if (options.hideEmpty) {
+                    $select.show();
+                }
+
+                $select.html(selectOptions);
             }
 
             if (!the._unChangeNext) {
