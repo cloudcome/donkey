@@ -106,7 +106,7 @@ define(function (require, exports, module) {
 
             // 获取到了列表数据
             dato.repeat(the._length, function (index) {
-                event.on(the._$selects[index], 'change', the._onchange = function () {
+                $(the._$selects[index]).on('change', the._onchange = function () {
                     var self = this;
                     var index = self[namespace + 'index'];
                     var value = self.value;
@@ -231,8 +231,8 @@ define(function (require, exports, module) {
                 url: options.urls[index],
                 data: query
             }).done(function (list) {
-                    the.emit('afterdata', list);
-                    callback(null, typeis.function(options.filter) ? options.filter(list) : list);
+                the.emit('afterdata', list);
+                callback(null, typeis.function(options.filter) ? options.filter(list) : list);
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 the.emit('error', new Error(errorThrown));
             });
