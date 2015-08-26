@@ -102,7 +102,7 @@ define(function (require, exports, module) {
 
         Validation.addRule('equal', function (val, done, param0) {
             val = val || '';
-            done(val === this.getData(param0) ? null : '${path}必须与' + this.getAlias(param0) + '相同');
+            done(val === this.getData(param0) ? null : '${1}必须与' + this.getAlias(param0) + '相同');
         });
 
 
@@ -123,7 +123,7 @@ define(function (require, exports, module) {
                 }
 
                 if (!REG_NUMBERIC.test(val)) {
-                    return done('${path}必须为数值格式');
+                    return done('${1}必须为数值格式');
                 }
 
                 val = number.parseFloat(val);
@@ -131,7 +131,7 @@ define(function (require, exports, module) {
 
                 var boolean = type === 0 ? val >= param0 : val <= param0;
 
-                done(boolean ? null : '${path}不能' + map[type] + param0);
+                done(boolean ? null : lang.get('min'));
             };
         };
 
@@ -150,7 +150,7 @@ define(function (require, exports, module) {
             }
 
             if (!REG_NUMBERIC.test(val)) {
-                return done('${path}必须为数值格式');
+                return done('${1}必须为数值格式');
             }
 
             var min = this.getRuleParams(this.path, 'min')[0];
@@ -162,7 +162,7 @@ define(function (require, exports, module) {
                 return done(null);
             }
 
-            done((val - min) % param0 ? '${path}递增步进值必须是' + param0 + '，最小值为' + min : null);
+            done((val - min) % param0 ? '${1}递增步进值必须是' + param0 + '，最小值为' + min : null);
         });
     };
 
