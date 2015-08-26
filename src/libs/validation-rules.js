@@ -39,6 +39,7 @@ define(function (require, exports, module) {
 
                 case 'integer':
                     val = val.replace(/^-/, '');
+
                     //return done(/^[1-9]*\d$/.test(val) ? null : '${path}必须是整数');
                     return done(/^[1-9]*\d$/.test(val) ? null : string.assign(lang.get('type', 'integer'), alias, param0));
 
