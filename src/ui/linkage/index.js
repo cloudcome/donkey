@@ -360,7 +360,7 @@ define(function (require, exports, module) {
 
             the.destroyed = true;
             dato.repeat(the._length, function (index) {
-                event.un(the._$selects[index], 'change', the._onchange);
+                $(the._$selects[index]).off('change', the._onchange);
             });
         }
     });
