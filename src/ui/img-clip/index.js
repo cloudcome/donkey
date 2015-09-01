@@ -23,6 +23,8 @@ define(function (require, exports, module) {
     var style = require('./style.css', 'css');
     var gif = require('./line.gif', 'image');
     var modification = require('../../core/dom/modification.js');
+    var compatible = require('../../core/navigator/compatible.js');
+    var URL = compatible.html5('URL', window);
     var canvasImg = require('../../canvas/img.js');
     var canvasContent = require('../../canvas/content.js');
     var eleCanvas = modification.create('canvas', {
@@ -267,7 +269,7 @@ define(function (require, exports, module) {
             }
 
             // 支持画布
-            if (supportCanvas && options.clientClip) {
+            if (supportCanvas && options.clientClip && URL) {
                 eleCanvas.width = options.clipSize[0] || the._selection.w;
                 eleCanvas.height = options.clipSize[1] || the._selection.h;
                 canvasImg(eleCanvas, the._$img[0], {
