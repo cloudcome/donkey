@@ -25,6 +25,7 @@ define(function (require, exports, module) {
     //var canvasContent = require('../../canvas/content.js');
     //var modification = require('../../core/dom/modification.js');
     var compatible = require('../../core/navigator/compatible.js');
+    var upload = require('../../core/communication/upload.js');
     var URL = compatible.html5('URL', window);
     //var eleCanvas = modification.create('canvas');
     //var supportCanvas = 'getContext' in eleCanvas;
@@ -34,7 +35,8 @@ define(function (require, exports, module) {
         width: 'auto',
         height: 'auto',
         maxWidth: 'none',
-        maxHeight: 'none'
+        maxHeight: 'none',
+        uploadURL: ''
     };
     var ImgPreview = ui.create({
         constructor: function ($parent, options) {
@@ -50,20 +52,20 @@ define(function (require, exports, module) {
          * @param fileInput {String|Element|jQuery|Object}
          * @returns {ImgPreview}
          */
-        preview: function (fileInput) {
+        preview: function (fileInput, callback) {
             var the = this;
             var url;
-
+            var options = the._options;
             the._$parent.html('<img>');
             the._$img = the._$parent.children();
             the._$img.css(the._options);
             the._eleImg = the._$img[0];
             the._eleImg.onload = function () {
-                the.emit('afterload');
+                the.emit('afterload', this.src);
             };
 
-            if (REG_HTTP.test(fileInput)) {
-                url = fileInput;
+            if (REG_HTTP.test(fileInput.value)) {
+                url = fileInput.value;
             } else if (URL) {
                 fileInput = $(fileInput)[0];
 
@@ -92,12 +94,34 @@ define(function (require, exports, module) {
                 }
 
                 url = URL.createObjectURL(file);
+                the._eleImg.src = url;
+
+                if(typeis.function(callback)){
+                    callback.call(the.url);
+                }
             } else {
-                return the.emit('error', new Error('浏览器不支持图片预览'));
+                upload(fileInput,{
+                    url:options.uploadURL,
+                    body:{
+                        type:'images/jpeg'
+                    }
+                }).on('success',function(json){
+                    if(json.code !== 200){
+                        return the.emit('error',new Error(json.message));
+                    }
+                    var ret = json.result;
+                    url = ret[0];
+                    the._eleImg.src = url;
+                    if(typeis.function(callback)){
+                        callback.call(the,url);
+                    }
+                }).on('error',function(err){
+                    the.emit('error',err);
+                });
+                //the.emit('error', new Error('浏览器不支持图片预览'));
             }
 
             the.emit('beforeload');
-            the._eleImg.src = url;
 
             return url;
         },
