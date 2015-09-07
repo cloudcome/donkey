@@ -298,7 +298,7 @@ define(function (require, exports, module) {
                         next(err);
                     });
                 })
-                .try(function () {
+                .done(function () {
                     if (errorLength) {
                         /**
                          * 验证成功
@@ -313,7 +313,7 @@ define(function (require, exports, module) {
                         the.emit('success');
                     }
                 })
-                .catch(function (err) {
+                .fail(function (err) {
                     if (options.breakOnInvalid) {
                         //err = new Error(string.assign(err || options.defaultMsg, {
                         //    path: the._aliasMap[path] || path
@@ -370,7 +370,7 @@ define(function (require, exports, module) {
                     the.path = path;
                     rule.fn.apply(the, args);
                 })
-                .try(function () {
+                .done(function () {
                     /**
                      * 验证成功
                      * @event valid
@@ -389,7 +389,7 @@ define(function (require, exports, module) {
                         callback.call(the, null, false);
                     }
                 })
-                .catch(function (err) {
+                .fail(function (err) {
                     var overrideMsg = the._msgMap[path] && the._msgMap[path][currentRule.name];
                     var args = [overrideMsg || err || options.defaultMsg, the.getAlias(path) || path];
 
