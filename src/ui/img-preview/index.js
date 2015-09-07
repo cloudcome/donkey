@@ -48,22 +48,23 @@ define(function (require, exports, module) {
         /**
          * 预览本地图片
          * @param fileInput {String|Element|jQuery|Object}
+         * @param [callback] {Function}
          * @returns {ImgPreview}
          */
-        preview: function (fileInput) {
+        preview: function (fileInput, callback) {
             var the = this;
             var url;
-
+            var options = the._options;
             the._$parent.html('<img>');
             the._$img = the._$parent.children();
             the._$img.css(the._options);
             the._eleImg = the._$img[0];
             the._eleImg.onload = function () {
-                the.emit('afterload');
+                the.emit('afterload', this.src);
             };
 
-            if (REG_HTTP.test(fileInput)) {
-                url = fileInput;
+            if (REG_HTTP.test(fileInput.value)) {
+                url = fileInput.value;
             } else if (URL) {
                 fileInput = $(fileInput)[0];
 
@@ -92,12 +93,37 @@ define(function (require, exports, module) {
                 }
 
                 url = URL.createObjectURL(file);
+                the._eleImg.src = url;
+
+                if (typeis.function(callback)) {
+                    callback.call(the, url);
+                }
             } else {
-                return the.emit('error', new Error('浏览器不支持图片预览'));
+                upload(fileInput, {
+                    url: options.uploadURL,
+                    body: {
+                        type: 'image/jpeg'
+                    }
+                }).on('success', function (json) {
+                    if (json.code !== 200) {
+                        return the.emit('erorr', new Error(json.message));
+                    }
+
+                    var ret = json.result;
+
+                    url = ret[0];
+                    the._eleImg.src = url;
+
+                    if (typeis.function(callback)) {
+                        callback.call(the, url);
+                    }
+                }).on('error', function (err) {
+                    the.emit('error', err);
+                });
+                //the.emit('error', new Error('该浏览器不支持图片预览'));
             }
 
             the.emit('beforeload');
-            the._eleImg.src = url;
 
             return url;
         },
