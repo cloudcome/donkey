@@ -47,12 +47,12 @@ define(function (require, exports, module) {
             }
 
             if (!time1) {
-                time1 = Date.now();
+                time1 = new Date().getTime();
             }
 
-            if (Date.now() - time1 > wait) {
+            if (new Date().getTime() - time1 > wait) {
                 fn.apply(this, arguments);
-                time1 = Date.now();
+                time1 = new Date().getTime();
             }
         };
     };
