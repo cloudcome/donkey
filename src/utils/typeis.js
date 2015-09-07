@@ -152,7 +152,7 @@ define(function (require, exports, module) {
          * @property isGlobal {Function}
          * @returns {boolean}
          */
-        typeis['is' + tp2] = function (obj) {
+        typeis[tp] = typeis['is' + tp2] = function (obj) {
             return typeis(obj) === tp;
         };
     };
@@ -209,7 +209,7 @@ define(function (require, exports, module) {
      * // => true
      */
     typeis.url = function (string) {
-        return typeis.string(string) && REG_URL.test(string);
+        return typeis.isString(string) && REG_URL.test(string);
     };
 
 
@@ -223,7 +223,7 @@ define(function (require, exports, module) {
      * // => true
      */
     typeis.email = function (string) {
-        return typeis.string(string) && REG_EMAIL.test(string);
+        return typeis.isString(string) && REG_EMAIL.test(string);
     };
 
 

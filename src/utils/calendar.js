@@ -45,7 +45,7 @@ define(function (require, exports, module) {
     exports.month = function calendar(year, month, options) {
         options = dato.extend({}, defaults, options);
         month = options.isNatualMonth ? month - 1 : month;
-        options.activeDate = typeis.array(options.activeDate) ? options.activeDate : [options.activeDate];
+        options.activeDate = typeis.isArray(options.activeDate) ? options.activeDate : [options.activeDate];
 
         var list = [];
         var prevDate = new Date(year, month - 1);

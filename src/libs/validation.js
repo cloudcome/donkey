@@ -118,7 +118,7 @@ define(function (require, exports, module) {
             var params = args.slice(2);
             var index = the._validateIndexMap[path];
 
-            if (typeis.undefined(index)) {
+            if (typeis.isUndefined(index)) {
                 index = the._validateIndexMap[path] = the._validateList.length;
                 the._validateList.push({
                     path: path,
@@ -126,7 +126,7 @@ define(function (require, exports, module) {
                 });
             }
 
-            if (typeis.string(nameOrfn)) {
+            if (typeis.isString(nameOrfn)) {
                 var name = nameOrfn;
 
                 if (!validationMap[name]) {

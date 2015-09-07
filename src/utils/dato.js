@@ -238,7 +238,7 @@ define(function (require, exports, module) {
                     same.push(key);
                 }
 
-                if (typeis.undefined(obj2[key])) {
+                if (typeis.isUndefined(obj2[key])) {
                     obj1Only.push(key);
                 }
             });
@@ -248,7 +248,7 @@ define(function (require, exports, module) {
                     diff.push(key);
                 }
 
-                if (typeis.undefined(obj1[key])) {
+                if (typeis.isUndefined(obj1[key])) {
                     obj2Only.push(key);
                 }
             });

@@ -42,11 +42,11 @@ define(function (require, exports, module) {
 
         switch (nodeName) {
             case '#text':
-                node = doc.createTextNode(typeis.undefined(attributes) ? '' : String(attributes));
+                node = doc.createTextNode(typeis.isUndefined(attributes) ? '' : String(attributes));
                 break;
 
             case '#comment':
-                node = doc.createComment(typeis.undefined(attributes) ? '' : String(attributes));
+                node = doc.createComment(typeis.isUndefined(attributes) ? '' : String(attributes));
                 break;
 
             default:
