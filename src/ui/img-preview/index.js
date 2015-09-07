@@ -20,6 +20,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var typeis = require('../../utils/typeis.js');
+    var upload = require('../../core/communication/upload.js');
     var dato = require('../../utils/dato.js');
     //var canvasImg = require('../../canvas/img.js');
     //var canvasContent = require('../../canvas/content.js');
@@ -95,7 +96,7 @@ define(function (require, exports, module) {
                 url = URL.createObjectURL(file);
                 the._eleImg.src = url;
 
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.call(the, url);
                 }
             } else {
