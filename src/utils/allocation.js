@@ -67,7 +67,7 @@ define(function (require, exports, module) {
             }
         }
 
-        getset.onset = typeis.function(getset.onset) ? getset.onset : noop;
+        getset.onset = typeis.isFunction(getset.onset) ? getset.onset : noop;
 
         // e.g. .html();
         if (argl === 0 && setLength === 1) {

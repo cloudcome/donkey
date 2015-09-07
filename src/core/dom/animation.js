@@ -50,7 +50,7 @@ define(function (require, exports, module) {
         var args = allocation.args(arguments);
 
         if (args.length === 3) {
-            if (typeis.function(args[2])) {
+            if (typeis.isFunction(args[2])) {
                 callback = args[2];
                 options = null;
             }
@@ -82,7 +82,7 @@ define(function (require, exports, module) {
         var args = allocation.args(arguments);
 
         if (args.length === 2) {
-            if (typeis.function(args[1])) {
+            if (typeis.isFunction(args[1])) {
                 callback = args[1];
                 options = null;
             }

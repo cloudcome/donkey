@@ -26,7 +26,7 @@
  constructor: function(){},
  abc: '123'
  });
- var B = klass.extends(A).create({
+ var B = klass.extend(A).create({
  constructor: function(){},
  def: '456'
  });
@@ -93,13 +93,13 @@ define(function (require, exports, module) {
      * @returns {Function}
      */
     var create = function (prototypes, superConstructor, isInheritStatic) {
-        if (typeis.function(prototypes)) {
+        if (typeis.isFunction(prototypes)) {
             prototypes = {
                 constructor: prototypes
             };
         }
 
-        if (!typeis.function(prototypes.constructor)) {
+        if (!typeis.isFunction(prototypes.constructor)) {
             throw Error('propertypes.constructor must be a function');
         }
 
@@ -107,7 +107,7 @@ define(function (require, exports, module) {
 
         prototypes.constructor = null;
 
-        var superConstructorIsAFn = typeis.function(superConstructor);
+        var superConstructorIsAFn = typeis.isFunction(superConstructor);
         var c = function () {
             var the = this;
             var args = arguments;
@@ -179,11 +179,12 @@ define(function (require, exports, module) {
 
     /**
      * 类的继承，参考了 es6 的 class 表现
+     * 因为 extends 是关键字，在 IE 下会报错，修改为 extend、inherit
      * @param superConstructor
      * @param isInheritStatic
      * @returns {Class}
      */
-    exports.extends = function (superConstructor, isInheritStatic) {
+    exports.extend = exports.inherit = function (superConstructor, isInheritStatic) {
         return new Class(null, superConstructor, isInheritStatic);
     };
 
@@ -206,8 +207,8 @@ define(function (require, exports, module) {
      * });
      *
      * // 3. 创建一个子类
-     * var C = klass.extends(B).create(fn);
-     * var D = klass.extends(C).create({
+     * var C = klass.extend(B).create(fn);
+     * var D = klass.extend(C).create({
      *     constructor: fn,
      *     ...
      * });

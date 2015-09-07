@@ -32,7 +32,7 @@ define(function (require, exports, module) {
         blob: null,
         dataType: 'json'
     };
-    var Upload = klass.extends(Emitter).create({
+    var Upload = klass.extend(Emitter).create({
         constructor: function ($file, options) {
             var the = this;
 

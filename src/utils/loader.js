@@ -26,7 +26,7 @@ define(function (require, exports, module) {
                 err = new Error('load error');
             }
 
-            if (typeis.function(callback)) {
+            if (typeis.isFunction(callback)) {
                 callback(err);
             }
         };
@@ -65,7 +65,7 @@ define(function (require, exports, module) {
     exports.js = function (url, callback) {
         //var err = null;
         //
-        //callback = typeis.function(callback) ? callback : noop;
+        //callback = typeis.isFunction(callback) ? callback : noop;
         //$.ajax({
         //    dataType: 'script',
         //    url: url

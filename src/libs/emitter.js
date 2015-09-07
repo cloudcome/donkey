@@ -58,7 +58,7 @@ define(function (require, exports, module) {
                 eventType = null;
             }
 
-            if (!typeis.function(listener)) {
+            if (!typeis.isFunction(listener)) {
                 return the;
             }
 
@@ -76,7 +76,7 @@ define(function (require, exports, module) {
                     throw new Error('instance event `' + et + '` pool is full as ' + this._emitterLimit);
                 }
 
-                if (typeis.function(listener)) {
+                if (typeis.isFunction(listener)) {
                     the._emitterListener[et].push(listener);
                 }
             });
