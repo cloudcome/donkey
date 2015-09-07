@@ -192,10 +192,12 @@ define(function (require, exports, module) {
                     case 'file':
                         var files = ele.files;
 
-                        if (isMultiple) {
+                        if (isMultiple && files) {
                             data[path] = files.length ? files : [];
-                        } else {
+                        } else if (files) {
                             data[path] = files.length ? files[0] : null;
+                        } else {
+                            data[path] = ele.value;
                         }
 
                         break;
