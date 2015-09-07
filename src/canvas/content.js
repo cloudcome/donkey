@@ -75,7 +75,7 @@ define(function (require, exports, module) {
     exports.toBlob = function (canvas, options, callback) {
         var args = allocation.args(arguments);
 
-        if (typeis.function(args[1])) {
+        if (typeis.isFunction(args[1])) {
             callback = args[1];
             options = {};
         }

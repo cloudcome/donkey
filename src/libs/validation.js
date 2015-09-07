@@ -49,7 +49,7 @@ define(function (require, exports, module) {
         breakOnInvalid: typeis.window(window) ? false : true,
         defaultMsg: '${path}字段不合法'
     };
-    var Validation = klass.extends(Emitter).create({
+    var Validation = klass.extend(Emitter).create({
         /**
          * constructor
          * @extends Emitter
@@ -138,7 +138,7 @@ define(function (require, exports, module) {
                     params: params,
                     fn: validationMap[name]
                 });
-            } else if (typeis.function(nameOrfn)) {
+            } else if (typeis.isFunction(nameOrfn)) {
                 the._validateList[index].rules.push({
                     name: namespace + alienIndex++,
                     params: params,
@@ -237,7 +237,7 @@ define(function (require, exports, module) {
                  */
                 the.emit('aftervalidateone', path);
 
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.apply(this, arguments);
                 }
             });
@@ -270,7 +270,7 @@ define(function (require, exports, module) {
             the.emit('beforevalidateall');
             var errorLength = 0;
             var complete = function () {
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.apply(the, arguments);
                 }
 
@@ -385,7 +385,7 @@ define(function (require, exports, module) {
                      */
                     the.emit('aftervalidate', path);
 
-                    if (typeis.function(callback)) {
+                    if (typeis.isFunction(callback)) {
                         callback.call(the, null, false);
                     }
                 })
@@ -405,7 +405,7 @@ define(function (require, exports, module) {
                          */
                         the.emit('aftervalidate', path);
 
-                        if (typeis.function(callback)) {
+                        if (typeis.isFunction(callback)) {
                             callback.call(the, err, true);
                         }
                     } else {
@@ -428,7 +428,7 @@ define(function (require, exports, module) {
                          */
                         the.emit('aftervalidate', path);
 
-                        if (typeis.function(callback)) {
+                        if (typeis.isFunction(callback)) {
                             callback.call(the, null, true);
                         }
                     }

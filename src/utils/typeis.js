@@ -130,26 +130,29 @@ define(function (require, exports, module) {
     var i = 0;
     var jud = 'string number function object undefined null nan element regexp boolean array window document global'.split(' ');
     var makeStatic = function (tp) {
+        var tp2 = tp.replace(/^./, function ($0) {
+            return $0.toUpperCase();
+        });
         /**
          * 快捷判断
          * @name typeis
-         * @property string {Function}
-         * @property number {Function}
-         * @property function {Function}
-         * @property object {Function}
-         * @property undefined {Function}
-         * @property null {Function}
-         * @property nan {Function}
-         * @property element {Function}
-         * @property regexp {Function}
-         * @property boolean {Function}
-         * @property array {Function}
-         * @property window {Function}
-         * @property document {Function}
-         * @property global {Function}
+         * @property isString {Function}
+         * @property isNumber {Function}
+         * @property isFunction {Function}
+         * @property isObject {Function}
+         * @property isUndefined {Function}
+         * @property isNull {Function}
+         * @property isNan {Function}
+         * @property isElement {Function}
+         * @property isRegexp {Function}
+         * @property isBoolean {Function}
+         * @property isArray {Function}
+         * @property isWindow {Function}
+         * @property isDocument {Function}
+         * @property isGlobal {Function}
          * @returns {boolean}
          */
-        typeis[tp] = function (obj) {
+        typeis['is' + tp2] = function (obj) {
             return typeis(obj) === tp;
         };
     };

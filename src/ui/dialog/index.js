@@ -229,7 +229,7 @@ define(function (require, exports, module) {
             the.emit('beforeopen');
             the.visible = true;
             the._window.open(function () {
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.call(the);
                 }
 
@@ -255,7 +255,7 @@ define(function (require, exports, module) {
             the.emit('beforeclose');
             the.visible = false;
             the._window.close(function () {
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.call(the);
                 }
 

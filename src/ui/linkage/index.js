@@ -142,7 +142,7 @@ define(function (require, exports, module) {
                 if (!err) {
                     the._renderList(index, list);
 
-                    if (typeis.function(callback)) {
+                    if (typeis.isFunction(callback)) {
                         callback.call(the);
                     }
                 }
@@ -226,7 +226,7 @@ define(function (require, exports, module) {
             query[options.queryName] = index > 0 ? prevValue : '';
             //the._xhr = xhr.get(options.urls[index], query).on('success', function (list) {
             //    the.emit('afterdata', list);
-            //    callback(null, typeis.function(options.filter) ? options.filter(list) : list);
+            //    callback(null, typeis.isFunction(options.filter) ? options.filter(list) : list);
             //}).on('error', function (err) {
             //    the.emit('error', err);
             //    callback(err);
@@ -236,7 +236,7 @@ define(function (require, exports, module) {
                 data: query
             }).done(function (list) {
                 the.emit('afterdata', list);
-                callback(null, typeis.function(options.filter) ? options.filter(list) : list);
+                callback(null, typeis.isFunction(options.filter) ? options.filter(list) : list);
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 the.emit('error', new Error(errorThrown));
             });

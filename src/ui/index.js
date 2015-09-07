@@ -46,7 +46,7 @@ define(function (require, exports, module) {
      * var Dialog = ui.create({...});
      */
     exports.create = function (prototypes, isInheritSuperStatic) {
-        if (!typeis.function(prototypes.constructor)) {
+        if (!typeis.isFunction(prototypes.constructor)) {
             throw 'UI class constructor must be a function';
         }
 
@@ -99,7 +99,7 @@ define(function (require, exports, module) {
             };
         }
 
-        return klass.extends(Emitter, isInheritSuperStatic).create(prototypes);
+        return klass.extend(Emitter, isInheritSuperStatic).create(prototypes);
     };
 
 

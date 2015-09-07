@@ -27,7 +27,7 @@ define(function (require, exports, module) {
         stop: 4
     };
     var index = 0;
-    var Queue = klass.extends(Emitter).create({
+    var Queue = klass.extend(Emitter).create({
         constructor: function () {
             var the = this;
 
@@ -68,7 +68,7 @@ define(function (require, exports, module) {
         push: function (task, callback) {
             var the = this;
 
-            callback = typeis.function(callback) ? callback : noop;
+            callback = typeis.isFunction(callback) ? callback : noop;
             the._queueList.push({
                 t: task,
                 c: callback

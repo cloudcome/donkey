@@ -46,7 +46,7 @@ define(function (require, exports, module) {
     // * base64 编码
     // * @ref https://github.com/davidchambers/Base64.js/blob/master/base64.js
     // */
-    //var btoa = typeis.function(win.btoa) ? win.btoa : function (str) {
+    //var btoa = typeis.isFunction(win.btoa) ? win.btoa : function (str) {
     //    var block;
     //    var charCode;
     //    var idx;
@@ -75,7 +75,7 @@ define(function (require, exports, module) {
     // * base64 解码
     // * @ref https://github.com/davidchambers/Base64.js/blob/master/base64.js
     // */
-    //var atob = typeis.function(win.atob) ? win.atob : function (input) {
+    //var atob = typeis.isFunction(win.atob) ? win.atob : function (input) {
     //    var str = String(input).replace(/=+$/, '');
     //
     //    if (str.length % 4 === 1) {
@@ -163,7 +163,7 @@ define(function (require, exports, module) {
         var argL = args.length;
         var data = {};
 
-        if (typeis.function(args[argL - 1])) {
+        if (typeis.isFunction(args[argL - 1])) {
             filter = args.splice(argL - 1, 1)[0];
         } else {
             filter = function (val) {

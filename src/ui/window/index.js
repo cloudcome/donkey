@@ -165,7 +165,7 @@ define(function (require, exports, module) {
             }, function () {
                 the._$focus.blur();
 
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.call(the);
                 }
 
@@ -275,7 +275,7 @@ define(function (require, exports, module) {
                     the._$modal.hide();
                 }
 
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.call(the);
                 }
 
@@ -336,7 +336,7 @@ define(function (require, exports, module) {
                 });
                 windowList.splice(findIndex, 1);
 
-                if (typeis.function(callback)) {
+                if (typeis.isFunction(callback)) {
                     callback.call(the);
                 }
 

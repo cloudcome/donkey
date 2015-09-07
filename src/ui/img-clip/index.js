@@ -145,7 +145,7 @@ define(function (require, exports, module) {
                 the._options.trueSize = [img.width, img.height];
                 the._clip.setOptions(the._options);
                 the._clip.setImage(url, function () {
-                    if (typeis.function(callback)) {
+                    if (typeis.isFunction(callback)) {
                         callback();
                     }
 
