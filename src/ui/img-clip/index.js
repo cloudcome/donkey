@@ -123,6 +123,10 @@ define(function (require, exports, module) {
             the.emit('beforeload');
             img.src = the._$img[0].src;
             img.onload = onload;
+
+            if(img.complete){
+                onload();
+            }
         },
 
 

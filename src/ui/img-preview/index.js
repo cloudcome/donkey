@@ -27,6 +27,7 @@ define(function (require, exports, module) {
     //var modification = require('../../core/dom/modification.js');
     var compatible = require('../../core/navigator/compatible.js');
     var URL = compatible.html5('URL', window);
+    //var URL ='';
     //var eleCanvas = modification.create('canvas');
     //var supportCanvas = 'getContext' in eleCanvas;
     var REG_IMAGE = /^image\//;

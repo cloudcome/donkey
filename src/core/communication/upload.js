@@ -111,7 +111,7 @@ define(function (require, exports, module) {
             var $clone = the._$file.clone().removeAttr('id').insertAfter(the._$file);
 
             $form.append(the._$file);
-            iframe.onload = function () {
+            $iframe.on('load', function () {
                 var text = iframe.contentDocument.body.innerText;
 
                 the._$file.insertAfter($clone);
@@ -127,7 +127,7 @@ define(function (require, exports, module) {
                 }
 
                 the.emit('finish');
-            };
+            });
 
             var html = '';
 
