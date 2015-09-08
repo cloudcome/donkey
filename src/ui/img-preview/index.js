@@ -115,7 +115,7 @@ define(function (require, exports, module) {
                     url = ret[0];
                     the._eleImg.src = url;
 
-                    if (typeis.function(callback)) {
+                    if (typeis.isFunction(callback)) {
                         callback.call(the, url);
                     }
                 }).on('error', function (err) {
