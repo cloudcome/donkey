@@ -118,7 +118,7 @@ define(function (require, exports, module) {
             options = options.message();
         }
 
-        if (typeis.string(options)) {
+        if (typeis.isString(options)) {
             options = {
                 text: options
             };

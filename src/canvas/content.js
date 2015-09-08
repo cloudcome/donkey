@@ -19,7 +19,7 @@ define(function (require, exports, module) {
     var typeis = require('../utils/typeis.js');
     var allocation = require('../utils/allocation.js');
     var modification = require('../core/dom/modification.js');
-    var supportToBlob = 'toBlob' in HTMLCanvasElement.prototype;
+    var supportToBlob = window.HTMLCanvasElement && 'toBlob' in HTMLCanvasElement.prototype;
     var defaults = {
         type: 'image/png',
         quality: 1

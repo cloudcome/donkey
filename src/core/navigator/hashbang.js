@@ -214,7 +214,7 @@ define(function (require, exports) {
             });
 
             if (matched && matchIndex > -1) {
-                var callbacks = typeis.array(routerConfig[matchIndex][matchKey])
+                var callbacks = typeis.isArray(routerConfig[matchIndex][matchKey])
                     ? routerConfig[matchIndex][matchKey]
                     : [routerConfig[matchIndex][matchKey]];
 

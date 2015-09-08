@@ -343,7 +343,7 @@ define(function (require, exports, module) {
          * 正常回调
          * @param callback
          */
-        try: function (callback) {
+        done: function (callback) {
             var the = this;
 
             if (isFunction(callback)) {
@@ -356,7 +356,7 @@ define(function (require, exports, module) {
          * 异常回调
          * @param callback
          */
-        catch: function (callback) {
+        fail: function (callback) {
             var the = this;
 
             if (isFunction(callback)) {

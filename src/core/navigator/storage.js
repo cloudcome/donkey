@@ -68,7 +68,7 @@ define(function (require, exports, module) {
             return ls.clear();
         }
 
-        key = typeis.array(key) ? key : [key];
+        key = typeis.isArray(key) ? key : [key];
 
         key.forEach(function (ik) {
             ls.removeItem(ik);

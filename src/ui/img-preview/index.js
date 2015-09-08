@@ -20,12 +20,12 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var typeis = require('../../utils/typeis.js');
+    var upload = require('../../core/communication/upload.js');
     var dato = require('../../utils/dato.js');
     //var canvasImg = require('../../canvas/img.js');
     //var canvasContent = require('../../canvas/content.js');
     //var modification = require('../../core/dom/modification.js');
     var compatible = require('../../core/navigator/compatible.js');
-    var upload = require('../../core/communication/upload.js');
     var URL = compatible.html5('URL', window);
     //var eleCanvas = modification.create('canvas');
     //var supportCanvas = 'getContext' in eleCanvas;
@@ -50,6 +50,7 @@ define(function (require, exports, module) {
         /**
          * 预览本地图片
          * @param fileInput {String|Element|jQuery|Object}
+         * @param [callback] {Function}
          * @returns {ImgPreview}
          */
         preview: function (fileInput, callback) {
@@ -96,29 +97,32 @@ define(function (require, exports, module) {
                 url = URL.createObjectURL(file);
                 the._eleImg.src = url;
 
-                if(typeis.function(callback)){
-                    callback.call(the.url);
+                if (typeis.isFunction(callback)) {
+                    callback.call(the, url);
                 }
             } else {
-                upload(fileInput,{
-                    url:options.uploadURL,
-                    body:{
-                        type:'images/jpeg'
+                upload(fileInput, {
+                    url: options.uploadURL,
+                    body: {
+                        type: 'image/jpeg'
                     }
-                }).on('success',function(json){
-                    if(json.code !== 200){
-                        return the.emit('error',new Error(json.message));
+                }).on('success', function (json) {
+                    if (json.code !== 200) {
+                        return the.emit('erorr', new Error(json.message));
                     }
+
                     var ret = json.result;
+
                     url = ret[0];
                     the._eleImg.src = url;
-                    if(typeis.function(callback)){
-                        callback.call(the,url);
+
+                    if (typeis.isFunction(callback)) {
+                        callback.call(the, url);
                     }
-                }).on('error',function(err){
-                    the.emit('error',err);
+                }).on('error', function (err) {
+                    the.emit('error', err);
                 });
-                //the.emit('error', new Error('浏览器不支持图片预览'));
+                //the.emit('error', new Error('该浏览器不支持图片预览'));
             }
 
             the.emit('beforeload');

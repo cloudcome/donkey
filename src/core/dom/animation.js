@@ -94,7 +94,7 @@ define(function (require, exports, module) {
         options = dato.extend({}, defaults, options);
         options.complete = callback;
 
-        if (typeis.element(position) || position.length && typeis.element(position[0])) {
+        if (typeis.isElement(position) || position.length && typeis.isElement(position[0])) {
             position = $(position).offset();
             position.left += options.offsetLeft;
             position.top += options.offsetTop;

@@ -242,7 +242,7 @@ define(function (require, exports, module) {
      * @returns {string}
      */
     exports.base64 = function (str) {
-        if (typeis.undefined(win.Buffer)) {
+        if (typeis.isUndefined(win.Buffer)) {
             return btoa(encodeURIComponent(str));
         } else {
             return new win.Buffer(str, 'utf8').toString('base64');
@@ -256,7 +256,7 @@ define(function (require, exports, module) {
      * @returns {string}
      */
     exports.debase64 = function (str) {
-        if (typeis.undefined(win.Buffer)) {
+        if (typeis.isUndefined(win.Buffer)) {
             return decodeURIComponent(atob(str));
         } else {
             return new win.Buffer(str, 'base64').toString('utf8');

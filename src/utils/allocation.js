@@ -87,7 +87,7 @@ define(function (require, exports, module) {
                     getset.set(key, val);
                 });
                 getset.onset();
-            } else if (typeis.array(args[0])) {
+            } else if (typeis.isArray(args[0])) {
                 dato.each(args[0], function (index, key) {
                     ret[key] = getset.get(key);
                 });
@@ -113,7 +113,7 @@ define(function (require, exports, module) {
     exports.args = function (args) {
         var argL = args.length;
 
-        while (argL >= 0 && typeis.undefined(args[argL - 1])) {
+        while (argL >= 0 && typeis.isUndefined(args[argL - 1])) {
             argL -= 1;
         }
 

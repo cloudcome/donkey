@@ -259,7 +259,7 @@ define(function (require, exports, module) {
         render: function (data) {
             var the = this;
             var options = the._options;
-            var _var = 'alienTemplateData_' + Date.now();
+            var _var = 'alienTemplateData_' + new Date().getTime();
             var vars = [];
             var fn;
             var existFilters = dato.extend(true, {}, filters, the._template.filters);

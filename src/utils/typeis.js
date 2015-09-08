@@ -136,23 +136,37 @@ define(function (require, exports, module) {
         /**
          * 快捷判断
          * @name typeis
+         * @property string {Function}
          * @property isString {Function}
+         * @property number {Function}
          * @property isNumber {Function}
+         * @property function {Function}
          * @property isFunction {Function}
+         * @property object {Function}
          * @property isObject {Function}
+         * @property undefined {Function}
          * @property isUndefined {Function}
+         * @property null {Function}
          * @property isNull {Function}
+         * @property nan {Function}
          * @property isNan {Function}
+         * @property element {Function}
          * @property isElement {Function}
+         * @property regexp {Function}
          * @property isRegexp {Function}
+         * @property boolean {Function}
          * @property isBoolean {Function}
+         * @property array {Function}
          * @property isArray {Function}
+         * @property window {Function}
          * @property isWindow {Function}
+         * @property document {Function}
          * @property isDocument {Function}
+         * @property global {Function}
          * @property isGlobal {Function}
          * @returns {boolean}
          */
-        typeis['is' + tp2] = function (obj) {
+        typeis[tp] = typeis['is' + tp2] = function (obj) {
             return typeis(obj) === tp;
         };
     };
@@ -195,7 +209,7 @@ define(function (require, exports, module) {
      * @returns {Boolean}
      */
     typeis.empty = function (obj) {
-        return typeof obj === udf || typeis.null(obj);
+        return typeof obj === udf || typeis.isNull(obj);
     };
 
 
@@ -209,7 +223,7 @@ define(function (require, exports, module) {
      * // => true
      */
     typeis.url = function (string) {
-        return typeis.string(string) && REG_URL.test(string);
+        return typeis.isString(string) && REG_URL.test(string);
     };
 
 
@@ -223,7 +237,7 @@ define(function (require, exports, module) {
      * // => true
      */
     typeis.email = function (string) {
-        return typeis.string(string) && REG_EMAIL.test(string);
+        return typeis.isString(string) && REG_EMAIL.test(string);
     };
 
 

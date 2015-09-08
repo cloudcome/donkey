@@ -161,7 +161,7 @@ define(function (require, exports, module) {
             var ret = true;
 
             _middleware(eventType, function (et) {
-                var time = Date.now();
+                var time = new Date().getTime();
 
                 dato.each(the._emitterCallbacks, function (index, callback) {
                     the.alienEmitter = {

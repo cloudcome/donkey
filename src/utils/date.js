@@ -398,45 +398,45 @@ define(function (require, exports, module) {
      *
      * @example
      * // 过去时间
-     * date.from(Date.now() - 1);
+     * date.from(new Date().getTime() - 1);
      * // => "刚刚"
-     * date.from(Date.now() - 10*1000);
+     * date.from(new Date().getTime() - 10*1000);
      * // => "10秒前"
-     * date.from(Date.now() - 61*1000);
+     * date.from(new Date().getTime() - 61*1000);
      * // => "1分钟前"
-     * date.from(Date.now() - 60*60*1000);
+     * date.from(new Date().getTime() - 60*60*1000);
      * // => "1小时前"
-     * date.from(Date.now() - 24*60*60*1000);
+     * date.from(new Date().getTime() - 24*60*60*1000);
      * // => "1天前"
-     * date.from(Date.now() - 30*24*60*60*1000);
+     * date.from(new Date().getTime() - 30*24*60*60*1000);
      * // => "1个月前"
-     * date.from(Date.now() - 12*30*24*60*60*1000);
+     * date.from(new Date().getTime() - 12*30*24*60*60*1000);
      * // => "1年前"
-     * date.from(Date.now() - 20*12*30*24*60*60*1000);
+     * date.from(new Date().getTime() - 20*12*30*24*60*60*1000);
      * // => "19年前"
-     * date.from(Date.now() - 100*12*30*24*60*60*1000);
+     * date.from(new Date().getTime() - 100*12*30*24*60*60*1000);
      * // => "很久之前"
      *
      * // 将来时间
-     * date.from(Date.now() + 1);
+     * date.from(new Date().getTime() + 1);
      * // => "即将"
-     * date.from(Date.now() + 10*1000);
+     * date.from(new Date().getTime() + 10*1000);
      * // => "10秒后"
-     * date.from(Date.now() + 61*1000);
+     * date.from(new Date().getTime() + 61*1000);
      * // => "1分钟后"
-     * date.from(Date.now() + 60*60*1000);
+     * date.from(new Date().getTime() + 60*60*1000);
      * // => "1小时后"
-     * date.from(Date.now() + 24*60*60*1000);
+     * date.from(new Date().getTime() + 24*60*60*1000);
      * // => "1天后"
-     * date.from(Date.now() + 30*24*60*60*1000);
+     * date.from(new Date().getTime() + 30*24*60*60*1000);
      * // => "1个月后"
-     * date.from(Date.now() + 12*30*24*60*60*1000);
+     * date.from(new Date().getTime() + 12*30*24*60*60*1000);
      * // => "11个月后"
-     * date.from(Date.now() + 20*12*30*24*60*60*1000);
+     * date.from(new Date().getTime() + 20*12*30*24*60*60*1000);
      * // => "19年后"
-     * date.from(Date.now() + 100*12*30*24*60*60*1000);
+     * date.from(new Date().getTime() + 100*12*30*24*60*60*1000);
      * // => "98年后"
-     * date.from(Date.now() + 200*12*30*24*60*60*1000);
+     * date.from(new Date().getTime() + 200*12*30*24*60*60*1000);
      * // => "很久之后"
      */
     exports.from = function (date, compareDate, options) {
