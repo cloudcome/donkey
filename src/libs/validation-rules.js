@@ -131,7 +131,7 @@ define(function (require, exports, module) {
 
                 var boolean = type === 0 ? val >= param0 : val <= param0;
 
-                done(boolean ? null : lang.get('min'));
+                done(boolean ? null : lang.get(type ? 'max' : 'min'));
             };
         };
 
