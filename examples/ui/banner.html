@@ -34,21 +34,50 @@
             margin: 20px auto;
             box-shadow: 0 0 20px #000;
         }
+
+        .banner-nav{
+            position: absolute;
+            width: 300px;
+            height: 40px;
+            bottom: 0;
+            left: 50%;
+            margin-left: -150px;
+            text-align: center;
+        }
+
+        .banner-nav li{
+            font-size: 0;
+            display: inline-block;
+            border-radius: 100%;
+            margin: 0 5px;
+            width: 19px;
+            height: 19px;
+            border: 1px solid #fff;
+        }
+
+        .banner-nav li.active{
+            width: 20px;
+            height: 20px;
+            background: #fff;
+        }
     </style>
 </head>
 <body ontouchstart="">
 
 
-<div id="banner">
-    <ul>
+<div id="banner" class="banner">
+    <ul class="banner-list">
         <li><img src="http://img.zcool.cn/community/033398e554c7d3b00000158fc4d502c.jpg" alt=""/></li>
         <li><img src="http://www.jintupian.com/Photo/i.php?/upload/2015/07/02/20150702040034-11efea04-me.jpg" alt=""/></li>
         <li><img src="http://www.jintupian.com/Photo/i.php?/upload/2015/05/30/20150530043452-66c26ea6-me.jpg" alt=""/></li>
         <li><img src="http://farm8.staticflickr.com/7374/10861294833_6b7ae5b03b_o.jpg" alt=""/></li>
         <li><img src="http://www.jintupian.com/Photo/i.php?/upload/2015/03/19/20150319023838-0d8460bf-me.jpg" alt=""/></li>
     </ul>
+
+    <ul class="banner-nav"></ul>
 </div>
 
+<button id="prev">上一张</button>
 
 <script src="/examples/jquery/1.11.3/jquery.min.js"></script>
 <script coolie src="/examples/coolie.min-1.1.1.js"

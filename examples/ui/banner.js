@@ -16,7 +16,13 @@ define(function (require, exports, module) {
     var Banner = require('../../src/ui/banner/index.js');
     var banner = new Banner('#banner', {
         width: 1000,
-        height: 400
+        height: 400,
+        interval: 3000,
+        auto: false
+    });
+
+    $('#prev').on('click', function () {
+        banner.prev();
     });
 
 });
