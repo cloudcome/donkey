@@ -66,6 +66,7 @@ define(function (require, exports, module) {
             }));
         }
     };
+    exports.supportTransition = supportTransition;
 
 
     /**
