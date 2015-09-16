@@ -203,12 +203,29 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         * 上一张
+         * @returns {Banner}
+         */
         prev: function () {
             var the = this;
-            var options = the._options;
 
             the._pause();
             the.change(the._currentIndex - 1);
+
+            return the;
+        },
+
+
+        /**
+         * 下一张
+         * @returns {Banner}
+         */
+        next: function () {
+            var the = this;
+
+            the._pause();
+            the.change(the._currentIndex + 1);
 
             return the;
         }
