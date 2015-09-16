@@ -1,5 +1,5 @@
 /*!
- * 文件描述
+ * banner
  * @author ydr.me
  * @create 2015-09-14 22:43
  */

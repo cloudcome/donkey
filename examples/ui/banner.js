@@ -17,8 +17,7 @@ define(function (require, exports, module) {
     var banner = new Banner('#banner', {
         width: 1000,
         height: 400,
-        interval: 3000,
-        auto: false
+        auto: true
     });
 
     $('#prev').on('click', function () {

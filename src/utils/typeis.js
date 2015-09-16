@@ -137,36 +137,50 @@ define(function (require, exports, module) {
          * 快捷判断
          * @name typeis
          * @property string {Function}
+         * @property String {Function}
          * @property isString {Function}
          * @property number {Function}
+         * @property Number {Function}
          * @property isNumber {Function}
          * @property function {Function}
+         * @property Function {Function}
          * @property isFunction {Function}
          * @property object {Function}
+         * @property Object {Function}
          * @property isObject {Function}
          * @property undefined {Function}
+         * @property Undefined {Function}
          * @property isUndefined {Function}
          * @property null {Function}
+         * @property Null {Function}
          * @property isNull {Function}
          * @property nan {Function}
+         * @property Nan {Function}
          * @property isNan {Function}
          * @property element {Function}
+         * @property Element {Function}
          * @property isElement {Function}
          * @property regexp {Function}
+         * @property Regexp {Function}
          * @property isRegexp {Function}
          * @property boolean {Function}
+         * @property Boolean {Function}
          * @property isBoolean {Function}
          * @property array {Function}
+         * @property Array {Function}
          * @property isArray {Function}
          * @property window {Function}
+         * @property Window {Function}
          * @property isWindow {Function}
          * @property document {Function}
+         * @property Document {Function}
          * @property isDocument {Function}
          * @property global {Function}
+         * @property Global {Function}
          * @property isGlobal {Function}
          * @returns {boolean}
          */
-        typeis[tp] = typeis['is' + tp2] = function (obj) {
+        typeis[tp] = typeis[tp2] = typeis['is' + tp2] = function (obj) {
             return typeis(obj) === tp;
         };
     };
@@ -275,6 +289,16 @@ define(function (require, exports, module) {
         return !!anything &&
             typeis.number(anything.nodeType) && anything.nodeType > 0 && anything.nodeType < 13 &&
             'nodeName' in anything && 'nodeValue' in anything;
+    };
+
+
+    /**
+     * 判断对象是否为 jquery 对象
+     * @param anything
+     * @returns {boolean}
+     */
+    typeis.jquery = function (anything) {
+        return !!anything && 'length' in anything && !!anything.jquery;
     };
 
 

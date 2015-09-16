@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+ - 文件描述
+ - @author ydr.me
+ - @create 2015-09-16 10:31
+ -->
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,user-scalable=no,maximum-scale=1.0,minimum-scale=1.0,minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="author" content="云淡然;http://ydr.me">
+    <meta name="keywords" content="关键词1,关键词2">
+    <meta name="description" content="描述语句">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <title>validation.html</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        input,button{
+            height: 34px;
+            display: block;
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+
+        button{
+            background: #ececec;
+        }
+
+        #form{
+            width: 400px;
+            margin: 10px auto;
+        }
+
+        p{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body ontouchstart="">
+
+
+<div id="form">
+    <p><input type="text" name="username" id="username" required/></p>
+    <p><input type="text" name="password" id="password" required/></p>
+    <p><input type="text" name="password2" id="password2"
+              required data-validation="equal:password"/></p>
+    <p><button id="submit">提交</button></p>
+    <p><button id="submit1">只验证 username</button></p>
+</div>
+
+
+<script src="/examples/jquery/1.11.3/jquery.min.js"></script>
+<script src="/examples/coolie.min-1.1.1.js"
+        data-config="./coolie-config.js"
+        data-main="ui/validation.js"></script>
+
+
+</body>
+</html>

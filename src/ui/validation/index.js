@@ -37,6 +37,8 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var string = require('../../utils/string.js');
+    var howdo = require('../../utils/howdo.js');
+    var allocation = require('../../utils/allocation.js');
     var ui = require('../');
     // {
     //     minLength: function(ruleValue){
@@ -228,18 +230,72 @@ define(function (require, exports, module) {
 
         /**
          * 单独验证某个输入对象
-         * @param [$ele] {Object} 输入对象，如果为空则验证全部
+         * @param [$ele] {Object|Array|String} 待验证的对象或字段，可以为多个对象，如果为空则验证全部
          * @param [callback] {Function} 回调
+         * @arguments [pass] {Boolean} 是否通过验证
          * @returns {ValidationUI}
          */
         validate: function ($ele, callback) {
             var the = this;
-            var data = the.getData($ele);
+            var options = the._options;
+            var data;
+            var args = allocation.args(arguments);
 
-            if ($ele) {
-                the._validation.validateOne(data, callback);
+            if (typeis.Function(args[0])) {
+                callback = args[0];
+                $ele = null;
+            }
+
+            // 单个字段
+            if (typeis.string($ele)) {
+                $ele = the._pathMap[$ele];
+            }
+
+            // 多个字段
+            if (typeis.Array($ele)) {
+                var temp = [];
+
+                dato.each($ele, function (index, path) {
+                    temp.push(the._pathMap[path]);
+                });
+
+                $ele = temp;
+            }
+
+            // 单个元素
+            if (typeis.element($ele)) {
+                $ele = [$ele];
+            }
+
+            var pass = false;
+            var oncomplete = function () {
+                if (typeis.Function(callback)) {
+                    callback.call(the, pass);
+                }
+            };
+
+            if ($ele && 'length' in $ele) {
+                howdo.each($ele, function (index, $ele, next) {
+                    data = the.getData($ele);
+                    the._validation.validateOne(data, function (_pass) {
+                        pass = _pass;
+
+                        var err = !_pass;
+
+                        // 有错 && 失败继续
+                        if (err && !options.breakOnInvalid) {
+                            err = false;
+                        }
+
+                        next(err);
+                    });
+                }).follow(oncomplete);
             } else {
-                the._validation.validateAll(data, callback);
+                data = the.getData();
+                the._validation.validateAll(data, function (_pass) {
+                    pass = _pass;
+                    oncomplete();
+                });
             }
 
             return the;
