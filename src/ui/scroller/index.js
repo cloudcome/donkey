@@ -1,5 +1,5 @@
 /*!
- * 文件描述
+ * 滚动器
  * @author ydr.me
  * @create 2015-09-16 18:44
  */
@@ -7,7 +7,10 @@
 
 define(function (require, exports, module) {
     /**
-     * @module parent/index
+     * @module ui/scroller/
+     * @requires utils/dato
+     * @requires utils/controller
+     * @requires ui/scroll/
      */
 
     'use strict';
