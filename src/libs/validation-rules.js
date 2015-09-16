@@ -107,11 +107,6 @@ define(function (require, exports, module) {
 
 
         var _createNumber = function (type) {
-            var map = {
-                0: '小于',
-                1: '大于'
-            };
-
             return function (val, done, param0) {
                 val = val || '';
 
