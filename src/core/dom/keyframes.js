@@ -19,6 +19,7 @@ define(function (require, exports, module) {
     var modification = require('./modification.js');
     var typeis = require('./../../utils/typeis.js');
     var dato = require('./../../utils/dato.js');
+    var attribute = require('./attribute.js');
     var REG_NUM = /^(\d+?\.)?\d+$/;
     var VENDOR_PREFIX = ['-webkit-', '-moz-', '-ms-', ''];
     var alienIndex = 0;
@@ -28,9 +29,7 @@ define(function (require, exports, module) {
      */
     var keyframesMap = {};
     var $style = modification.create('style');
-    var head = selector.query('head')[0] || document.documentElement;
-
-    modification.insert($style, head);
+    $('head').append($style);
 
 
     /**
