@@ -15,7 +15,7 @@ define(function (require, exports, module) {
     var Validation = require('../../src/ui/validation/index.js');
 
     var v = new Validation('#form', {
-        breakOnInvalid: true
+        breakOnInvalid: false
     });
 
     v.before('validate', function (ele) {

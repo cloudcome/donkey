@@ -1,4 +1,5 @@
 # validation
+配置`breakOnInvalid`表示是否在遇到非法字段时断开验证。
 
 
 # 验证规则

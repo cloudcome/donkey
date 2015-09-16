@@ -47,7 +47,7 @@ define(function (require, exports, module) {
         // 浏览器端，默认为 false
         // 服务器端，默认为 true
         breakOnInvalid: typeis.window(window) ? false : true,
-        defaultMsg: '${path}字段不合法'
+        defaultMsg: '${1}不合法'
     };
     var Validation = klass.extend(Emitter).create({
         /**
