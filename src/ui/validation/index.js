@@ -47,7 +47,6 @@ define(function (require, exports, module) {
     //         };
     //     };
     // }
-    var validationMap = {};
     var tagNameMap = {
         textarea: 1,
         select: 1
@@ -71,10 +70,6 @@ define(function (require, exports, module) {
         // 验证的表单项目选择器
         inputSelector: 'input,select,textarea'
     };
-    //var typeRegExpMap = {
-    //    number: /^\d+$/,
-    //    url: ''
-    //};
     var ValidationUI = ui.create({
         constructor: function ($form, options) {
             var the = this;
@@ -523,19 +518,6 @@ define(function (require, exports, module) {
             };
         }
     });
-
-    /**
-     * 添加静态的 ui 验证规则
-     * @param ruleName {String} 规则名称
-     * @param fn {Function} 返回包含生成规则的方法的高阶方法
-     */
-    ValidationUI.addRule = function (ruleName, fn) {
-        if (validationMap[ruleName] && DEBUG) {
-            console.warn('override rule of ' + ruleName);
-        }
-
-        validationMap[ruleName] = fn;
-    };
 
     ValidationUI.defaults = defaults;
     module.exports = ValidationUI;
