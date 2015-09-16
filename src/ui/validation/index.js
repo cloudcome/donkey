@@ -420,13 +420,6 @@ define(function (require, exports, module) {
             validationList.forEach(function (validation) {
                 var validationName = validation.name;
                 var validationVals = validation.values;
-                //
-                //if (validationName === 'alias') {
-                //    the._validation.setAlias(path, validationVals.join(''));
-                //    hasAlias = true;
-                //    return;
-                //}
-
                 var args = [path, validationName];
 
                 args = args.concat(validationVals);
