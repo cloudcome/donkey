@@ -67,6 +67,8 @@ define(function (require, exports, module) {
         dataSep: ',',
         // data 规则等于符
         dataEqual: ':',
+        // data 多值分隔符
+        dataVal: '|',
         // 验证的表单项目选择器
         inputSelector: 'input,select,textarea'
     };
@@ -75,7 +77,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._options = dato.extend({}, defaults, options);
-            the._regDataMsg = new RegExp(string.escapeRegExp('data-' + the._options).dataMsg, 'i');
+            //the._regDataMsg = new RegExp(string.escapeRegExp('data-' + the._options.dataMsg), 'i');
             the._$form = $($form);
             the._pathMap = {};
             the.update();
@@ -492,6 +494,7 @@ define(function (require, exports, module) {
          */
         _parseValidation: function (ruleString) {
             var the = this;
+            var options = the._options;
             var list = the._parseDataStr(ruleString);
             var hasType = false;
 
@@ -508,7 +511,7 @@ define(function (require, exports, module) {
 
                 list2.push({
                     name: item.key,
-                    values: item.val ? item.val.split('|') : true
+                    values: item.val ? item.val.split(options.dataVal) : true
                 });
             });
 

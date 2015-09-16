@@ -134,3 +134,13 @@ ${1}是字段，${2}是规则值
 - 对应的 label 的值
 - 对应的 placeholder 值
 - 对应的 name 值
+
+
+# 重写表单消息
+如果对内置的静态规则消息不赞同，除了修改静态规则外，还可以在 DOM 层直接修改：
+```
+<input type="text" 
+    data-validation="type:email,minLength:5,maxLength:12"
+    data-msg="type:数据类型不合法啦">
+```
+
