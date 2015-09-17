@@ -45,7 +45,7 @@ define(function (require, exports, module) {
 
         if (!typeis.string(name)) {
             keyframes = args[0];
-            name = 'alien-keyframes-' + alienIndex++;
+            name = 'donkey-keyframes-' + alienIndex++;
         }
 
         var mainStyle = '';
