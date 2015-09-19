@@ -22,9 +22,7 @@ define(function (require, exports, module) {
 
     var defaults = {
         easing: 'linear',
-        duration: 456,
-        offsetLeft: 0,
-        offsetTop: -50
+        duration: 456
     };
 
     /**
@@ -55,6 +53,7 @@ define(function (require, exports, module) {
                 to.translateY = null;
             }
 
+            options = dato.extend({}, defaults, options);
             options.easing = easing.get(options.easing);
             $(ele).transition(dato.extend(to, options, {
                 complete: callback
