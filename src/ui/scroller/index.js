@@ -1,5 +1,5 @@
 /*!
- * 滚动器
+ * 区域滚动检查器
  * @author ydr.me
  * @create 2015-09-16 18:44
  */
@@ -25,10 +25,11 @@ define(function (require, exports, module) {
         containerSelector: window,
         // 项目选择器
         itemSelector: '> *',
-        // 偏移量
-        offset: 0,
         // 最后一次触发的 xx ms后检查
-        wait: 123
+        wait: 123,
+        // 上、下视线比
+        topLine: 0,
+        bottomLine: 1
     };
     var Scroller = ui.create({
         constructor: function ($parent, options) {
@@ -36,6 +37,13 @@ define(function (require, exports, module) {
 
             the._$parent = $($parent);
             options = the._options = dato.extend({}, defaults, options);
+
+            if (options.topLine > options.bottomLine) {
+                var temp = options.topLine;
+                options.topLine = options.bottomLine;
+                options.bottomLine = temp;
+            }
+
             the._$container = $(options.containerSelector);
             the.update();
             the._initEvent();
@@ -75,67 +83,37 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
             var options = the._options;
-            var lastEnter = -1;
-            var lastLeave = -1;
-            var onenter = function (ele, index) {
-                if (lastEnter !== index) {
-                    lastEnter = index;
-                    the.emit('enter', ele, index);
-                }
-            };
-            var onleave = function (ele, index) {
-                if (lastLeave !== index) {
-                    lastLeave = index;
-                    the.emit('leave', ele, index);
-                }
-            };
-            var onscroll = controller.debounce(function (isDown) {
+            var lineMap = {};
+            var onscroll = controller.debounce(function () {
                 var scrollTop = the._$container.scrollTop();
                 var containerHeight = the._$container.height();
-                var hasEnter = false;
-                var hasLeave = false;
 
-                if (isDown) {
-                    dato.each(the._list2, function (index, item) {
-                        if (!hasEnter && scrollTop + containerHeight > item.top) {
-                            hasEnter = true;
-                            index = the._length - index - 1;
-                            onenter(item.ele, index);
-                        }
+                var topLine = scrollTop + containerHeight * options.topLine;
+                var bottomLine = scrollTop + containerHeight * options.bottomLine;
 
-                        if (!hasLeave && item.bottom < scrollTop) {
-                            hasLeave = true;
-                            onleave(item.ele, index);
+                // 遍历判断，是否在视线区间
+                dato.each(the._list, function (index, item) {
+                    if (
+                        item.bottom < topLine || item.top > bottomLine
+                    ) {
+                        if (lineMap[index]) {
+                            lineMap[index] = false;
+                            the.emit('leave', item.ele, index);
                         }
-
-                        if (hasEnter && hasLeave) {
-                            return false;
+                    } else {
+                        if (!lineMap[index]) {
+                            lineMap[index] = true;
+                            the.emit('enter', item.ele, index);
                         }
-                    });
-                } else {
-                    dato.each(the._list, function (index, item) {
-                        if (!hasEnter && item.bottom > scrollTop && scrollTop + containerHeight > the._parentTop) {
-                            hasEnter = true;
-                            onenter(item.ele, index);
-                        }
-
-                        if (!hasLeave && item.top > scrollTop + containerHeight) {
-                            hasLeave = true;
-                            onleave(item.ele, index);
-                        }
-
-                        if (hasEnter && hasLeave) {
-                            return false;
-                        }
-                    });
-                }
+                    }
+                });
             }, options.wait);
 
             the._scroll = new Scroll(the._$container);
             the._scroll.on('up', function () {
                 onscroll();
             }).on('down', function () {
-                onscroll(true);
+                onscroll();
             });
         },
 

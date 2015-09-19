@@ -172,7 +172,7 @@ define(function (require, exports, module) {
 
             the._pause();
             the._timeid = setInterval(function () {
-                the.change(the._currentIndex + 1);
+                the.change(the._currentIndex + 1, 'next');
             }, options.interval);
         },
 
