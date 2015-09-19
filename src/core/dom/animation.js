@@ -11,22 +11,12 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var allocation = require('../../utils/allocation.js');
+    var easing = require('../../utils/easing.js');
     var modification = require('../../core/dom/modification.js');
+    var compatible = require('../../core/navigator/compatible.js');
+    var supportTransition = !!compatible.css3('transition');
     var $ = window.jQuery;
-    var supportTransition = (function () {
-        var vendorList = ['mozT', 'webkitT', 'oT', 'msT', 't'];
-        var style = modification.create('div').style;
-        var support = false;
 
-        dato.each(vendorList, function (index, vendor) {
-            if ((vendor + 'ransition') in style) {
-                support = true;
-                return false;
-            }
-        });
-
-        return support;
-    }());
 
     require('../../jquery-plugins/jquery-transit.js')($);
 
@@ -65,6 +55,7 @@ define(function (require, exports, module) {
                 to.translateY = null;
             }
 
+            options.easing = easing.get(options.easing);
             $(ele).transition(dato.extend(to, options, {
                 complete: callback
             }));
@@ -74,8 +65,6 @@ define(function (require, exports, module) {
             }));
         }
     };
-    exports.supportTransition = supportTransition;
-
 
     /**
      * 定点滚动
