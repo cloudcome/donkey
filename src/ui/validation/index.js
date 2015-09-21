@@ -264,7 +264,7 @@ define(function (require, exports, module) {
                 $ele = [$ele];
             }
 
-            var pass = false;
+            var pass = null;
             var oncomplete = function () {
                 if (typeis.Function(callback)) {
                     callback.call(the, pass);
@@ -275,7 +275,9 @@ define(function (require, exports, module) {
                 howdo.each($ele, function (index, $ele, next) {
                     data = the.getData($ele);
                     the._validation.validateOne(data, function (_pass) {
-                        pass = _pass;
+                        if (pass === null) {
+                            pass = _pass;
+                        }
 
                         var err = !_pass;
 
