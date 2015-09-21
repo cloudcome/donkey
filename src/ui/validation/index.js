@@ -134,9 +134,7 @@ define(function (require, exports, module) {
                 switch (inputType) {
                     case 'checkbox':
                     case 'radio':
-                        list = $('input[name="' + ele.name + '"]', the._$form).filter(function () {
-                            return !this.disabled;
-                        });
+                        list = $('input[name="' + ele.name + '"]', the._$form);
                         break;
 
                     default :
@@ -347,7 +345,7 @@ define(function (require, exports, module) {
 
             the._items = [];
             the._$inputs = $(options.inputSelector, the._$form).filter(function () {
-                return this.name;
+                return this.name && !this.disabled;
             });
             dato.each(the._$inputs, function (i, eleInput) {
                 var name = eleInput.name;
