@@ -134,7 +134,9 @@ define(function (require, exports, module) {
                 switch (inputType) {
                     case 'checkbox':
                     case 'radio':
-                        list = $('input[name="' + ele.name + '"]', the._$form);
+                        list = $('input[name="' + ele.name + '"]', the._$form).filter(function () {
+                            return !this.disabled;
+                        });
                         break;
 
                     default :
