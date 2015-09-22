@@ -102,7 +102,7 @@ define(function (require, exports, module) {
 
         Validation.addRule('equal', function (val, done, param0) {
             val = val || '';
-            done(val === this.getData(param0) ? null : '${1}必须与${2}相同');
+            done(val === this.getData(param0) ? null : '${1}必须与' + this.getAlias(param0) + '相同');
         });
 
 
