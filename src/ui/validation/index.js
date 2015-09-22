@@ -19,6 +19,7 @@ define(function (require, exports, module) {
      * @requires utils/dato
      * @requires utils/typeis
      * @requires utils/string
+     * @requires utils/controller
      * @requires ui/
      */
 
@@ -39,6 +40,7 @@ define(function (require, exports, module) {
     var string = require('../../utils/string.js');
     var howdo = require('../../utils/howdo.js');
     var allocation = require('../../utils/allocation.js');
+    var controller = require('../../utils/controller.js');
     var ui = require('../');
     // {
     //     minLength: function(ruleValue){
@@ -112,7 +114,10 @@ define(function (require, exports, module) {
                     the.emit('aftervalidate', the._pathMap[path]);
                 });
             the._parseItems();
-            the.emit('update');
+
+            controller.nextTick(function () {
+                the.emit('update');
+            });
 
             return the;
         },
