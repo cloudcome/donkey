@@ -281,7 +281,7 @@ define(function (require, exports, module) {
                 howdo.each($ele, function (index, $ele, next) {
                     data = the.getData($ele);
                     the._validation.validateOne(data, function (_pass) {
-                        if (pass === null) {
+                        if (pass === null || _pass === false) {
                             pass = _pass;
                         }
 
