@@ -79,7 +79,6 @@ define(function (require, exports, module) {
             the._options = dato.extend({}, defaults, options);
             //the._regDataMsg = new RegExp(string.escapeRegExp('data-' + the._options.dataMsg), 'i');
             the._$form = $($form);
-            the._pathMap = {};
             the.update();
         },
 
@@ -91,6 +90,7 @@ define(function (require, exports, module) {
         update: function () {
             var the = this;
 
+            the._pathMap = {};
             the._validation = new Validation(the._options);
             the._validation
                 .on('valid', function (path) {
