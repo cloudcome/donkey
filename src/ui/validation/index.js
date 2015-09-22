@@ -112,6 +112,7 @@ define(function (require, exports, module) {
                     the.emit('aftervalidate', the._pathMap[path]);
                 });
             the._parseItems();
+            the.emit('update');
 
             return the;
         },
