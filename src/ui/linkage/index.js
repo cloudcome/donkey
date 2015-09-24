@@ -224,13 +224,6 @@ define(function (require, exports, module) {
             var query = {};
 
             query[options.queryName] = index > 0 ? prevValue : '';
-            //the._xhr = xhr.get(options.urls[index], query).on('success', function (list) {
-            //    the.emit('afterdata', list);
-            //    callback(null, typeis.isFunction(options.filter) ? options.filter(list) : list);
-            //}).on('error', function (err) {
-            //    the.emit('error', err);
-            //    callback(err);
-            //});
             the._xhr = $.ajax({
                 url: options.urls[index],
                 data: query
@@ -238,7 +231,9 @@ define(function (require, exports, module) {
                 the.emit('afterdata', list);
                 callback(null, typeis.isFunction(options.filter) ? options.filter(list) : list);
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                the.emit('error', new Error(errorThrown));
+                var err = new Error(errorThrown);
+                the.emit('error', err);
+                callback(err);
             });
         },
 
@@ -330,13 +325,12 @@ define(function (require, exports, module) {
                 if (options.hideEmpty) {
                     $select.show();
                 }
-
-                $select.html(selectOptions);
             }
 
-            if (!the._unChangeNext) {
-                the.emit('change', index, selectedValue);
+            $select.html(selectOptions);
+            the.emit('change', index, selectedValue);
 
+            if (!the._unChangeNext) {
                 var nextIndex = index + 1;
                 if (nextIndex < the._length) {
                     the._cleanValues(nextIndex);
