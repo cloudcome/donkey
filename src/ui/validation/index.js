@@ -172,10 +172,10 @@ define(function (require, exports, module) {
                         }
 
                         dato.repeat(ele.length, function (index) {
-                            var $option = ele[index];
-                            var val = $($option).attr('value');
+                            var eleOption = ele[index];
+                            var val = eleOption.value;
 
-                            if ($option.selected && val) {
+                            if (eleOption.selected && val) {
                                 if (isMultiple) {
                                     data[path].push(val);
                                 } else {
@@ -232,13 +232,13 @@ define(function (require, exports, module) {
 
 
         /**
-         * 单独验证某个输入对象
-         * @param [$ele] {Object|Array|String} 待验证的对象或字段，可以为多个对象，如果为空则验证全部
+         * 单独验证某个/些字段
+         * @param [ele] {Object|Array|String} 待验证的对象或字段，可以为多个对象，如果为空则验证全部
          * @param [callback] {Function} 回调
          * @arguments [pass] {Boolean} 是否通过验证
          * @returns {ValidationUI}
          */
-        validate: function ($ele, callback) {
+        validate: function (ele, callback) {
             var the = this;
             var options = the._options;
             var data;
@@ -246,28 +246,28 @@ define(function (require, exports, module) {
 
             if (typeis.Function(args[0])) {
                 callback = args[0];
-                $ele = null;
+                ele = null;
             }
 
             // 单个字段
-            if (typeis.string($ele)) {
-                $ele = the._pathMap[$ele];
+            if (typeis.string(ele)) {
+                ele = the._pathMap[ele];
             }
 
             // 多个字段
-            if (typeis.Array($ele)) {
+            if (typeis.Array(ele)) {
                 var temp = [];
 
-                dato.each($ele, function (index, path) {
+                dato.each(ele, function (index, path) {
                     temp.push(the._pathMap[path]);
                 });
 
-                $ele = temp;
+                ele = temp;
             }
 
             // 单个元素
-            if (typeis.element($ele)) {
-                $ele = [$ele];
+            if (typeis.element(ele)) {
+                ele = [ele];
             }
 
             var pass = null;
@@ -277,8 +277,8 @@ define(function (require, exports, module) {
                 }
             };
 
-            if ($ele && 'length' in $ele) {
-                howdo.each($ele, function (index, $ele, next) {
+            if (ele && 'length' in ele) {
+                howdo.each(ele, function (index, $ele, next) {
                     data = the.getData($ele);
                     the._validation.validateOne(data, function (_pass) {
                         if (pass === null || _pass === false) {

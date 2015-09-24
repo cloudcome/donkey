@@ -1,5 +1,5 @@
 /*!
- * 文件描述
+ * 验证语法
  * @author ydr.me
  * @create 2015-08-20 15:30
  */
@@ -8,6 +8,7 @@
 define(function (require, exports, module) {
     /**
      * @module libs/validation-lang
+     * @requires utils/string
      */
 
     'use strict';

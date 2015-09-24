@@ -118,7 +118,7 @@ define(function (require, exports, module) {
 
         var ret = Object.prototype.toString.call(object).slice(8, -1).toLowerCase();
 
-        if (ret.nodeType === 1 && ret.nodeName) {
+        if (object.nodeType === 1 && object.nodeName) {
             return 'element';
         } else if (isNaN(object) && ret === 'number') {
             return 'nan';
