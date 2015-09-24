@@ -93,7 +93,7 @@ define(function (require, exports, module) {
             the._$close = $(nodes[2]);
             the._$body = $(nodes[3]);
             the._window = new Window(the._$parent, dato.extend({}, options, {
-                addClass: namespace + '-window'
+                addClass: namespace + '-window ' + options.addClass
             }));
             the._$window = $(the._window.getNode());
 

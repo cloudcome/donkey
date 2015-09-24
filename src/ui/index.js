@@ -8,6 +8,14 @@
 define(function (require, exports, module) {
     /**
      * @module ui/index
+     * @requires libs/emitter
+     * @requires utils/typeis
+     * @requires utils/dato
+     * @requires utils/class
+     * @requires utils/number
+     * @requires utils/allocation
+     * @requires core/dom/modification
+     * @requires core/navigator/compatibe
      */
 
     'use strict';
