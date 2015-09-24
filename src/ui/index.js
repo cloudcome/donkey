@@ -242,4 +242,82 @@ define(function (require, exports, module) {
 
         translate(ele, translateX, 'Y');
     };
+
+
+
+    /**
+     * 原型过渡
+     * @param parentClass {Function} 父级构造函数
+     * @param parentInstanceName {String} 父级实例名称
+     * @param childClass {Function} 子级构造函数
+     * @param [filter] {Array} 允许和禁止的公共方法名称
+     *
+     * @example
+     * name 与 ['name'] 匹配
+     * name 与 ['!name'] 不匹配
+     */
+    exports.extend = function (parentClass, parentInstanceName, childClass, filter) {
+        dato.each(parentClass.prototype, function (property) {
+            if(!childClass.prototype[property] && _matches(property, filter)){
+                childClass.prototype[property] = function () {
+                    var the = this;
+
+                    the[parentInstanceName][property].apply(the[parentInstanceName], arguments);
+
+                    return the;
+                };
+            }
+        });
+    };
+
+    exports.inherit = exports['extends'] = exports.extend;
+
+
+    var REG_PRIVATE = /^_/;
+
+    /**
+     * 判断是否匹配
+     * @param name {String} 待匹配字符串
+     * @param [names] {Array} 被匹配字符串数组
+     * @returns {boolean}
+     * @private
+     */
+    function _matches(name, names) {
+        names = names || [];
+
+        if (REG_PRIVATE.test(name)) {
+            return false;
+        }
+
+        if (!names.length) {
+            return true;
+        }
+
+        var matched = true;
+
+        dato.each(names, function (index, _name) {
+            var flag = _name[0];
+
+            // !name
+            if (flag === '!') {
+                matched = true;
+
+                if (name === _name.slice(1)) {
+                    matched = false;
+                    return false;
+                }
+            }
+            // name
+            else {
+                matched = false;
+
+                if (name === _name) {
+                    matched = true;
+                    return false;
+                }
+            }
+        });
+
+        return matched;
+    }
 });
