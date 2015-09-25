@@ -479,7 +479,7 @@ define(function (require, exports, module) {
 
                 list2.push({
                     key: temp[0].trim(),
-                    val: temp[1].trim()
+                    val: temp[1] ? temp[1].trim() : ''
                 });
             });
 
