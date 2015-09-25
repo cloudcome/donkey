@@ -46,11 +46,11 @@ define(function (require, exports, module) {
 
         if (supportTransition) {
             if (!typeis.empty(to.translateX)) {
-                to.translate = [to.translateX, 0];
-                to.translateX = null;
+                to.x = to.translateX;
+                delete(to.translateX);
             } else if (!typeis.empty(to.translateY)) {
-                to.translate = [0, to.translateY];
-                to.translateY = null;
+                to.y = to.translateY;
+                delete(to.translateY);
             }
 
             options = dato.extend({}, defaults, options);
