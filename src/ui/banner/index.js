@@ -96,7 +96,7 @@ define(function (require, exports, module) {
                 the._$items = the._$items.add(the._$firstItemClone).add(the._$lastItemClone);
             }
 
-            if (typeis.function(options.navGenerator)) {
+            if (typeis.Function(options.navGenerator)) {
                 var html = '';
 
                 dato.repeat(the._length, function (index) {
