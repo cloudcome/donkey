@@ -93,6 +93,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._pathMap = {};
+            the._equalMap = {};
             the._validation = new Validation(the._options);
             the._validation
                 .on('valid', function (path) {
@@ -279,7 +280,15 @@ define(function (require, exports, module) {
 
             if (ele && 'length' in ele) {
                 howdo.each(ele, function (index, $ele, next) {
-                    data = the.getData($ele);
+                    var path = $ele.name;
+                    var equalPath = the._equalMap[path];
+                    var select = [path];
+
+                    if (equalPath) {
+                        select.push(equalPath);
+                    }
+
+                    data = dato.select(temp, select);
                     the._validation.validateOne(data, function (_pass) {
                         if (pass === null || _pass === false) {
                             pass = _pass;
@@ -429,6 +438,10 @@ define(function (require, exports, module) {
                 var validationName = validation.name;
                 var validationVals = validation.values;
                 var args = [path, validationName];
+
+                if (validationName === 'equal') {
+                    the._equalMap[path] = validationVals[0];
+                }
 
                 args = args.concat(validationVals);
                 the._validation.addRule.apply(the._validation, args);
