@@ -288,7 +288,7 @@ define(function (require, exports, module) {
                         select.push(equalPath);
                     }
 
-                    data = dato.select(temp, select);
+                    data = dato.select(the.getData(), select);
                     the._validation.validateOne(data, function (_pass) {
                         if (pass === null || _pass === false) {
                             pass = _pass;
