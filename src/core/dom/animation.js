@@ -12,15 +12,17 @@ define(function (require, exports, module) {
     var typeis = require('../../utils/typeis.js');
     var allocation = require('../../utils/allocation.js');
     var easing = require('../../utils/easing.js');
+    var string = require('../../utils/string.js');
     var modification = require('../../core/dom/modification.js');
     var compatible = require('../../core/navigator/compatible.js');
-    var supportTransition = !!compatible.css3('transition');
+
+
     var $ = window.jQuery;
-
-
     require('../../jquery-plugins/jquery.easing.js')($);
     require('../../jquery-plugins/jquery-transit.js')($);
 
+    var supportTransition = !!compatible.css3('transition');
+    var REG_SEP = /-/;
     var defaults = {
         easing: 'linear',
         duration: 456
@@ -60,6 +62,14 @@ define(function (require, exports, module) {
                 complete: callback
             }));
         } else {
+            if (!$.easing[options.easing]) {
+                options.easing = 'ease' + string.humprize(options.easing, true);
+            }
+
+            if (!$.easing[options.easing]) {
+                options.easing = defaults.easing;
+            }
+
             $(ele).animate(to, dato.extend(options, {
                 complete: callback
             }));
