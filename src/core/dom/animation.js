@@ -47,6 +47,8 @@ define(function (require, exports, module) {
             }
         }
 
+        options = dato.extend({}, defaults, options);
+
         if (supportTransition) {
             if (!typeis.empty(to.translateX)) {
                 to.x = to.translateX;
@@ -56,7 +58,6 @@ define(function (require, exports, module) {
                 delete(to.translateY);
             }
 
-            options = dato.extend({}, defaults, options);
             options.easing = easing.get(options.easing);
             $(ele).transition(dato.extend(to, options, {
                 complete: callback

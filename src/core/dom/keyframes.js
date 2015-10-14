@@ -87,7 +87,7 @@ define(function (require, exports, module) {
         });
 
         keyframesMap[name] = style;
-        modification.importStyle(style, $style, true);
+        modification.importStyle(style);
 
         return name;
     };
