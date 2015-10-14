@@ -336,6 +336,11 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         * 重置 banner 尺寸
+         * @param size
+         * @returns {Banner}
+         */
         resize: function (size) {
             var the = this;
 
