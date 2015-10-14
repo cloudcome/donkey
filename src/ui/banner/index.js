@@ -300,7 +300,7 @@ define(function (require, exports, module) {
             if (supportTransition) {
                 to.transform = 'translate(-' + left + 'px, 0)';
             } else {
-                to.marginLeft = left;
+                to.marginLeft = -left;
             }
 
             return to;
