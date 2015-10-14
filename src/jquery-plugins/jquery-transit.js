@@ -1,9 +1,4 @@
-/*!
- * 文件描述
- * @author ydr.me
- * @create 2015-07-20 10:29
- */
-
+define(function (require, exports, module) {
 
 /*!
  * jQuery Transit - CSS3 transitions and transformations
@@ -17,7 +12,6 @@
 /* jshint expr: true */
 
 
-define(function (require, exports, module) {
     'use strict';
 
     module.exports = function($) {

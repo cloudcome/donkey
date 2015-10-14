@@ -34,7 +34,7 @@ define(function (require, exports, module) {
         width: 1024,
         height: 800,
         duration: 678,
-        easing: 'ease',
+        easing: 'swing',
         interval: 5000,
         // 列表选择器
         listSelector: '.banner-list',

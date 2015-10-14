@@ -18,6 +18,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
 
 
+    require('../../jquery-plugins/jquery.easing.js')($);
     require('../../jquery-plugins/jquery-transit.js')($);
 
     var defaults = {
