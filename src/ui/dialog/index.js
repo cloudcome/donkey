@@ -122,16 +122,10 @@ define(function (require, exports, module) {
          */
         _initEvent: function () {
             var the = this;
-            var options = the._options;
+            //var options = the._options;
 
             the._$close.on('click', function () {
                 the.close();
-            });
-
-            the._window.before('update', function () {
-                the._$body.css('height', 'auto');
-            }).after('update', function () {
-                the._$body.css('height', the._$window.outerHeight() - 2 - (options.title ? 35 : 0));
             });
         },
 
