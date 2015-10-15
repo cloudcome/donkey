@@ -400,28 +400,33 @@ define(function (require, exports, module) {
             // 规则顺序
             // required => type => minLength => maxLength => pattern => data
 
-            if (eleInput.required) {
+            if ($(eleInput).attr('required')) {
                 the._validation.addRule(path, 'required');
             }
 
-            if (eleInput.min !== '' && !typeis.empty(eleInput.min)) {
-                the._validation.addRule(path, 'min', eleInput.min);
+            var min = $(eleInput).attr('min');
+            if (min !== '' && !typeis.empty(min)) {
+                the._validation.addRule(path, 'min', min);
             }
 
-            if (eleInput.max !== '' && !typeis.empty(eleInput.max)) {
-                the._validation.addRule(path, 'max', eleInput.max);
+            var max = $(eleInput).attr('min');
+            if (max !== '' && !typeis.empty(max)) {
+                the._validation.addRule(path, 'max', max);
             }
 
-            if (eleInput.accept !== '' && !typeis.empty(eleInput.accept)) {
-                the._validation.addRule(path, 'accept', eleInput.accept);
+            var accept = $(eleInput).attr('accept');
+            if (accept !== '' && !typeis.empty(accept)) {
+                the._validation.addRule(path, 'accept', accept);
             }
 
-            if (eleInput.pattern !== '' && !typeis.empty(eleInput.pattern)) {
-                the._validation.addRule(path, 'pattern', eleInput.pattern);
+            var pattern = $(eleInput).attr('pattern');
+            if (pattern !== '' && !typeis.empty(pattern)) {
+                the._validation.addRule(path, 'pattern', pattern);
             }
 
-            if (eleInput.step !== '' && !typeis.empty(eleInput.step)) {
-                the._validation.addRule(path, 'step', eleInput.step);
+            var step = $(eleInput).attr('step');
+            if (step !== '' && !typeis.empty(step)) {
+                the._validation.addRule(path, 'step', step);
             }
 
             if (!validationInfo.hasType) {
