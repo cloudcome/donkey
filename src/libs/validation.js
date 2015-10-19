@@ -231,7 +231,7 @@ define(function (require, exports, module) {
              * @param path {String} 字段
              */
             the.emit('beforevalidateone', path);
-            the._validateOne(data, path, rules, function (err) {
+            the._validateOne(path, rules, function (err) {
                 /**
                  * 单个验证之后
                  * @event aftervalidateone
@@ -277,7 +277,7 @@ define(function (require, exports, module) {
             howdo
                 // 遍历验证顺序
                 .each(the._validateList, function (i, item, next) {
-                    the._validateOne(data, path = item.path, item.rules, function (err) {
+                    the._validateOne(path = item.path, item.rules, function (err) {
                         if (err) {
                             if (!firstInvlidPath) {
                                 firstInvlidError = err;
@@ -328,15 +328,15 @@ define(function (require, exports, module) {
 
         /**
          * 表单验证
-         * @param data {Object} 验证数据
          * @param path {String} 字段
          * @param rules {Array} 验证规则
          * @param callback {Function} 验证回调
          * @private
          */
-        _validateOne: function (data, path, rules, callback) {
+        _validateOne: function (path, rules, callback) {
             var the = this;
             var options = the._options;
+            var data = the.data;
 
             /**
              * 验证之前
