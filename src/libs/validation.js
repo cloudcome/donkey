@@ -215,13 +215,16 @@ define(function (require, exports, module) {
 
         /**
          * 设置待验证的数据
-         * @param path
-         * @param val
+         * @param path {String} 数据字段
+         * @param val {*} 数据值
+         * @returns {Validation}
          */
         setData: function (path, val) {
             var the = this;
 
             the.data[path] = val;
+
+            return the;
         },
 
 
