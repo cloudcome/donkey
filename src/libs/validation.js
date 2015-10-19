@@ -1,7 +1,8 @@
-/*!
+/**
  * 表单验证
  * @author ydr.me
  * @create 2015-07-01 16:57
+ * @update 2015-10-19 11:44:25
  */
 
 
@@ -178,8 +179,8 @@ define(function (require, exports, module) {
 
         /**
          * 获取字段验证规则的参数
-         * @param path
-         * @param name
+         * @param path {String} 字段
+         * @param name {String} 规则名称
          * @returns {*|Array}}
          */
         getRuleParams: function (path, name) {
@@ -209,6 +210,18 @@ define(function (require, exports, module) {
             }
 
             return this.data;
+        },
+
+
+        /**
+         * 设置待验证的数据
+         * @param path
+         * @param val
+         */
+        setData: function (path, val) {
+            var the = this;
+
+            the.data[path] = val;
         },
 
 

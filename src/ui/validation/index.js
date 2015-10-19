@@ -218,6 +218,21 @@ define(function (require, exports, module) {
 
 
         /**
+         * 设置值
+         * @param ele {String|Object} 待验证的元素
+         * @param val {*} 验证值
+         * @returns {ValidationUI}
+         */
+        setData: function (ele, val) {
+            var the = this;
+
+            the._validation.setData(typeis.string(ele) ? ele : ele.name, val);
+
+            return the;
+        },
+
+
+        /**
          * 注册验证规则，按顺序执行验证
          * @param path {String} 字段
          * @param nameOrfn {String|Function} 验证规则，可以是静态规则，也可以添加规则
