@@ -71,6 +71,7 @@ define(function (require, exports, module) {
             the.visible = false;
             the.destroyed = false;
             the._id = donkeyId++;
+            the.className = 'dialog';
             the._initNode();
             the._initEvent();
         },

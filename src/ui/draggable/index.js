@@ -35,6 +35,7 @@ define(function (require, exports, module) {
             the._$draggable = $($draggable);
             the._options = dato.extend({}, defaults, options);
             the.destroyed = false;
+            the.className = 'draggable';
             the._initEvent();
         },
 

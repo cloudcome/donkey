@@ -24,6 +24,7 @@ define(function (require, exports, module) {
             the._$container = $($container);
             the._options = dato.extend({}, defaults, options);
             the.destroyed = false;
+            the.className = 'scroll';
             the._initEvent();
         },
 

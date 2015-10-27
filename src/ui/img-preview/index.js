@@ -43,6 +43,7 @@ define(function (require, exports, module) {
         constructor: function ($parent, options) {
             var the = this;
 
+            the.className = 'img-preview';
             the._$parent = $($parent);
             the._options = dato.extend({}, defaults, options);
         },

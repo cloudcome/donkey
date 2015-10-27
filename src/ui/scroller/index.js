@@ -36,6 +36,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._$parent = $($parent);
+            the.className = 'scroller';
             options = the._options = dato.extend({}, defaults, options);
 
             if (options.topLine > options.bottomLine) {

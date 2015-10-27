@@ -62,6 +62,7 @@ define(function (require, exports, module) {
             the._options = dato.extend({}, defaults, options);
             the._id = donkeyId++;
             the._currentIndex = 0;
+            the.className = 'banner';
             the._initNode();
             the._initEvent();
             the._auto();

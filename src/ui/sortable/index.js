@@ -57,6 +57,7 @@ define(function (require, exports, module) {
             the._$parent = $($parent);
             the._options = dato.extend({}, defaults, options);
             the._$parent.sortable(the._options);
+            the.className = 'sortable';
         },
 
 

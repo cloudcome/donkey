@@ -29,7 +29,7 @@ define(function (require, exports, module) {
     //var attribute = require('../../core/dom/attribute.js');
     //var event = require('../../core/event/base.js');
     //var xhr = require('../../core/communication/xhr.js');
-    var namespace = 'alien-ui-linkage';
+    var namespace = 'donkey-ui-linkage';
     var defaults = {
         // 数据的 text 键名
         textName: 'text',
@@ -69,6 +69,7 @@ define(function (require, exports, module) {
             the._cache = {};
             the._changeIndex = -1;
             the.destroyed = false;
+            the.className = 'linkage';
             the._initNode();
             the._initEvent();
             // 初始加载第一级

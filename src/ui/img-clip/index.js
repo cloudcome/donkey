@@ -64,6 +64,7 @@ define(function (require, exports, module) {
             the._selection = null;
             the._imgWidth = 0;
             the._imgHeight = 0;
+            the.className = 'img-clip';
             options = the._options = dato.extend({}, defaults, options);
             options.baseClass = namespace;
             options.onSelect = function () {
