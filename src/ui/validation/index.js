@@ -81,6 +81,7 @@ define(function (require, exports, module) {
             the._options = dato.extend({}, defaults, options);
             //the._regDataMsg = new RegExp(string.escapeRegExp('data-' + the._options.dataMsg), 'i');
             the._$form = $($form);
+            the.className = 'validation';
             the.update();
         },
 

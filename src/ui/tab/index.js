@@ -34,6 +34,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._$tab = $($tab);
+            the.className = 'tab';
 
             if (!the._$tab.length) {
                 throw new Error('instance element is empty');

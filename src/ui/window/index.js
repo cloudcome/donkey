@@ -59,6 +59,7 @@ define(function (require, exports, module) {
             the._options = dato.extend({}, defaults, options);
             the._id = donekyId++;
             the.destroyed = false;
+            the.className = 'window';
             windowMap[the._id] = the;
             windowList.push(the._id);
             the._initNode();

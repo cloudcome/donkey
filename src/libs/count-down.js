@@ -42,6 +42,7 @@ define(function (require, exports, module) {
             var the = this;
 
             options = the._options = dato.extend({}, defaults, options);
+            the.className = 'count-down';
             options.minStepValue = stepMap[options.minStep];
             options.maxStepValue = stepMap[options.maxStep];
         },
