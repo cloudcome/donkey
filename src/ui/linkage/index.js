@@ -217,7 +217,7 @@ define(function (require, exports, module) {
                 var cacheList = the.cache[prevIndex][prevValue];
 
                 if (cacheList) {
-                    return callback(null, cacheList);
+                    return callback(null, cacheList.slice(the._hasPlaceholder ? 1 : 0));
                 }
             }
 
