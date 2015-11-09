@@ -6,13 +6,20 @@
 
 
 define(function (require, exports, module) {
-    /**
-     * @module parent/1.js
-     */
-
     'use strict';
 
-    var abc = require('./abc.js');
+    var avalon = window.avalon;
 
-    module.exports = {};
+    avalon.define('div', function (vm) {
+        vm.name = 'cloudcome';
+        vm.age = 20;
+        vm.fullAge = {
+            get: function () {
+                return this.age + '岁';
+            },
+            set: function (age) {
+                this.age = age;
+            }
+        };
+    });
 });
