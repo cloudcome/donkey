@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div ms-controller="div">
+    <input type="text" ms-duplex="name">
+    <input type="text" ms-duplex="age">
+    <span ms-html="name"></span>
+    <span ms-html="fullAge"></span>
+</div>
+
+<script src="/examples/avalon-ie8.js"></script>
+<script src="/examples/coolie.mincoccooooodqwdqw.js"
+data-config="./coolie-config.js"
+data-main="avalon/1.js"></script>
+<script>
+    avalon.config({
+        debug: true
+    });
+    var divModel = avalon.define('div', function (vm) {
+        vm.name = 'cloudcome';
+        vm.age = 20;
+        vm.fullAge = {
+            get: function () {
+                return this.age + '岁';
+            },
+            set: function (age) {
+                this.age = age;
+            }
+        };
+    });
+</script>
+
+</body>
+</html>
