@@ -11,21 +11,27 @@ define(function (require, exports, module) {
     var dato = require('../../src/utils/dato.js');
     var avalon = window.avalon;
 
-    window.div1 = avalon.define('div1', function (vm) {
+    var div1 = avalon.define('div1', function (vm) {
         vm.name = 'cloudcome';
         vm.age = 20;
     });
 
-    window.div2 = avalon.define('div2', function (vm) {
+    var div2 = avalon.define('div2', function (vm) {
         dato.extend(vm, {
             name: 'yundanran',
-            age: 20,
             addAge: function () {
-                div2.age++;
+                div1.age++;
             },
             delAge: function (num) {
-                div2.age -= num;
+                div1.age -= num;
             }
         });
     });
+
+    avalon.define({
+        $id: 'div3',
+        name: '<h2>呵呵</h2>'
+    });
+
+    avalon.scan();
 });

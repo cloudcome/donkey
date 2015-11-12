@@ -13,19 +13,28 @@
 </head>
 <body>
 
-<div id="div1">
+<div ms-controller="div1">
     <input type="text" ms-duplex="name">
     <input type="text" ms-duplex="age">
+    <input type="text" ms-value="name">
     <span ms-html="name"></span>
     <span ms-html="age"></span>
+
+    <div ms-controller="div2">
+        <input type="text" ms-duplex="name">
+        <input type="text" ms-duplex="age"><button ms-click="addAge">age + 1</button><button ms-click="delAge(1)">age - 1</button>
+        <span ms-if="name" ms-html="name"></span>
+        <span ms-visible="age > 20" ms-html="age"></span>
+
+        <div ms-important="div3">
+            <input type="text" ms-duplex="name">
+            <div>{{name|html}}</div>
+            <span>{{age|html}}</span>
+        </div>
+    </div>
 </div>
 
-<div id="div2">
-    <input type="text" ms-duplex="name">
-    <input type="text" ms-duplex="age"><button ms-click="addAge">age + 1</button><button ms-click="delAge(1)">age - 1</button>
-    <span ms-if="name" ms-html="name"></span>
-    <span ms-visible="age > 20" ms-html="age"></span>
-</div>
+
 
 
 <!--coolie-->
