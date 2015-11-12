@@ -8,18 +8,24 @@
 define(function (require, exports, module) {
     'use strict';
 
+    var dato = require('../../src/utils/dato.js');
     var avalon = window.avalon;
 
-    avalon.define('div', function (vm) {
+    window.div1 = avalon.define('div1', function (vm) {
         vm.name = 'cloudcome';
         vm.age = 20;
-        vm.fullAge = {
-            get: function () {
-                return this.age + '岁';
+    });
+
+    window.div2 = avalon.define('div2', function (vm) {
+        dato.extend(vm, {
+            name: 'yundanran',
+            age: 20,
+            addAge: function () {
+                div2.age++;
             },
-            set: function (age) {
-                this.age = age;
+            delAge: function (num) {
+                div2.age -= num;
             }
-        };
+        });
     });
 });

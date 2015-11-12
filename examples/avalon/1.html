@@ -3,17 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        span{
+            padding: 6px;
+            background: #000;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 
-<div ms-controller="div">
+<div id="div1">
     <input type="text" ms-duplex="name">
     <input type="text" ms-duplex="age">
     <span ms-html="name"></span>
-    <span ms-html="fullAge"></span>
+    <span ms-html="age"></span>
 </div>
 
+<div id="div2">
+    <input type="text" ms-duplex="name">
+    <input type="text" ms-duplex="age"><button ms-click="addAge">age + 1</button><button ms-click="delAge(1)">age - 1</button>
+    <span ms-if="name" ms-html="name"></span>
+    <span ms-visible="age > 20" ms-html="age"></span>
+</div>
+
+
+<!--coolie-->
+<script src="/examples/jquery.js"></script>
+<!--/coolie-->
+<!--coolie-->
 <script src="/examples/avalon-ie8.js"></script>
+<!--/coolie-->
 <script src="/examples/coolie.min.js"
 data-config="./coolie-config.js"
 data-main="avalon/1.js"></script>

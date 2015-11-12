@@ -1087,29 +1087,31 @@
      **********************************************************************/
     //avalon最核心的方法的两个方法之一（另一个是avalon.scan），返回一个ViewModel(VM)
     var VMODELS = avalon.vmodels = {} //所有vmodel都储存在这里
-    avalon.define = function (id, factory) {
-        var $id = id.$id || id
-        if (!$id) {
-            log("warning: vm必须指定$id")
-        }
-        if (VMODELS[$id]) {
-            log("warning: " + $id + " 已经存在于avalon.vmodels中")
-        }
-        if (typeof id === "object") {
-            var model = modelFactory(id)
-        } else {
-            var scope = {
-                $watch: noop
-            }
-            factory(scope) //得到所有定义
 
-            model = modelFactory(scope) //偷天换日，将scope换为model
-            stopRepeatAssign = true
-            factory(model)
-            stopRepeatAssign = false
+    avalon.define = function ($id, factory) {
+        var ele = DOC.getElementById($id);
+
+        if (!ele || !$id || VMODELS[$id]) {
+            return;
         }
-        model.$id = $id
-        return VMODELS[$id] = model
+
+        ele.setAttribute('ms-controller', $id);
+
+        var scope = {
+            $watch: noop
+        };
+
+        factory(scope) //得到所有定义
+
+        var model = modelFactory(scope) //偷天换日，将scope换为model
+        stopRepeatAssign = true
+        factory(model)
+        stopRepeatAssign = false
+        model.$id = $id;
+        VMODELS[$id] = model;
+        avalon.scan(ele);
+
+        return model
     }
 
 //一些不需要被监听的属性
@@ -4903,59 +4905,61 @@
     }
 
 
-    /*********************************************************************
-     *                           DOMReady                               *
-     **********************************************************************/
-
-    var readyList = [], isReady
-    var fireReady = function (fn) {
-        isReady = true
-        while (fn = readyList.shift()) {
-            fn(avalon)
-        }
-    }
-
-    function doScrollCheck() {
-        try { //IE下通过doScrollCheck检测DOM树是否建完
-            root.doScroll("left")
-            fireReady()
-        } catch (e) {
-            setTimeout(doScrollCheck, 1)
-        }
-    }
-
-    if (DOC.readyState === "complete") {
-        setTimeout(fireReady, 1) //如果在domReady之外加载
-    } else if (W3C) {
-        DOC.addEventListener("DOMContentLoaded", fireReady)
-    } else {
-        DOC.attachEvent("onreadystatechange", function () {
-            if (DOC.readyState === "complete") {
-                fireReady()
-            }
-        })
-
-        try {
-            var isTop = window.frameElement === null
-        } catch (e) {
-            // ignore
-        }
-
-        if (root.doScroll && isTop && window.external) {//fix IE iframe BUG
-            doScrollCheck()
-        }
-    }
-    avalon.bind(window, "load", fireReady)
-
-    avalon.ready = function (fn) {
-        if (!isReady) {
-            readyList.push(fn)
-        } else {
-            fn(avalon)
-        }
-    }
-
-    avalon.scan(DOC.body);
+    ///*********************************************************************
+    // *                           DOMReady                               *
+    // **********************************************************************/
+    //
+    //var readyList = [], isReady
+    //var fireReady = function (fn) {
+    //    isReady = true
+    //    while (fn = readyList.shift()) {
+    //        fn(avalon)
+    //    }
+    //}
+    //
+    //function doScrollCheck() {
+    //    try { //IE下通过doScrollCheck检测DOM树是否建完
+    //        root.doScroll("left")
+    //        fireReady()
+    //    } catch (e) {
+    //        setTimeout(doScrollCheck, 1)
+    //    }
+    //}
+    //
+    //if (DOC.readyState === "complete") {
+    //    setTimeout(fireReady, 1) //如果在domReady之外加载
+    //} else if (W3C) {
+    //    DOC.addEventListener("DOMContentLoaded", fireReady)
+    //} else {
+    //    DOC.attachEvent("onreadystatechange", function () {
+    //        if (DOC.readyState === "complete") {
+    //            fireReady()
+    //        }
+    //    })
+    //
+    //    try {
+    //        var isTop = window.frameElement === null
+    //    } catch (e) {
+    //        // ignore
+    //    }
+    //
+    //    if (root.doScroll && isTop && window.external) {//fix IE iframe BUG
+    //        doScrollCheck()
+    //    }
+    //}
+    //avalon.bind(window, "load", fireReady)
+    //
+    //avalon.ready = function (fn) {
+    //    if (!isReady) {
+    //        readyList.push(fn)
+    //    } else {
+    //        fn(avalon)
+    //    }
+    //}
+    //
+    //avalon.ready(function () {
+    //    avalon.scan(DOC.body);
+    //});
 
 
 // Register as a named AMD module, since avalon can be concatenated with other
