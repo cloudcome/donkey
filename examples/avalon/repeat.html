@@ -26,8 +26,9 @@
     <li ms-repeat-item="list1">
         {{$index}} = {{item}}
         <button ms-click="addSuffix($index)">添加后缀0</button>
+        <button ms-click="remove($index)">删除当前</button>
     </li>
-    <li><button ms-click="push">push list1</button></li>
+    <li>数组长度{{list1.size()}}<button ms-click="push">push list1</button></li>
     <li ms-repeat="list2">{{$key}} = {{$val}}</li>
 </ul>
 

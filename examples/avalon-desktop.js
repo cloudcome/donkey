@@ -1104,7 +1104,6 @@
         }
         var vmodel = modelFactory(source)
         vmodel.$id = $id
-        avalon.scan();
         return VMODELS[$id] = vmodel
     }
 
