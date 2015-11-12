@@ -2,7 +2,7 @@
 <!--
  - 文件描述
  - @author ydr.me
- - @create 2015-11-12 12:44
+ - @create 2015-11-12 14:59
  -->
 <html lang="zh-Hans">
 <head>
@@ -17,30 +17,27 @@
     <meta name="keywords" content="关键词1,关键词2">
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>attribute.html</title>
-    <style>
-        .green{
-            border: 10px solid green;
-        }
-        .yellow{
-            background-color: yellow;
-        }
-    </style>
+    <title>repeat.html</title>
 </head>
 <body ontouchstart="">
 
-<div ms-controller="attribute">
-    <h1 ms-class-1="green:isGreen" ms-class-2="yellow : isYellow">h1</h1>
-    <input type="text" ms-attr-disabled="disabled">
-</div>
+
+<ul ms-controller="repeat">
+    <li ms-repeat-item="list1">
+        {{$index}} = {{item}}
+        <button ms-click="addSuffix($index)">添加后缀0</button>
+    </li>
+    <li><button ms-click="push">push list1</button></li>
+    <li ms-repeat="list2">{{$key}} = {{$val}}</li>
+</ul>
 
 
 <!--coolie-->
-<script src="/examples/avalon-ie8.js"></script>
+<script src="/examples/avalon-desktop.js"></script>
 <!--/coolie-->
 <script src="/examples/coolie.min.js"
         data-config="./coolie-config.js"
-        data-main="avalon/attribute.js"></script>
+        data-main="avalon/repeat.js"></script>
 
 
 </body>
