@@ -22,9 +22,9 @@
 <body ontouchstart="">
 
 
-<ul ms-controller="repeat">
+<ul id="repeat">
     <li ms-repeat-item="list1">
-        {{$index}} = {{item}}
+        {{$index}} = {{item | add('呵呵 呵呵')}}
         <button ms-click="addSuffix($index)">添加后缀0</button>
         <button ms-click="remove($index)">删除当前</button>
     </li>
