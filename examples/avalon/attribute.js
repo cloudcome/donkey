@@ -12,12 +12,14 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    var avalon = window.avalon;
+    var Avalon = window.Avalon;
 
-    avalon.define('attribute', function (vm) {
-        vm.disabled = true;
-        vm.isYellow = true;
-        vm.isGreen = true;
+    new Avalon({
+        el: 'attribute',
+        data: {
+            disabled: true,
+            isYellow: true,
+            isGreen: true
+        }
     });
-    avalon.scan();
 });

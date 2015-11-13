@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        button, input {
+            display: block;
+            padding: 6px;
+            width: 100%;
+        }
+
+        div {
+            border: 2px solid #0a5573;
+            margin-left: 20px;
+            padding: 10px;
+        }
+
+        div.first-child {
+            margin-left: 0;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>嵌套</h1>
+
+<div id="div1" class="first-child">
+    <h2>div1</h2>
+    name:{{name}}
+    <input type="text" ms-duplex="name"><br>
+    age:{{age}}
+    <input type="text" ms-duplex="age"><br>
+    <!--new div here-->
+</div>
+<button id="push">动态插入一个 div，并且实例化双向绑定</button>
+
+
+<!--coolie-->
+<script src="/examples/jquery.js"></script>
+<!--/coolie-->
+<!--coolie-->
+<script src="/examples/avalon-desktop.js"></script>
+<!--/coolie-->
+<script src="/examples/coolie.min.js"
+        data-config="./coolie-config.js"
+        data-main="avalon/nest.js"></script>
+
+</body>
+</html>

@@ -3023,7 +3023,7 @@ var attrDir = avalon.directive("attr", {
         binding.expr = normalizeExpr(binding.expr.trim())
         if (binding.type === "include") {
             var elem = binding.element
-            effectBinding(elem, binding)
+            //effectBinding(elem, binding)
             binding.includeRendered = getBindingCallback(elem, "data-include-rendered", binding.vmodels)
             binding.includeLoaded = getBindingCallback(elem, "data-include-loaded", binding.vmodels)
             var outer = binding.includeReplace = !!avalon(elem).data("includeReplace")
@@ -4660,7 +4660,7 @@ avalon.parseDisplay = parseDisplay
 
 avalon.directive("visible", {
     init: function (binding) {
-        effectBinding(binding.element, binding)
+        //effectBinding(binding.element, binding)
     },
     update: function (val) {
         var binding = this, elem = this.element, stamp
@@ -5165,7 +5165,9 @@ avalon.directive("visible", {
         vm.$destroy = function () {
             delete VMODELS[id];
         };
-        avalon.scan($ele, vm);
+        avalon.nextTick(function () {
+            avalon.scan($ele, vm);
+        });
         return vm;
     };
     window.Avalon.filter = function(filterName, filterFunction){
