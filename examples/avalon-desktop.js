@@ -4220,329 +4220,329 @@ function setCaret(ctrl, begin, end) {
         ctrl.selectionEnd = end
     }
 }
-avalon.directive("effect", {
-    priority: 5,
-    init: function (binding) {
-        var text = binding.expr,
-                className,
-                rightExpr
-        var colonIndex = text.replace(rexprg, function (a) {
-            return a.replace(/./g, "0")
-        }).indexOf(":") //取得第一个冒号的位置
-        if (colonIndex === -1) { // 比如 ms-class/effect="aaa bbb ccc" 的情况
-            className = text
-            rightExpr = true
-        } else { // 比如 ms-class/effect-1="ui-state-active:checked" 的情况
-            className = text.slice(0, colonIndex)
-            rightExpr = text.slice(colonIndex + 1)
-        }
-        if (!rexpr.test(text)) {
-            className = quote(className)
-        } else {
-            className = normalizeExpr(className)
-        }
-        binding.expr = "[" + className + "," + rightExpr + "]"
-    },
-    update: function (arr) {
-        var name = arr[0]
-        var elem = this.element
-        if (elem.getAttribute("data-effect-name") === name) {
-            return
-        } else {
-            elem.removeAttribute("data-effect-driver")
-        }
-        var inlineStyles = elem.style
-        var computedStyles = window.getComputedStyle ? window.getComputedStyle(elem) : null
-        var useAni = false
-        if (computedStyles && (supportTransition || supportAnimation)) {
-
-            //如果支持CSS动画
-            var duration = inlineStyles[transitionDuration] || computedStyles[transitionDuration]
-            if (duration && duration !== '0s') {
-                elem.setAttribute("data-effect-driver", "t")
-                useAni = true
-            }
-
-            if (!useAni) {
-
-                duration = inlineStyles[animationDuration] || computedStyles[animationDuration]
-                if (duration && duration !== '0s') {
-                    elem.setAttribute("data-effect-driver", "a")
-                    useAni = true
-                }
-
-            }
-        }
-
-        if (!useAni) {
-            if (avalon.effects[name]) {
-                elem.setAttribute("data-effect-driver", "j")
-                useAni = true
-            }
-        }
-        if (useAni) {
-            elem.setAttribute("data-effect-name", name)
-        }
-    }
-})
-
-avalon.effects = {}
-avalon.effect = function (name, callbacks) {
-    avalon.effects[name] = callbacks
-}
-
-
-
-var supportTransition = false
-var supportAnimation = false
-
-var transitionEndEvent
-var animationEndEvent
-var transitionDuration = avalon.cssName("transition-duration")
-var animationDuration = avalon.cssName("animation-duration")
-new function () {// jshint ignore:line
-    var checker = {
-        'TransitionEvent': 'transitionend',
-        'WebKitTransitionEvent': 'webkitTransitionEnd',
-        'OTransitionEvent': 'oTransitionEnd',
-        'otransitionEvent': 'otransitionEnd'
-    }
-    var tran
-    //有的浏览器同时支持私有实现与标准写法，比如webkit支持前两种，Opera支持1、3、4
-    for (var name in checker) {
-        if (window[name]) {
-            tran = checker[name]
-            break;
-        }
-        try {
-            var a = document.createEvent(name);
-            tran = checker[name]
-            break;
-        } catch (e) {
-        }
-    }
-    if (typeof tran === "string") {
-        supportTransition = true
-        transitionEndEvent = tran
-    }
-
-    //大致上有两种选择
-    //IE10+, Firefox 16+ & Opera 12.1+: animationend
-    //Chrome/Safari: webkitAnimationEnd
-    //http://blogs.msdn.com/b/davrous/archive/2011/12/06/introduction-to-css3-animat ions.aspx
-    //IE10也可以使用MSAnimationEnd监听，但是回调里的事件 type依然为animationend
-    //  el.addEventListener("MSAnimationEnd", function(e) {
-    //     alert(e.type)// animationend！！！
-    // })
-    checker = {
-        'AnimationEvent': 'animationend',
-        'WebKitAnimationEvent': 'webkitAnimationEnd'
-    }
-    var ani;
-    for (name in checker) {
-        if (window[name]) {
-            ani = checker[name];
-            break;
-        }
-    }
-    if (typeof ani === "string") {
-        supportTransition = true
-        animationEndEvent = ani
-    }
-
-}()
-
-var effectPool = []//重复利用动画实例
-function effectFactory(el, opts) {
-    if (!el || el.nodeType !== 1) {
-        return null
-    }
-    if (opts) {
-        var name = opts.effectName
-        var driver = opts.effectDriver
-    } else {
-        name = el.getAttribute("data-effect-name")
-        driver = el.getAttribute("data-effect-driver")
-    }
-    if (!name || !driver) {
-        return null
-    }
-
-    var instance = effectPool.pop() || new Effect()
-    instance.el = el
-    instance.driver = driver
-    instance.useCss = driver !== "j"
-    if (instance.useCss) {
-        opts && avalon(el).addClass(opts.effectClass)
-        instance.cssEvent = driver === "t" ? transitionEndEvent : animationEndEvent
-    }
-    instance.name = name
-    instance.callbacks = avalon.effects[name] || {}
-
-    return instance
-
-
-}
-
-function effectBinding(elem, binding) {
-    var name = elem.getAttribute("data-effect-name")
-    if (name) {
-        binding.effectName = name
-        binding.effectDriver = elem.getAttribute("data-effect-driver")
-        var stagger = +elem.getAttribute("data-effect-stagger")
-        binding.effectLeaveStagger = +elem.getAttribute("data-effect-leave-stagger") || stagger
-        binding.effectEnterStagger = +elem.getAttribute("data-effect-enter-stagger") || stagger
-        binding.effectClass = elem.className || NaN
-    }
-}
-function upperFirstChar(str) {
-    return str.replace(/^[\S]/g, function (m) {
-        return m.toUpperCase()
-    })
-}
-var effectBuffer = new Buffer()
-function Effect() {
-}// 动画实例,做成类的形式,是为了共用所有原型方法
-
-Effect.prototype = {
-    contrustor: Effect,
-    enterClass: function () {
-        return getEffectClass(this, "enter")
-    },
-    leaveClass: function () {
-        return getEffectClass(this, "leave")
-    },
-    // 共享一个函数
-    actionFun: function (name, before, after) {
-        if (document.hidden) {
-            return
-        }
-        var me = this
-        var el = me.el
-        var isLeave = name === "leave"
-        name = isLeave ? "leave" : "enter"
-        var oppositeName = isLeave ? "enter" : "leave"
-        callEffectHook(me, "abort" + upperFirstChar(oppositeName))
-        callEffectHook(me, "before" + upperFirstChar(name))
-        if (!isLeave)
-            before(el) //  这里可能做插入DOM树的操作,因此必须在修改类名前执行
-        var cssCallback = function (cancel) {
-            el.removeEventListener(me.cssEvent, me.cssCallback)
-            if (isLeave) {
-                before(el) //这里可能做移出DOM树操作,因此必须位于动画之后
-                avalon(el).removeClass(me.cssClass)
-            } else {
-                if (me.driver === "a") {
-                    avalon(el).removeClass(me.cssClass)
-                }
-            }
-            if (cancel !== true) {
-                callEffectHook(me, "after" + upperFirstChar(name))
-                after && after(el)
-            }
-            me.dispose()
-        }
-        if (me.useCss) {
-            if (me.cssCallback) { //如果leave动画还没有完成,立即完成
-                me.cssCallback(true)
-            }
-
-            me.cssClass = getEffectClass(me, name)
-            me.cssCallback = cssCallback
-
-            me.update = function () {
-                el.addEventListener(me.cssEvent, me.cssCallback)
-                if (!isLeave && me.driver === "t") {//transtion延迟触发
-                    avalon(el).removeClass(me.cssClass)
-                }
-            }
-            avalon(el).addClass(me.cssClass)//animation会立即触发
-
-            effectBuffer.render(true)
-            effectBuffer.queue.push(me)
-
-        } else {
-            callEffectHook(me, name, cssCallback)
-
-        }
-    },
-    enter: function (before, after) {
-        this.actionFun.apply(this, ["enter"].concat(avalon.slice(arguments)))
-
-    },
-    leave: function (before, after) {
-        this.actionFun.apply(this, ["leave"].concat(avalon.slice(arguments)))
-
-    },
-    dispose: function () {//销毁与回收到池子中
-        this.update = this.cssCallback = null
-        if (effectPool.unshift(this) > 100) {
-            effectPool.pop()
-        }
-    }
-
-
-}
-
-
-function getEffectClass(instance, type) {
-    var a = instance.callbacks[type + "Class"]
-    if (typeof a === "string")
-        return a
-    if (typeof a === "function")
-        return a()
-    return instance.name + "-" + type
-}
-
-
-function callEffectHook(effect, name, cb) {
-    var hook = effect.callbacks[name]
-    if (hook) {
-        hook.call(effect, effect.el, cb)
-    }
-}
-
-var applyEffect = function (el, dir/*[before, [after, [opts]]]*/) {
-    var args = aslice.call(arguments, 0)
-    if (typeof args[2] !== "function") {
-        args.splice(2, 0, noop)
-    }
-    if (typeof args[3] !== "function") {
-        args.splice(3, 0, noop)
-    }
-    var before = args[2]
-    var after = args[3]
-    var opts = args[4]
-    var effect = effectFactory(el, opts)
-    if (!effect) {
-        before()
-        after()
-        return false
-    } else {
-        var method = dir ? 'enter' : 'leave'
-        effect[method](before, after)
-    }
-}
-
-avalon.mix(avalon.effect, {
-    apply: applyEffect,
-    append: function (el, parent, after, opts) {
-        return applyEffect(el, 1, function () {
-            parent.appendChild(el)
-        }, after, opts)
-    },
-    before: function (el, target, after, opts) {
-        return applyEffect(el, 1, function () {
-            target.parentNode.insertBefore(el, target)
-        }, after, opts)
-    },
-    remove: function (el, parent, after, opts) {
-        return applyEffect(el, 0, function () {
-            if (el.parentNode === parent)
-                parent.removeChild(el)
-        }, after, opts)
-    }
-})
+//avalon.directive("effect", {
+//    priority: 5,
+//    init: function (binding) {
+//        var text = binding.expr,
+//                className,
+//                rightExpr
+//        var colonIndex = text.replace(rexprg, function (a) {
+//            return a.replace(/./g, "0")
+//        }).indexOf(":") //取得第一个冒号的位置
+//        if (colonIndex === -1) { // 比如 ms-class/effect="aaa bbb ccc" 的情况
+//            className = text
+//            rightExpr = true
+//        } else { // 比如 ms-class/effect-1="ui-state-active:checked" 的情况
+//            className = text.slice(0, colonIndex)
+//            rightExpr = text.slice(colonIndex + 1)
+//        }
+//        if (!rexpr.test(text)) {
+//            className = quote(className)
+//        } else {
+//            className = normalizeExpr(className)
+//        }
+//        binding.expr = "[" + className + "," + rightExpr + "]"
+//    },
+//    update: function (arr) {
+//        var name = arr[0]
+//        var elem = this.element
+//        if (elem.getAttribute("data-effect-name") === name) {
+//            return
+//        } else {
+//            elem.removeAttribute("data-effect-driver")
+//        }
+//        var inlineStyles = elem.style
+//        var computedStyles = window.getComputedStyle ? window.getComputedStyle(elem) : null
+//        var useAni = false
+//        if (computedStyles && (supportTransition || supportAnimation)) {
+//
+//            //如果支持CSS动画
+//            var duration = inlineStyles[transitionDuration] || computedStyles[transitionDuration]
+//            if (duration && duration !== '0s') {
+//                elem.setAttribute("data-effect-driver", "t")
+//                useAni = true
+//            }
+//
+//            if (!useAni) {
+//
+//                duration = inlineStyles[animationDuration] || computedStyles[animationDuration]
+//                if (duration && duration !== '0s') {
+//                    elem.setAttribute("data-effect-driver", "a")
+//                    useAni = true
+//                }
+//
+//            }
+//        }
+//
+//        if (!useAni) {
+//            if (avalon.effects[name]) {
+//                elem.setAttribute("data-effect-driver", "j")
+//                useAni = true
+//            }
+//        }
+//        if (useAni) {
+//            elem.setAttribute("data-effect-name", name)
+//        }
+//    }
+//})
+//
+//avalon.effects = {}
+//avalon.effect = function (name, callbacks) {
+//    avalon.effects[name] = callbacks
+//}
+//
+//
+//
+//var supportTransition = false
+//var supportAnimation = false
+//
+//var transitionEndEvent
+//var animationEndEvent
+//var transitionDuration = avalon.cssName("transition-duration")
+//var animationDuration = avalon.cssName("animation-duration")
+//new function () {// jshint ignore:line
+//    var checker = {
+//        'TransitionEvent': 'transitionend',
+//        'WebKitTransitionEvent': 'webkitTransitionEnd',
+//        'OTransitionEvent': 'oTransitionEnd',
+//        'otransitionEvent': 'otransitionEnd'
+//    }
+//    var tran
+//    //有的浏览器同时支持私有实现与标准写法，比如webkit支持前两种，Opera支持1、3、4
+//    for (var name in checker) {
+//        if (window[name]) {
+//            tran = checker[name]
+//            break;
+//        }
+//        try {
+//            var a = document.createEvent(name);
+//            tran = checker[name]
+//            break;
+//        } catch (e) {
+//        }
+//    }
+//    if (typeof tran === "string") {
+//        supportTransition = true
+//        transitionEndEvent = tran
+//    }
+//
+//    //大致上有两种选择
+//    //IE10+, Firefox 16+ & Opera 12.1+: animationend
+//    //Chrome/Safari: webkitAnimationEnd
+//    //http://blogs.msdn.com/b/davrous/archive/2011/12/06/introduction-to-css3-animat ions.aspx
+//    //IE10也可以使用MSAnimationEnd监听，但是回调里的事件 type依然为animationend
+//    //  el.addEventListener("MSAnimationEnd", function(e) {
+//    //     alert(e.type)// animationend！！！
+//    // })
+//    checker = {
+//        'AnimationEvent': 'animationend',
+//        'WebKitAnimationEvent': 'webkitAnimationEnd'
+//    }
+//    var ani;
+//    for (name in checker) {
+//        if (window[name]) {
+//            ani = checker[name];
+//            break;
+//        }
+//    }
+//    if (typeof ani === "string") {
+//        supportTransition = true
+//        animationEndEvent = ani
+//    }
+//
+//}()
+//
+//var effectPool = []//重复利用动画实例
+//function effectFactory(el, opts) {
+//    if (!el || el.nodeType !== 1) {
+//        return null
+//    }
+//    if (opts) {
+//        var name = opts.effectName
+//        var driver = opts.effectDriver
+//    } else {
+//        name = el.getAttribute("data-effect-name")
+//        driver = el.getAttribute("data-effect-driver")
+//    }
+//    if (!name || !driver) {
+//        return null
+//    }
+//
+//    var instance = effectPool.pop() || new Effect()
+//    instance.el = el
+//    instance.driver = driver
+//    instance.useCss = driver !== "j"
+//    if (instance.useCss) {
+//        opts && avalon(el).addClass(opts.effectClass)
+//        instance.cssEvent = driver === "t" ? transitionEndEvent : animationEndEvent
+//    }
+//    instance.name = name
+//    instance.callbacks = avalon.effects[name] || {}
+//
+//    return instance
+//
+//
+//}
+//
+//function effectBinding(elem, binding) {
+//    var name = elem.getAttribute("data-effect-name")
+//    if (name) {
+//        binding.effectName = name
+//        binding.effectDriver = elem.getAttribute("data-effect-driver")
+//        var stagger = +elem.getAttribute("data-effect-stagger")
+//        binding.effectLeaveStagger = +elem.getAttribute("data-effect-leave-stagger") || stagger
+//        binding.effectEnterStagger = +elem.getAttribute("data-effect-enter-stagger") || stagger
+//        binding.effectClass = elem.className || NaN
+//    }
+//}
+//function upperFirstChar(str) {
+//    return str.replace(/^[\S]/g, function (m) {
+//        return m.toUpperCase()
+//    })
+//}
+//var effectBuffer = new Buffer()
+//function Effect() {
+//}// 动画实例,做成类的形式,是为了共用所有原型方法
+//
+//Effect.prototype = {
+//    contrustor: Effect,
+//    enterClass: function () {
+//        return getEffectClass(this, "enter")
+//    },
+//    leaveClass: function () {
+//        return getEffectClass(this, "leave")
+//    },
+//    // 共享一个函数
+//    actionFun: function (name, before, after) {
+//        if (document.hidden) {
+//            return
+//        }
+//        var me = this
+//        var el = me.el
+//        var isLeave = name === "leave"
+//        name = isLeave ? "leave" : "enter"
+//        var oppositeName = isLeave ? "enter" : "leave"
+//        callEffectHook(me, "abort" + upperFirstChar(oppositeName))
+//        callEffectHook(me, "before" + upperFirstChar(name))
+//        if (!isLeave)
+//            before(el) //  这里可能做插入DOM树的操作,因此必须在修改类名前执行
+//        var cssCallback = function (cancel) {
+//            el.removeEventListener(me.cssEvent, me.cssCallback)
+//            if (isLeave) {
+//                before(el) //这里可能做移出DOM树操作,因此必须位于动画之后
+//                avalon(el).removeClass(me.cssClass)
+//            } else {
+//                if (me.driver === "a") {
+//                    avalon(el).removeClass(me.cssClass)
+//                }
+//            }
+//            if (cancel !== true) {
+//                callEffectHook(me, "after" + upperFirstChar(name))
+//                after && after(el)
+//            }
+//            me.dispose()
+//        }
+//        if (me.useCss) {
+//            if (me.cssCallback) { //如果leave动画还没有完成,立即完成
+//                me.cssCallback(true)
+//            }
+//
+//            me.cssClass = getEffectClass(me, name)
+//            me.cssCallback = cssCallback
+//
+//            me.update = function () {
+//                el.addEventListener(me.cssEvent, me.cssCallback)
+//                if (!isLeave && me.driver === "t") {//transtion延迟触发
+//                    avalon(el).removeClass(me.cssClass)
+//                }
+//            }
+//            avalon(el).addClass(me.cssClass)//animation会立即触发
+//
+//            effectBuffer.render(true)
+//            effectBuffer.queue.push(me)
+//
+//        } else {
+//            callEffectHook(me, name, cssCallback)
+//
+//        }
+//    },
+//    enter: function (before, after) {
+//        this.actionFun.apply(this, ["enter"].concat(avalon.slice(arguments)))
+//
+//    },
+//    leave: function (before, after) {
+//        this.actionFun.apply(this, ["leave"].concat(avalon.slice(arguments)))
+//
+//    },
+//    dispose: function () {//销毁与回收到池子中
+//        this.update = this.cssCallback = null
+//        if (effectPool.unshift(this) > 100) {
+//            effectPool.pop()
+//        }
+//    }
+//
+//
+//}
+//
+//
+//function getEffectClass(instance, type) {
+//    var a = instance.callbacks[type + "Class"]
+//    if (typeof a === "string")
+//        return a
+//    if (typeof a === "function")
+//        return a()
+//    return instance.name + "-" + type
+//}
+//
+//
+//function callEffectHook(effect, name, cb) {
+//    var hook = effect.callbacks[name]
+//    if (hook) {
+//        hook.call(effect, effect.el, cb)
+//    }
+//}
+//
+//var applyEffect = function (el, dir/*[before, [after, [opts]]]*/) {
+//    var args = aslice.call(arguments, 0)
+//    if (typeof args[2] !== "function") {
+//        args.splice(2, 0, noop)
+//    }
+//    if (typeof args[3] !== "function") {
+//        args.splice(3, 0, noop)
+//    }
+//    var before = args[2]
+//    var after = args[3]
+//    var opts = args[4]
+//    var effect = effectFactory(el, opts)
+//    if (!effect) {
+//        before()
+//        after()
+//        return false
+//    } else {
+//        var method = dir ? 'enter' : 'leave'
+//        effect[method](before, after)
+//    }
+//}
+//
+//avalon.mix(avalon.effect, {
+//    apply: applyEffect,
+//    append: function (el, parent, after, opts) {
+//        return applyEffect(el, 1, function () {
+//            parent.appendChild(el)
+//        }, after, opts)
+//    },
+//    before: function (el, target, after, opts) {
+//        return applyEffect(el, 1, function () {
+//            target.parentNode.insertBefore(el, target)
+//        }, after, opts)
+//    },
+//    remove: function (el, parent, after, opts) {
+//        return applyEffect(el, 0, function () {
+//            if (el.parentNode === parent)
+//                parent.removeChild(el)
+//        }, after, opts)
+//    }
+//})
 
 
 avalon.directive("html", {
@@ -4720,163 +4720,163 @@ function nodesToFrag(nodes) {
     }
     return frag
 }
-avalon.directive("include", {
-    init: directives.attr.init,
-    update: function (val) {
-        var binding = this
-        var elem = this.element
-        var vmodels = binding.vmodels
-        var rendered = binding.includeRendered
-        var effectClass = binding.effectName && binding.effectClass // 是否开启动画
-        var templateCache = binding.templateCache // 是否data-include-cache
-        var outer = binding.includeReplace // 是否data-include-replace
-        var loaded = binding.includeLoaded
-        var target = outer ? elem.parentNode : elem
-        var _ele = binding._element // data-include-replace binding.element === binding.end
-
-        binding.recoverNodes = binding.recoverNodes || avalon.noop
-        var scanTemplate = function (text) {
-            var _stamp = binding._stamp = +(new Date()) // 过滤掉频繁操作
-            if (loaded) {
-                var newText = loaded.apply(target, [text].concat(vmodels))
-                if (typeof newText === "string")
-                    text = newText
-            }
-            if (rendered) {
-                checkScan(target, function () {
-                    rendered.call(target)
-                }, NaN)
-            }
-            var lastID = binding.includeLastID || "_default" // 默认
-
-            binding.includeLastID = val
-            var leaveEl = templateCache && templateCache[lastID] || DOC.createElement(elem.tagName || binding._element.tagName) // 创建一个离场元素
-            if (effectClass) {
-                leaveEl.className = effectClass
-                target.insertBefore(leaveEl, binding.start) // 插入到start之前，防止被错误的移动
-            }
-
-            // cache or animate，移动节点
-            (templateCache || {})[lastID] = leaveEl
-            var fragOnDom = binding.recoverNodes() // 恢复动画中的节点
-            if (fragOnDom) {
-                target.insertBefore(fragOnDom, binding.end)
-            }
-            while (true) {
-                var node = binding.start.nextSibling
-                if (node && node !== leaveEl && node !== binding.end) {
-                    leaveEl.appendChild(node)
-                } else {
-                    break
-                }
-            }
-            // 元素退场
-            avalon.effect.remove(leaveEl, target, function () {
-                if (templateCache) { // write cache
-                    if (_stamp === binding._stamp)
-                        ifGroup.appendChild(leaveEl)
-                }
-            }, binding)
-
-
-            var enterEl = target,
-                    before = avalon.noop,
-                    after = avalon.noop
-
-            var fragment = getTemplateContainer(binding, val, text)
-            var nodes = avalon.slice(fragment.childNodes)
-
-            if (outer && effectClass) {
-                enterEl = _ele
-                enterEl.innerHTML = "" // 清空
-                enterEl.setAttribute("ms-skip", "true")
-                target.insertBefore(enterEl, binding.end.nextSibling) // 插入到bingding.end之后避免被错误的移动
-                before = function () {
-                    enterEl.insertBefore(fragment, null) // 插入节点
-                }
-                after = function () {
-                    binding.recoverNodes = avalon.noop
-                    if (_stamp === binding._stamp) {
-                        fragment = nodesToFrag(nodes)
-                        target.insertBefore(fragment, binding.end) // 插入真实element
-                        scanNodeArray(nodes, vmodels)
-                    }
-                    if (enterEl.parentNode === target)
-                        target.removeChild(enterEl) // 移除入场动画元素
-                }
-                binding.recoverNodes = function () {
-                    binding.recoverNodes = avalon.noop
-                    return nodesToFrag(nodes)
-                }
-            } else {
-                before = function () {// 新添加元素的动画 
-                    target.insertBefore(fragment, binding.end)
-                    scanNodeArray(nodes, vmodels)
-                }
-            }
-
-            avalon.effect.apply(enterEl, "enter", before, after)
-        }
-
-        if (binding.param === "src") {
-            if (typeof templatePool[val] === "string") {
-                avalon.nextTick(function () {
-                    scanTemplate(templatePool[val])
-                })
-            } else if (Array.isArray(templatePool[val])) { //#805 防止在循环绑定中发出许多相同的请求
-                templatePool[val].push(scanTemplate)
-            } else {
-                var xhr = getXHR()
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        var s = xhr.status
-                        if (s >= 200 && s < 300 || s === 304 || s === 1223) {
-                            var text = xhr.responseText
-                            for (var f = 0, fn; fn = templatePool[val][f++]; ) {
-                                fn(text)
-                            }
-                            templatePool[val] = text
-                        }else{
-                            log("ms-include load ["+ val +"] error")
-                        }
-                    }
-                }
-                templatePool[val] = [scanTemplate]
-                xhr.open("GET", val, true)
-                if ("withCredentials" in xhr) {
-                    xhr.withCredentials = true
-                }
-                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-                xhr.send(null)
-            }
-        } else {
-            //IE系列与够新的标准浏览器支持通过ID取得元素（firefox14+）
-            //http://tjvantoll.com/2012/07/19/dom-element-references-as-global-variables/
-            var el = val && val.nodeType === 1 ? val : DOC.getElementById(val)
-            if (el) {
-                if (el.tagName === "NOSCRIPT" && !(el.innerHTML || el.fixIE78)) { //IE7-8 innerText,innerHTML都无法取得其内容，IE6能取得其innerHTML
-                    xhr = getXHR() //IE9-11与chrome的innerHTML会得到转义的内容，它们的innerText可以
-                    xhr.open("GET", location, false)
-                    xhr.send(null)
-                    //http://bbs.csdn.net/topics/390349046?page=1#post-393492653
-                    var noscripts = DOC.getElementsByTagName("noscript")
-                    var array = (xhr.responseText || "").match(rnoscripts) || []
-                    var n = array.length
-                    for (var i = 0; i < n; i++) {
-                        var tag = noscripts[i]
-                        if (tag) { //IE6-8中noscript标签的innerHTML,innerText是只读的
-                            tag.style.display = "none" //http://haslayout.net/css/noscript-Ghost-Bug
-                            tag.fixIE78 = (array[i].match(rnoscriptText) || ["", "&nbsp;"])[1]
-                        }
-                    }
-                }
-                avalon.nextTick(function () {
-                    scanTemplate(el.fixIE78 || el.value || el.innerText || el.innerHTML)
-                })
-            }
-        }
-    }
-})
+//avalon.directive("include", {
+//    init: directives.attr.init,
+//    update: function (val) {
+//        var binding = this
+//        var elem = this.element
+//        var vmodels = binding.vmodels
+//        var rendered = binding.includeRendered
+//        var effectClass = binding.effectName && binding.effectClass // 是否开启动画
+//        var templateCache = binding.templateCache // 是否data-include-cache
+//        var outer = binding.includeReplace // 是否data-include-replace
+//        var loaded = binding.includeLoaded
+//        var target = outer ? elem.parentNode : elem
+//        var _ele = binding._element // data-include-replace binding.element === binding.end
+//
+//        binding.recoverNodes = binding.recoverNodes || avalon.noop
+//        var scanTemplate = function (text) {
+//            var _stamp = binding._stamp = +(new Date()) // 过滤掉频繁操作
+//            if (loaded) {
+//                var newText = loaded.apply(target, [text].concat(vmodels))
+//                if (typeof newText === "string")
+//                    text = newText
+//            }
+//            if (rendered) {
+//                checkScan(target, function () {
+//                    rendered.call(target)
+//                }, NaN)
+//            }
+//            var lastID = binding.includeLastID || "_default" // 默认
+//
+//            binding.includeLastID = val
+//            var leaveEl = templateCache && templateCache[lastID] || DOC.createElement(elem.tagName || binding._element.tagName) // 创建一个离场元素
+//            if (effectClass) {
+//                leaveEl.className = effectClass
+//                target.insertBefore(leaveEl, binding.start) // 插入到start之前，防止被错误的移动
+//            }
+//
+//            // cache or animate，移动节点
+//            (templateCache || {})[lastID] = leaveEl
+//            var fragOnDom = binding.recoverNodes() // 恢复动画中的节点
+//            if (fragOnDom) {
+//                target.insertBefore(fragOnDom, binding.end)
+//            }
+//            while (true) {
+//                var node = binding.start.nextSibling
+//                if (node && node !== leaveEl && node !== binding.end) {
+//                    leaveEl.appendChild(node)
+//                } else {
+//                    break
+//                }
+//            }
+//            // 元素退场
+//            avalon.effect.remove(leaveEl, target, function () {
+//                if (templateCache) { // write cache
+//                    if (_stamp === binding._stamp)
+//                        ifGroup.appendChild(leaveEl)
+//                }
+//            }, binding)
+//
+//
+//            var enterEl = target,
+//                    before = avalon.noop,
+//                    after = avalon.noop
+//
+//            var fragment = getTemplateContainer(binding, val, text)
+//            var nodes = avalon.slice(fragment.childNodes)
+//
+//            if (outer && effectClass) {
+//                enterEl = _ele
+//                enterEl.innerHTML = "" // 清空
+//                enterEl.setAttribute("ms-skip", "true")
+//                target.insertBefore(enterEl, binding.end.nextSibling) // 插入到bingding.end之后避免被错误的移动
+//                before = function () {
+//                    enterEl.insertBefore(fragment, null) // 插入节点
+//                }
+//                after = function () {
+//                    binding.recoverNodes = avalon.noop
+//                    if (_stamp === binding._stamp) {
+//                        fragment = nodesToFrag(nodes)
+//                        target.insertBefore(fragment, binding.end) // 插入真实element
+//                        scanNodeArray(nodes, vmodels)
+//                    }
+//                    if (enterEl.parentNode === target)
+//                        target.removeChild(enterEl) // 移除入场动画元素
+//                }
+//                binding.recoverNodes = function () {
+//                    binding.recoverNodes = avalon.noop
+//                    return nodesToFrag(nodes)
+//                }
+//            } else {
+//                before = function () {// 新添加元素的动画 
+//                    target.insertBefore(fragment, binding.end)
+//                    scanNodeArray(nodes, vmodels)
+//                }
+//            }
+//
+//            avalon.effect.apply(enterEl, "enter", before, after)
+//        }
+//
+//        if (binding.param === "src") {
+//            if (typeof templatePool[val] === "string") {
+//                avalon.nextTick(function () {
+//                    scanTemplate(templatePool[val])
+//                })
+//            } else if (Array.isArray(templatePool[val])) { //#805 防止在循环绑定中发出许多相同的请求
+//                templatePool[val].push(scanTemplate)
+//            } else {
+//                var xhr = getXHR()
+//                xhr.onreadystatechange = function () {
+//                    if (xhr.readyState === 4) {
+//                        var s = xhr.status
+//                        if (s >= 200 && s < 300 || s === 304 || s === 1223) {
+//                            var text = xhr.responseText
+//                            for (var f = 0, fn; fn = templatePool[val][f++]; ) {
+//                                fn(text)
+//                            }
+//                            templatePool[val] = text
+//                        }else{
+//                            log("ms-include load ["+ val +"] error")
+//                        }
+//                    }
+//                }
+//                templatePool[val] = [scanTemplate]
+//                xhr.open("GET", val, true)
+//                if ("withCredentials" in xhr) {
+//                    xhr.withCredentials = true
+//                }
+//                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+//                xhr.send(null)
+//            }
+//        } else {
+//            //IE系列与够新的标准浏览器支持通过ID取得元素（firefox14+）
+//            //http://tjvantoll.com/2012/07/19/dom-element-references-as-global-variables/
+//            var el = val && val.nodeType === 1 ? val : DOC.getElementById(val)
+//            if (el) {
+//                if (el.tagName === "NOSCRIPT" && !(el.innerHTML || el.fixIE78)) { //IE7-8 innerText,innerHTML都无法取得其内容，IE6能取得其innerHTML
+//                    xhr = getXHR() //IE9-11与chrome的innerHTML会得到转义的内容，它们的innerText可以
+//                    xhr.open("GET", location, false)
+//                    xhr.send(null)
+//                    //http://bbs.csdn.net/topics/390349046?page=1#post-393492653
+//                    var noscripts = DOC.getElementsByTagName("noscript")
+//                    var array = (xhr.responseText || "").match(rnoscripts) || []
+//                    var n = array.length
+//                    for (var i = 0; i < n; i++) {
+//                        var tag = noscripts[i]
+//                        if (tag) { //IE6-8中noscript标签的innerHTML,innerText是只读的
+//                            tag.style.display = "none" //http://haslayout.net/css/noscript-Ghost-Bug
+//                            tag.fixIE78 = (array[i].match(rnoscriptText) || ["", "&nbsp;"])[1]
+//                        }
+//                    }
+//                }
+//                avalon.nextTick(function () {
+//                    scanTemplate(el.fixIE78 || el.value || el.innerText || el.innerHTML)
+//                })
+//            }
+//        }
+//    }
+//})
 
 var rdash = /\(([^)]*)\)/
 var onDir = avalon.directive("on", {
@@ -4933,7 +4933,7 @@ avalon.directive("repeat", {
         var elem = binding.element
         if (elem.nodeType === 1) {
             elem.removeAttribute(binding.name)
-            effectBinding(elem, binding)
+            //effectBinding(elem, binding)
             binding.param = binding.param || "el"
             binding.sortedCallback = getBindingCallback(elem, "data-with-sorted", binding.vmodels)
             var rendered = getBindingCallback(elem, "data-" + type + "-rendered", binding.vmodels)
@@ -5879,6 +5879,7 @@ avalon.directive("visible", {
     //=================================================
     // 1、移除了所有的 filters
     // 2、重置了初始化方法，与 Vue 保持一致
+    // 3、删除了 ms-include ms-effect
     // @author ydr.me
     //=================================================
     var filters = avalon.filters = {
