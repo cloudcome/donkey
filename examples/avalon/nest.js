@@ -15,24 +15,19 @@ define(function (require, exports, module) {
     var type = 'important';
 
     var newAv = function (ele) {
-        var data = {};
+        var data = {
+            name: Math.random(),
+            age: Math.random()
+        };
 
-        if(Math.random() > 0.5){
-            data.name = Math.random();
-        }
+        new Avalon({
+            el: ele,
+            data: data
+        });
 
-        if(Math.random() > 0.5){
-            data.age = Math.random();
-        }
-
-        //new Avalon({
-        //    el: ele,
-        //    data: data
-        //});
-
-        data.$id = ele.id;
-        avalon.define(data);
-        avalon.scan();
+        //data.$id = ele.id;
+        //avalon.define(data);
+        //avalon.scan();
     };
 
     $div1.setAttribute('ms-' + type, $div1.id);
