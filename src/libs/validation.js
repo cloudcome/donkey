@@ -47,7 +47,7 @@ define(function (require, exports, module) {
         // false: 返回错误对象组成的数组
         // 浏览器端，默认为 false
         // 服务器端，默认为 true
-        breakOnInvalid: typeis.window(window) ? false : true,
+        breakOnInvalid: typeof window === 'undefined',
         defaultMsg: '${1}不合法'
     };
     var Validation = klass.extend(Emitter).create({
