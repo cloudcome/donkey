@@ -27,20 +27,20 @@ define(function (require, exports, module) {
 
     window.vm = avalon.define($.extend(data, {
         $id: 'todoList1',
+        //$template: '<input ms-duplex="todo"><h1>{{todo}}</h1>',
         add: function (eve) {
             if (eve.which === 13) {
                 vm.list.push({
-                    text: data.todo,
+                    text: vm.todo,
                     done: false
                 });
-                data.todo = '';
+                vm.todo = '';
             }
         },
         check: function (index, item) {
             item.done = !item.done;
         }
     }));
-    avalon.scan();
 
     //window.av = new Avalon({
     //    el: 'todoList2',

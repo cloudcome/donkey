@@ -106,7 +106,7 @@
 
     var IEVersion = IE()
 
-    avalon = function (el) { //创建jQuery式的无new 实例化结构
+    var avalon = function (el) { //创建jQuery式的无new 实例化结构
         return new avalon.init(el)
     }
 
@@ -130,7 +130,7 @@
         }
 
         if (tickObserver) {
-            var node = document.createTextNode("avalon")
+            var node = document.createTextNode("")
             new tickObserver(callback).observe(node, {characterData: true})// jshint ignore:line
             var bool = false
             return function (fn) {
@@ -567,7 +567,7 @@
     /*********************************************************************
      *                         javascript 底层补丁                       *
      **********************************************************************/
-    if (!"司徒正美".trim) {
+    if (!"".trim) {
         var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
         String.prototype.trim = function () {
             return this.replace(rtrim, "")
@@ -1144,7 +1144,7 @@
         var force = options.force || nullObject
         var old = options.old
         var oldAccessors = old && old.$accessors || nullObject
-        var $vmodel = source //要返回的对象, 它在IE6-8下可能被偷龙转凤
+        var $vmodel = new Component() //要返回的对象, 它在IE6-8下可能被偷龙转凤
         var accessors = {} //监控属性
         var hasOwn = {}
         var skip = []
@@ -5203,7 +5203,7 @@
     /*********************************************************************
      *                         各种指令                                  *
      **********************************************************************/
-//ms-skip绑定已经在scanTag 方法中实现
+    //ms-skip绑定已经在scanTag 方法中实现
     avalon.directive("text", {
         update: function (value) {
             var elem = this.element
@@ -5222,76 +5222,88 @@
             }
         }
     })
-    function parseDisplay(nodeName, val) {
-        //用于取得此类标签的默认display值
-        var key = "_" + nodeName
-        if (!parseDisplay[key]) {
-            var node = DOC.createElement(nodeName)
-            root.appendChild(node)
-            if (W3C) {
-                val = getComputedStyle(node, null).display
-            } else {
-                val = node.currentStyle.display
-            }
-            root.removeChild(node)
-            parseDisplay[key] = val
-        }
-        return parseDisplay[key]
-    }
-
-    avalon.parseDisplay = parseDisplay
-
-    avalon.directive("visible", {
-        init: function (binding) {
-            effectBinding(binding.element, binding)
-        },
-        update: function (val) {
-            var binding = this, elem = this.element, stamp
-            var noEffect = !this.effectName
-            if (!this.stamp) {
-                stamp = this.stamp = +new Date
-                if (val) {
-                    elem.style.display = binding.display || ""
-                    if (avalon(elem).css("display") === "none") {
-                        elem.style.display = binding.display = parseDisplay(elem.nodeName)
-                    }
-                } else {
-                    elem.style.display = "none"
-                }
-                return
-            }
-            stamp = this.stamp = +new Date
-            if (val) {
-                avalon.effect.apply(elem, 1, function () {
-                    if (stamp !== binding.stamp)
-                        return
-                    var driver = elem.getAttribute("data-effect-driver") || "a"
-
-                    if (noEffect) {//不用动画时走这里
-                        elem.style.display = binding.display || ""
-                    }
-                    // "a", "t"
-                    if (driver === "a" || driver === "t") {
-                        if (avalon(elem).css("display") === "none") {
-                            elem.style.display = binding.display || parseDisplay(elem.nodeName)
-                        }
-                    }
-                })
-            } else {
-                avalon.effect.apply(elem, 0, function () {
-                    if (stamp !== binding.stamp)
-                        return
-                    elem.style.display = "none"
-                })
-            }
-        }
-    })
+    //function parseDisplay(nodeName, val) {
+    //    //用于取得此类标签的默认display值
+    //    var key = "_" + nodeName
+    //    if (!parseDisplay[key]) {
+    //        var node = DOC.createElement(nodeName)
+    //        root.appendChild(node)
+    //        if (W3C) {
+    //            val = getComputedStyle(node, null).display
+    //        } else {
+    //            val = node.currentStyle.display
+    //        }
+    //        root.removeChild(node)
+    //        parseDisplay[key] = val
+    //    }
+    //    return parseDisplay[key]
+    //}
+    //
+    //avalon.parseDisplay = parseDisplay
+    //
+    //avalon.directive("visible", {
+    //    init: function (binding) {
+    //        effectBinding(binding.element, binding)
+    //    },
+    //    update: function (val) {
+    //        var binding = this, elem = this.element, stamp
+    //        var noEffect = !this.effectName
+    //        if (!this.stamp) {
+    //            stamp = this.stamp = +new Date
+    //            if (val) {
+    //                elem.style.display = binding.display || ""
+    //                if (avalon(elem).css("display") === "none") {
+    //                    elem.style.display = binding.display = parseDisplay(elem.nodeName)
+    //                }
+    //            } else {
+    //                elem.style.display = "none"
+    //            }
+    //            return
+    //        }
+    //        stamp = this.stamp = +new Date
+    //        if (val) {
+    //            avalon.effect.apply(elem, 1, function () {
+    //                if (stamp !== binding.stamp)
+    //                    return
+    //                var driver = elem.getAttribute("data-effect-driver") || "a"
+    //
+    //                if (noEffect) {//不用动画时走这里
+    //                    elem.style.display = binding.display || ""
+    //                }
+    //                // "a", "t"
+    //                if (driver === "a" || driver === "t") {
+    //                    if (avalon(elem).css("display") === "none") {
+    //                        elem.style.display = binding.display || parseDisplay(elem.nodeName)
+    //                    }
+    //                }
+    //            })
+    //        } else {
+    //            avalon.effect.apply(elem, 0, function () {
+    //                if (stamp !== binding.stamp)
+    //                    return
+    //                elem.style.display = "none"
+    //            })
+    //        }
+    //    }
+    //})
+    //
+    //avalon.directive('enter', {
+    //    init: function (binding) {
+    //        avalon.bind(binding.element, 'keypress', function (eve) {
+    //            if(eve.which === 13 || eve.keyCode === 13){
+    //                //binding;
+    //            }
+    //        });
+    //    },
+    //    update: function (fn) {
+    //        debugger;
+    //    }
+    //});
 
 
     //=================================================
     // 1、移除了所有的 filters
-    // 2、重置了初始化方法，与 Vue 保持一致
-    // 3、删除了 ms-include/ms-with/ms-each
+    // 2、删除了 ms-include/ms-with/ms-each/ms-visible
     // @author ydr.me
     //=================================================
     var filters = avalon.filters = {
@@ -5307,37 +5319,29 @@
             return val
         }
     };
-    window.Avalon = function (configs) {
-        if (!configs.el) {
-            return;
+    avalon.filter = function (filterName, filterFunction) {
+        avalon.filters[filterName] = filterFunction;
+    };
+    var _define = avalon.define;
+    avalon.define = function (source) {
+        var id = source.$id;
+        var $ele = DOC.getElementById(id);
+
+        if (source.$template) {
+            $ele.innerHTML = source.$template;
         }
 
-        var $ele = configs.el.nodeType ? configs.el : DOC.getElementById(configs.el);
-
-        if (!$ele) {
-            return;
-        }
-
-        var id = $ele.id;
-        configs.type = configs.type || 'important';
-        $ele.setAttribute('ms-' + configs.type, id);
-        var source = avalon.mix(configs.data, {
-            $id: id
-        }, configs.methods);
-        var vm = avalon.define(source);
-
+        source.$type = source.$type || 'important';
+        $ele.setAttribute('ms-' + source.$type, id);
+        var vm = _define(source);
+        avalon.scan($ele, vm);
         vm.$ele = $ele;
         vm.$destroy = function () {
             delete VMODELS[id];
         };
-        avalon.nextTick(function () {
-            avalon.scan($ele, vm);
-        });
         return vm;
     };
-    window.Avalon.filter = function (filterName, filterFunction) {
-        avalon.filters[filterName] = filterFunction;
-    }
+    window.avalon = avalon;
 }));
 
 

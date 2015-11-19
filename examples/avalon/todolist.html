@@ -36,7 +36,7 @@
 <body ontouchstart="">
 
 <h1>avalon-original</h1>
-<div id="todoList1" ms-controller="todoList1">
+<div id="todoList1">
     <input type="text" name="todo" ms-keypress="add" ms-duplex="todo">
     <ul>
         <li ms-repeat-item="list" ms-class="done: item.done">
@@ -46,27 +46,27 @@
     </ul>
 </div>
 
-<h1>avalon-desktop</h1>
-<div id="todoList2">
-    <input type="text" name="todo" ms-keypress="add" ms-duplex="todo">
-    <ul>
-        <li ms-repeat-item="list" ms-class="done: item.done">
-            {{$index}}: {{item.text}}
-            <button ms-click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>
-        </li>
-    </ul>
-</div>
+<!--<h1>avalon-desktop</h1>-->
+<!--<div id="todoList2">-->
+    <!--<input type="text" name="todo" ms-keypress="add" ms-duplex="todo">-->
+    <!--&lt;!&ndash;<ul>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li ms-repeat-item="list" ms-class="done: item.done">&ndash;&gt;-->
+            <!--&lt;!&ndash;{{$index}}: {{item.text}}&ndash;&gt;-->
+            <!--&lt;!&ndash;<button ms-click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>&ndash;&gt;-->
+        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+    <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+<!--</div>-->
 
-<h1>vue</h1>
-<div id="todoList3">
-    <input type="text" name="todo" v-on:keypress="add" v-model="todo">
-    <ul>
-        <li v-for="item in list" v-bind:class="{'done': item.done}">
-            {{$index}}: {{item.text}}
-            <button v-on:click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>
-        </li>
-    </ul>
-</div>
+<!--<h1>vue</h1>-->
+<!--<div id="todoList3">-->
+    <!--<input type="text" name="todo" v-on:keypress="add" v-model="todo">-->
+    <!--<ul>-->
+        <!--<li v-for="item in list" v-bind:class="{'done': item.done}">-->
+            <!--{{$index}}: {{item.text}}-->
+            <!--<button v-on:click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>-->
+        <!--</li>-->
+    <!--</ul>-->
+<!--</div>-->
 
 <script src="/examples/jquery.js"></script>
 
