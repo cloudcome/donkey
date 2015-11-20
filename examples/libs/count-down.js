@@ -16,11 +16,13 @@ define(function (require, exports, module) {
     });
 
     ct.on('change', function (remain) {
-        $ret.text('剩余' + Math.ceil(remain / 1000) + '秒');
+        $ret.text(JSON.stringify(CountDown.humanrize(remain)));
     }).on('start', function (remain) {
         console.log('开始计时', remain);
     }).on('pause', function (remain) {
         console.log('暂停计时', remain);
+    }).on('resume', function (remain) {
+        console.log('恢复计时', remain);
     }).on('stop', function (remain) {
         console.log('停止计时', remain);
     });
