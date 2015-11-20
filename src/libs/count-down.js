@@ -7,33 +7,17 @@
 define(function (require, exports, module) {
     'use strict';
 
-
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var Emitter = require('./emitter.js');
-    var oneSecond = 1000;
-    var oneMinute = oneSecond * 60;
-    var oneHour = oneMinute * 60;
-    var oneDate = oneHour * 24;
-    var oneMonth = oneDate * 30;
-    var oneYear = oneMonth * 12;
-    var stepMap = {
-        year: 7,
-        month: 6,
-        date: 5,
-        hour: 4,
-        minute: 3,
-        second: 2,
-        millisecond: 1
-    };
-    var udf;
+
     var defaults = {
         // 倒计时时长，单位：毫秒
         count: 10000,
         // 步长
-        step: 1000,
+        interval: 1000,
         // 最小步长
-        minStep: 'millisecond',
+        minStep: 'second',
         // 最大步长
         maxStep: 'year'
     };
@@ -41,37 +25,55 @@ define(function (require, exports, module) {
         constructor: function (options) {
             var the = this;
 
-            options = the._options = dato.extend({}, defaults, options);
-            the.className = 'count-down';
-            options.minStepValue = stepMap[options.minStep];
-            options.maxStepValue = stepMap[options.maxStep];
+            the._options = dato.extend({}, defaults, options);
         },
 
-        start: function () {
+        _start: function () {
             var the = this;
             var options = the._options;
             var startTime = new Date().getTime();
+            var count = the._remain;
             var doStep = function () {
                 the._timeid = setTimeout(function () {
                     var now = new Date().getTime();
                     var pastTime = now - startTime;
-                    var remain = options.count - pastTime;
+                    var remain = the._remain = count - pastTime;
+                    var steps = Math.floor(remain / options.interval);
 
-                    if (remain / options.step > 0) {
-                        the.emit('change', the.humanize(remain));
+                    if (steps) {
+                        the.emit('change', remain);
                         return doStep();
                     }
 
-                    the.emit('change', the.humanize(0));
+                    the._remain = 0;
+                    the.emit('change', 0);
                     the._pause();
-                    the.emit('stop');
-                }, options.step - 6);
+                    the.emit('stop', 0);
+                }, options.interval - 6);
             };
 
             the._pause();
-            the.emit('change', the.humanize(options.count));
-            the.emit('start');
-            doStep();
+            the.emit('change', the._remain);
+
+            if (the._remain) {
+                doStep();
+            } else {
+                the.emit('stop', 0);
+            }
+        },
+
+        /**
+         * （重新）开始计时
+         * @returns {CountDown}
+         */
+        start: function () {
+            var the = this;
+
+            the._remain = Math.max(the._options.count, 0);
+            the.emit('start', the._remain);
+            the._start();
+
+            return the;
         },
 
         _pause: function () {
@@ -84,105 +86,47 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         * 暂停计时
+         * @returns {CountDown}
+         */
         pause: function () {
             var the = this;
 
             the._pause();
-            the.emit('pause');
-
-            return the;
-        },
-
-        stop: function () {
-            var the = this;
-
-            the._pause();
-            the.emit('change', the.humanize(0));
-            the.emit('stop');
+            the.emit('pause', the._remain);
 
             return the;
         },
 
         /**
-         * 时间人性化
-         * @param time {Number} 时间
-         * @returns {{}}
+         * 恢复计时
+         * @returns {CountDown}
          */
-        humanize: function (time) {
+        resume: function () {
             var the = this;
-            var options = the._options;
-            var ret = {};
 
-            // 年
-            if (options.maxStepValue > 6) {
-                ret.years = Math.round(time / oneYear);
-                time = time % oneYear;
-            }
+            the._remain -= the._options.interval;
+            the.emit('resume', the._remain);
+            the._start();
 
-            if (options.minStepValue > 6 && ret.years === udf) {
-                ret.years = Math.floor(time / oneYear);
-                time = time % oneYear;
-            }
+            return the;
+        },
 
-            // 月
-            if (options.maxStepValue > 5) {
-                ret.months = Math.round(time / oneMonth);
-                time = time % oneMonth;
-            }
 
-            if (options.minStepValue > 5 && ret.months === udf) {
-                ret.months = Math.floor(time / oneMonth);
-                time = time % oneMonth;
-            }
+        /**
+         * 停止计时
+         * @returns {CountDown}
+         */
+        stop: function () {
+            var the = this;
 
-            // 日
-            if (options.maxStepValue > 4) {
-                ret.dates = Math.round(time / oneDate);
-                time = time % oneDate;
-            }
+            the._pause();
+            the._remain = 0;
+            the.emit('change', 0);
+            the.emit('stop', 0);
 
-            if (options.minStepValue > 4 && ret.dates === udf) {
-                ret.dates = Math.floor(time / oneDate);
-                time = time % oneDate;
-            }
-
-            // 时
-            if (options.maxStepValue > 3) {
-                ret.hours = Math.round(time / oneHour);
-                time = time % oneHour;
-            }
-
-            if (options.minStepValue > 3 && ret.hours === udf) {
-                ret.hours = Math.floor(time / oneHour);
-                time = time % oneHour;
-            }
-
-            // 分
-            if (options.maxStepValue > 2) {
-                ret.minutes = Math.round(time / oneMinute);
-                time = time % oneMinute;
-            }
-
-            if (options.minStepValue > 2 && ret.minutes === udf) {
-                ret.minutes = Math.floor(time / oneMinute);
-                time = time % oneMinute;
-            }
-
-            // 秒
-            if (options.maxStepValue > 1) {
-                ret.seconds = options.minStepValue < 2 ? Math.floor(time / oneSecond) : Math.round(time / oneSecond);
-            }
-
-            if (options.minStepValue > 1 && ret.seconds === udf) {
-                ret.seconds = Math.floor(time / oneSecond);
-            }
-
-            // 毫秒
-            if (options.minStepValue === 1) {
-                ret.milliSeconds = time % oneSecond;
-            }
-
-            return ret;
+            return the;
         }
     });
 
