@@ -7,7 +7,13 @@
 
 define(function (require, exports, module) {
     /**
-     * @module parent/index
+     * @module ui/pager
+     * @requires ui/
+     * @requires libs/template
+     * @requires utils/dato
+     * @requires utils/number
+     * @requires utils/string
+     * @requires core/dom/modification
      */
 
     'use strict';
