@@ -41,10 +41,6 @@ define(function (require, exports, module) {
         // 当两者都互相相等时，即是一个正方形
         width: 'auto',
         height: 'auto',
-        minWidth: 'none',
-        minHeight: 'none',
-        maxWidth: 1000,
-        maxHeight: 800,
         duration: 345,
         addClass: '',
         translateY: 25,
@@ -195,16 +191,6 @@ define(function (require, exports, module) {
             var heightEWidth = false;
 
             the.emit('beforeupdate');
-            the._$parent.css({
-                display: 'block',
-                width: 'auto',
-                height: 'auto',
-                minWidth: options.minWidth,
-                minHeight: options.minHeight,
-                maxWidth: options.maxWidth,
-                maxHeight: options.maxHeight,
-                zIndex: ui.getZindex()
-            });
 
             if (width === 'height') {
                 width = 'auto';
@@ -215,6 +201,13 @@ define(function (require, exports, module) {
                 height = 'auto';
                 heightEWidth = true;
             }
+
+            the._$parent.css({
+                display: 'block',
+                width: options.width,
+                height: options.height,
+                zIndex: ui.getZindex()
+            });
 
             the._$parent.width(width).height(height);
 

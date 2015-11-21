@@ -1,5 +1,5 @@
-/*!
- * 文件描述
+/**
+ * mask
  * @author ydr.me
  * @create 2015-07-17 13:49
  */
@@ -7,7 +7,7 @@
 
 define(function (require, exports, module) {
     /**
-     * @module parent/index
+     * @module ui/mask
      */
 
     'use strict';
@@ -17,15 +17,18 @@ define(function (require, exports, module) {
     var doc = win.document;
     var html = doc.documentElement;
     var body = doc.body;
+
     var ui = require('../index.js');
     var template = require('./template.html', 'html');
     var Template = require('../../libs/template.js');
     var dato = require('../../utils/dato.js');
+
     var tpl = new Template(template);
     var donkeyIndex = 0;
     var defaults = {
         backgroundColor: '#000',
-        opacity: 0.5
+        opacity: 0.5,
+        fixed: true
     };
     var Mask = ui.create({
         constructor: function ($parent, options) {
@@ -39,48 +42,6 @@ define(function (require, exports, module) {
             the.destroyed = false;
             the._initNode();
         },
-
-
-        ///**
-        // * 更新尺寸关系
-        // * @returns {Mask}
-        // */
-        //update: function () {
-        //    var the = this;
-        //    var style = the._options.style;
-        //
-        //    the._topStyle = {
-        //        top: 0,
-        //        left: 0,
-        //        width: '100%',
-        //        height: style.top
-        //    };
-        //    the._rightStyle = {
-        //        top: style.top,
-        //        right: 0,
-        //        left: style.left + style.width,
-        //        height: style.height
-        //    };
-        //    the._bottomStyle = {
-        //        bottom: 0,
-        //        left: 0,
-        //        width: '100%',
-        //        top: style.top + style.height
-        //    };
-        //    the._leftStyle = {
-        //        top: style.top,
-        //        left: 0,
-        //        width: style.left,
-        //        height: style.height
-        //    };
-        //
-        //    the._$top.css(the._topStyle);
-        //    the._$right.css(the._rightStyle);
-        //    the._$bottom.css(the._bottomStyle);
-        //    the._$left.css(the._leftStyle);
-        //
-        //    return the;
-        //},
 
         _initNode: function () {
             var the = this;
@@ -113,6 +74,7 @@ define(function (require, exports, module) {
                 var offset = the._$parent.offset();
 
                 the._$mask.css({
+                    position: 'absolute',
                     width: the._$parent.outerWidth(),
                     height: the._$parent.outerHeight(),
                     right: 'auto',
@@ -149,7 +111,7 @@ define(function (require, exports, module) {
             the.emit('beforeclose');
             the.visible = false;
             the._$mask.hide();
-            the.emit('afterclose');
+            the.emit('close');
 
             return the;
         },
@@ -168,7 +130,7 @@ define(function (require, exports, module) {
             the.emit('beforedestroy');
             the.destroyed = true;
             the._$mask.remove();
-            the.emit('afterdestroy');
+            the.emit('destroy');
         }
     });
 

@@ -14,9 +14,7 @@ define(function (require, exports, module) {
 
     var Window = require('../../src/ui/window/index.js');
     var win = new Window('#demo', {
-        width: 'height',
-        height: 'width',
-        maxHeight: $(window).height() - 100
+        width: 500
     });
 
     $('#open').on('click', function () {
