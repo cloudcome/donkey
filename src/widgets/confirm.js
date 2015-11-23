@@ -22,13 +22,13 @@ define(function (require, exports, module) {
     var defaults = {
         addClass: namespace,
         buttons: [{
-            text: '取消',
-            addClass: namespace + '-cancel'
-        }, {
             text: '确定',
             addClass: namespace + '-sure'
+        }, {
+            text: '取消',
+            addClass: namespace + '-cancel'
         }],
-        sureIndex: 1
+        sureIndex: 0
     };
     module.exports = function (content) {
         var options = {};
