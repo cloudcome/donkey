@@ -23,6 +23,7 @@ define(function (require, exports, module) {
     var $ = win.jQuery;
     var doc = win.document;
     var elBody = doc.body;
+
     var ui = require('../index.js');
     var Emitter = require('../../libs/emitter.js');
     var Template = require('../../libs/template.js');
@@ -31,6 +32,7 @@ define(function (require, exports, module) {
     var style = require('./style.css', 'css');
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
+    var allocation = require('../../utils/allocation.js');
     var Window = require('../window/index.js');
     var Draggable = require('../draggable/index.js');
     var modification = require('../../core/dom/modification.js');
@@ -60,11 +62,30 @@ define(function (require, exports, module) {
         // 是否可以关闭
         canClose: true,
         // overflow
-        overflow: 'auto'
+        overflow: 'auto',
+        // 模板
+        template: null,
+        // 远程地址
+        remote: null,
+        remoteHeight: 300
     };
     var Dialog = ui.create({
         constructor: function ($dialog, options) {
             var the = this;
+
+            var args = allocation.args(arguments);
+
+            // new Dailog(null, options);
+            // new Dailog(options);
+            // new Dailog();
+            if (args.length === 0 || typeis.null(args[0]) || typeis.object(args[0])) {
+                options = args[args.length - 1];
+                $dialog = null;
+            }
+
+            if (!$dialog) {
+                $dialog = $('<div/>').appendTo(elBody);
+            }
 
             the._$dialog = $($dialog);
             the._options = dato.extend({}, defaults, options);
@@ -84,6 +105,10 @@ define(function (require, exports, module) {
         _initNode: function () {
             var the = this;
             var options = the._options;
+
+            if (options.template) {
+                the._$dialog.html(options.template);
+            }
 
             the._$parent = $(tpl.render({
                 id: the._id
@@ -114,6 +139,15 @@ define(function (require, exports, module) {
                 });
                 Emitter.pipe(the._draggable, the);
             }
+        },
+
+
+        /**
+         * 获取 body 节点
+         * @returns {*|HTMLElement}
+         */
+        getNode: function () {
+            return this._$body;
         },
 
 
@@ -184,7 +218,7 @@ define(function (require, exports, module) {
             the._$body.css('overflow', 'auto');
             the._window.update();
             the._$body.css('overflow', options.overflow);
-            the.emit('afterupdate');
+            the.emit('update');
 
             return the;
         },
@@ -203,7 +237,7 @@ define(function (require, exports, module) {
 
             the.emit('beforeresize');
             the._window.resize();
-            the.emit('afterresize');
+            the.emit('resize');
 
             return the;
         },
@@ -218,6 +252,10 @@ define(function (require, exports, module) {
             var the = this;
 
             if (the.visible) {
+                if (typeis.isFunction(callback)) {
+                    callback.call(the);
+                }
+
                 return the;
             }
 
@@ -228,7 +266,7 @@ define(function (require, exports, module) {
                     callback.call(the);
                 }
 
-                the.emit('afteropen');
+                the.emit('open');
             });
 
             return the;
@@ -244,6 +282,10 @@ define(function (require, exports, module) {
             var the = this;
 
             if (!the.visible) {
+                if (typeis.isFunction(callback)) {
+                    callback.call(the);
+                }
+
                 return the;
             }
 
@@ -254,7 +296,7 @@ define(function (require, exports, module) {
                     callback.call(the);
                 }
 
-                the.emit('afterclose');
+                the.emit('close');
             });
 
             return the;
@@ -266,6 +308,7 @@ define(function (require, exports, module) {
          */
         destroy: function () {
             var the = this;
+            var options = the._options;
 
             if (the.destroyed) {
                 return;
@@ -283,7 +326,12 @@ define(function (require, exports, module) {
                 the._$flag.remove();
                 the._$parent.remove();
                 the._$close.off('click');
-                the.emit('afterdestroy');
+
+                if (options.template) {
+                    the._$dialog.remove();
+                }
+
+                the.emit('destroy');
             });
         }
     });

@@ -1,0 +1,29 @@
+.donkey-ui-msg {
+  padding: 20px;
+
+  &-content {
+    font-size: 16px;
+  }
+
+  &-btns {
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  &-btn {
+    $color: #15AEED;
+    display: inline-block;
+    background: $color;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    margin: 0 10px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover{
+      background: darken($color, 10%);
+    }
+  }
+}

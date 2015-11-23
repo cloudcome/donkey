@@ -1,0 +1,19 @@
+.donkey-ui-msg {
+  padding: 20px; }
+  .donkey-ui-msg-content {
+    font-size: 16px; }
+  .donkey-ui-msg-btns {
+    text-align: center;
+    padding-top: 20px; }
+  .donkey-ui-msg-btn {
+    display: inline-block;
+    background: #15AEED;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    margin: 0 10px;
+    line-height: 1;
+    cursor: pointer; }
+    .donkey-ui-msg-btn:hover {
+      background: #0f8cc0; }
