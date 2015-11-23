@@ -1,13 +1,13 @@
 /**
  * 文件描述
  * @author ydr.me
- * @create 2015-11-23 12:03
+ * @create 2015-11-23 14:21
  */
 
 
 define(function (require, exports, module) {
     /**
-     * @module parent/alert
+     * @module parent/confirm
      */
 
     'use strict';
@@ -16,14 +16,19 @@ define(function (require, exports, module) {
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
     var modification = require('../core/dom/modification.js');
-    var style= require('./alert.css', 'css');
+    var style = require('./confirm.css', 'css');
 
+    var namespace = 'donkey-widgets-confirm';
     var defaults = {
-        addClass: 'donkey-widgets-alert',
+        addClass: namespace,
         buttons: [{
-            text: '好',
-            addClass: 'donkey-widgets-alert-sure'
-        }]
+            text: '取消',
+            addClass: namespace + '-cancel'
+        }, {
+            text: '确定',
+            addClass: namespace + '-sure'
+        }],
+        sureIndex: 1
     };
     module.exports = function (content) {
         var options = {};
@@ -34,7 +39,9 @@ define(function (require, exports, module) {
             options = content;
         }
 
-        return new Msg(dato.extend({}, defaults, options));
+        return new Msg(options = dato.extend({}, defaults, options)).on('close', function (index) {
+            this.emit(options.sureIndex === index ? 'sure' : 'cancel');
+        });
     };
     modification.importStyle(style);
 });

@@ -1,0 +1,18 @@
+.donkey-widgets-confirm {
+  &-cancel {
+    $color: #15aeed;
+    background: #FFFFFF;
+    color: $color;
+    border: 1px solid $color;
+
+    &:hover {
+      background: #fff;
+      color: darken($color, 10%);
+      border-color: darken($color, 10%);
+    }
+  }
+
+  &-sure {
+
+  }
+}

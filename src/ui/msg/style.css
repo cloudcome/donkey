@@ -6,6 +6,7 @@
     text-align: center;
     padding-top: 40px; }
   .donkey-ui-msg-btn {
+    border: 1px solid #15AEED;
     display: inline-block;
     background: #15AEED;
     color: #fff;

@@ -12,6 +12,7 @@
 
   &-btn {
     $color: #15AEED;
+    border: 1px solid $color;
     display: inline-block;
     background: $color;
     color: #fff;
@@ -22,7 +23,7 @@
     line-height: 1;
     cursor: pointer;
 
-    &:hover{
+    &:hover {
       background: darken($color, 10%);
     }
   }
