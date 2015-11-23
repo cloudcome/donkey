@@ -15,13 +15,7 @@ define(function (require, exports, module) {
     var alert = require('../../src/widgets/alert.js');
 
     $('#btn0').on('click', function () {
-        alert('没有按钮').on('close', function (index) {
-            alert('已关闭');
-        });
-    });
-
-    $('#btn1').on('click', function () {
-        alert('一个按钮').on('close', function (index) {
+        alert('哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈').on('close', function (index) {
             alert('已关闭');
         });
     });

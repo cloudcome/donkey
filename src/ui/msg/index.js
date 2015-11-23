@@ -41,7 +41,8 @@ define(function (require, exports, module) {
         easing: 'swig',
         timeout: 0,
         autoFocus: true,
-        autoOpen: true
+        autoOpen: true,
+        canClose: false
     };
     var Msg = ui.create({
         constructor: function (options) {
@@ -84,7 +85,9 @@ define(function (require, exports, module) {
                 canDrag: options.canDrag,
                 modal: options.modal,
                 duration: options.duration,
-                autoFocus: options.autoFocus
+                autoFocus: options.autoFocus,
+                addClass: options.addClass,
+                canClose: options.canClose
             });
             the._$body = the._dialog.getNode();
             the._$buttons = $('.j-flag', the._$body);
