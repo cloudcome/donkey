@@ -128,6 +128,7 @@ define(function (require, exports, module) {
             the._$mask.hide();
             the.emit('close');
             $($html).removeClass(namespace + '-overflow');
+
             if (_isSameToWindow(the._$parent[0])) {
                 maskWindowLength--;
 

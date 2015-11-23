@@ -20,20 +20,27 @@
     <title>window.html</title>
 
     <style>
+        #fixed{
+            position: fixed;
+            z-index: 9999999999999;
+        }
         #demo{
             position: relative;
-            background: #000;
-            color: #fff;
+            background: #9d9d6a;
+            color: #ff6c60;
             font-size: 30px;
             height: 1000px;
+            border: 4px solid #15AEED;
         }
     </style>
 </head>
 <body ontouchstart="">
 
-<button id="open">open window</button>
-<button id="resize">resize window</button>
-<button id="destroy">destroy window</button>
+<div id="fixed">
+    <button id="open">open window</button>
+    <button id="resize">resize window</button>
+    <button id="destroy">destroy window</button>
+</div>
 
 <div id="demo">#demo</div>
 
