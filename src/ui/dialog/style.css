@@ -2,36 +2,35 @@
   height: 100%; }
   .donkey-ui-dialog-inner {
     background: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #26AFE9;
     border-radius: 6px;
-    box-shadow: 0 0 10px #888;
     height: 100%;
     overflow: hidden; }
   .donkey-ui-dialog-head {
     position: relative;
-    background: #f5f5f5;
-    border-bottom: 1px solid #ccc;
-    height: 34px;
-    line-height: 33px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px; }
+    background: #26AFE9;
+    height: 40px;
+    line-height: 40px; }
   .donkey-ui-dialog-title {
-    color: #444;
+    color: #fff;
     font-size: 16px;
-    padding: 0 10px; }
+    padding: 0 10px;
+    text-align: center; }
   .donkey-ui-dialog-close {
-    font: 20px normal Arial;
+    font: 20px normal serif;
     position: absolute;
     right: 0;
     top: 0;
-    color: #bbb;
+    color: #fff;
     cursor: pointer;
-    width: 34px;
-    height: 34px;
-    line-height: 34px;
-    text-align: center; }
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    opacity: 0.6; }
     .donkey-ui-dialog-close:hover {
-      color: #888; }
+      color: #fff;
+      opacity: 1; }
   .donkey-ui-dialog-body {
     overflow: auto;
     border-bottom-left-radius: 6px;

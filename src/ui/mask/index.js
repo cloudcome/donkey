@@ -32,7 +32,7 @@ define(function (require, exports, module) {
     var tpl = new Template(template);
     var donkeyIndex = 0;
     var defaults = {
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
         opacity: 0.5,
         // 是否固定滚动条
         fixed: true
