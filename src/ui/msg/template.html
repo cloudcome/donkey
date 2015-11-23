@@ -3,7 +3,7 @@
     {{if buttons.length}}
     <div class="donkey-ui-msg-btns">
         {{list buttons as index,button}}
-        <div class="donkey-ui-msg-btn j-flag" data-index="{{index}}">{{=button}}</div>
+        <div class="donkey-ui-msg-btn j-flag {{=button.addClass}}" data-index="{{index}}">{{=button.text}}</div>
         {{/list}}
     </div>
     {{/if}}
