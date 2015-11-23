@@ -18,7 +18,12 @@ define(function (require, exports, module) {
         new Mask('#demo').open();
     });
 
+    var mask2 = new Mask(window);
     $('#btn2').click(function () {
-        new Mask(window).open();
+        mask2.open();
+    });
+
+    $('#btn3').click(function () {
+        mask2.close();
     });
 });

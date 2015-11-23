@@ -8,6 +8,8 @@
 define(function (require, exports, module) {
     /**
      * @module ui/mask
+     * @requires libs/template
+     * @requires utils/dato
      */
 
     'use strict';
@@ -15,19 +17,24 @@ define(function (require, exports, module) {
     var win = window;
     var $ = win.jQuery;
     var doc = win.document;
-    var html = doc.documentElement;
-    var body = doc.body;
+    var $html = doc.documentElement;
+    var $body = doc.body;
 
     var ui = require('../index.js');
+    var style = require('./style.css', 'css');
     var template = require('./template.html', 'html');
     var Template = require('../../libs/template.js');
     var dato = require('../../utils/dato.js');
 
+    var maskWindowLength = 0;
+    var maskWindowList = [];
+    var namespace = 'donkey-ui-mask';
     var tpl = new Template(template);
     var donkeyIndex = 0;
     var defaults = {
         backgroundColor: '#000',
         opacity: 0.5,
+        // 是否固定滚动条
         fixed: true
     };
     var Mask = ui.create({
@@ -36,7 +43,7 @@ define(function (require, exports, module) {
 
             the._$parent = $($parent);
             the._options = dato.extend({}, defaults, options);
-            the._id = donkeyIndex++;
+            the.id = donkeyIndex++;
             the.className = 'mask';
             the.visible = false;
             the.destroyed = false;
@@ -47,10 +54,10 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var innerHTML = tpl.render({
-                id: the._id
+                id: the.id
             });
 
-            the._$mask = $(innerHTML).appendTo(body);
+            the._$mask = $(innerHTML).appendTo($body);
             the._$mask.css(options);
         },
 
@@ -61,6 +68,7 @@ define(function (require, exports, module) {
          */
         open: function () {
             var the = this;
+            var options = the._options;
 
             if (the.visible) {
                 return the;
@@ -70,7 +78,14 @@ define(function (require, exports, module) {
             the.emit('beforeopen');
             the.visible = true;
 
-            if (!_isSameToWindow(the._$parent[0])) {
+            if (_isSameToWindow(the._$parent[0])) {
+                if (options.fixed) {
+                    $($html).addClass(namespace + '-overflow');
+                }
+
+                maskWindowLength++;
+                maskWindowList.push(the);
+            } else {
                 var offset = the._$parent.offset();
 
                 the._$mask.css({
@@ -112,6 +127,21 @@ define(function (require, exports, module) {
             the.visible = false;
             the._$mask.hide();
             the.emit('close');
+            $($html).removeClass(namespace + '-overflow');
+            if (_isSameToWindow(the._$parent[0])) {
+                maskWindowLength--;
+
+                var findIndex = -1;
+
+                dato.each(maskWindowList, function (index, mask) {
+                    if (mask.id === the.id) {
+                        findIndex = index;
+                        return false;
+                    }
+                });
+
+                maskWindowList.splice(findIndex, 1);
+            }
 
             return the;
         },
@@ -134,12 +164,43 @@ define(function (require, exports, module) {
         }
     });
 
+    /**
+     * 覆盖 window 的 mask 列表
+     * @type {Array}
+     */
+    Mask.maskWindowList = maskWindowList;
+
+
+    /**
+     * 获得当前最顶层覆盖 window 的 mask
+     * @returns {*}
+     */
+    Mask.getTopWindowMask = function () {
+        return maskWindowList[maskWindowLength - 1];
+    };
+
     Mask.defaults = defaults;
     module.exports = Mask;
-    ui.importStyle(require('./style.css', 'css'));
+    style += '.' + namespace + '-overflow{padding-right:' + _getScrollbarWidth() + 'px !important;}';
+    ui.importStyle(style);
+
+    /**
+     * 获得当前页面的滚动条宽度
+     * @returns {number}
+     * @private
+     */
+    function _getScrollbarWidth() {
+        var divWidth = 100;
+        var $div = $('<div style="width:' + 100 + 'px;height:' + 100 + 'px;position:absolute;overflow:scroll">').appendTo($body);
+
+        var width = divWidth - $div[0].clientWidth;
+        $div.remove();
+
+        return width;
+    }
 
 
     function _isSameToWindow(ele) {
-        return ele === window || ele === html || ele === doc || ele === body;
+        return ele === window || ele === $html || ele === doc || ele === $body;
     }
 });
