@@ -24,6 +24,8 @@ define(function (require, exports, module) {
     var string = require('../utils/string.js');
     var typeis = require('../utils/typeis.js');
     var klass = require('../utils/class.js');
+    var allocation = require('../utils/allocation.js');
+
     var REG_STRING_WRAP = /([\\"])/g;
     var REG_LINES = /[\n\r\t]/g;
     var REG_SPACES = /\s{2,}/g;
@@ -42,7 +44,7 @@ define(function (require, exports, module) {
         'r': /\r/g,
         't': /\t/g
     }];
-    var namespace = '_donkey_libs_template_';
+    var namespace = '_alien_libs_template_';
     var openTag = '{{';
     var closeTag = '}}';
     var configs = {
@@ -289,7 +291,15 @@ define(function (require, exports, module) {
             var fn;
             var existFilters = dato.extend(true, {}, filters, the._template.filters);
             var self = dato.extend(true, {}, {
-                each: dato.each,
+                each: function (obj) {
+                    var args = allocation.args(arguments);
+
+                    if (typeis(obj) === 'string') {
+                        args[0] = [];
+                    }
+
+                    return dato.each.apply(dato, args);
+                },
                 escape: string.escapeHTML,
                 filters: existFilters,
                 options: options,
@@ -314,20 +324,18 @@ define(function (require, exports, module) {
                     vars.join('') +
                     this.fn +
                     '\n}catch(err){\n' +
-                    'return this.options.debug?message:"";\n' +
+                    'return this.options.debug?err.message:"";\n' +
                     '}');
             } catch (err) {
                 fn = function () {
-                    return configs.debug ? err.message : '';
+                    return options.debug ? err.message : '';
                 };
             }
-
-            console.log(fn);
 
             try {
                 ret = fn.call(self, data);
             } catch (err) {
-                ret = configs.debug ? err.message : '';
+                ret = options.debug ? err.message : '';
             }
 
 
@@ -487,6 +495,7 @@ define(function (require, exports, module) {
          * @private
          */
         _parseList: function (str) {
+            var the = this;
             var matches = str.trim().match(REH_LIST);
             var parse;
             var randomKey1 = this._generatorVar();
@@ -503,7 +512,7 @@ define(function (require, exports, module) {
                 val: matches[4] ? matches[4] : matches[2]
             };
 
-            return 'this.each(' + parse.list + ', function(' + randomKey1 + ', ' + randomVal + '){' +
+            return 'this.each(' + the._wrapSafe(parse.list) + ', function(' + randomKey1 + ', ' + randomVal + '){' +
                 'var ' + parse.key + ' = ' + randomKey1 + ';\n' +
                 'var ' + parse.val + '=' + randomVal + ';\n';
         },
