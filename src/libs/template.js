@@ -1,8 +1,9 @@
-/*!
+/**
  * html 字符串模板引擎
  * @author ydr.me
  * @create 2014-10-09 18:35
- * @2015年05月03日00:07:41 增加 {{ignore}}...{{/ignore}} 忽略 parse 区间
+ * @update 2015年05月03日00:07:41
+ * @update 2015年11月24日16:17:46
  */
 
 
@@ -18,10 +19,10 @@ define(function (require, exports, module) {
 
     require('../polyfill/array.js');
     require('../polyfill/object.js');
+
     var dato = require('../utils/dato.js');
     var string = require('../utils/string.js');
     var typeis = require('../utils/typeis.js');
-    var random = require('../utils/random.js');
     var klass = require('../utils/class.js');
     var REG_STRING_WRAP = /([\\"])/g;
     var REG_LINES = /[\n\r\t]/g;
@@ -34,12 +35,14 @@ define(function (require, exports, module) {
     var REH_LIST = /^list\s+([^,]*)\s+as\s+([^,]*)(\s*,\s*([^,]*))?$/;
     var REG_ELSE_IF = /^else\s+if\s/;
     var REG_HASH = /^#/;
+    var REG_F = /;$/;
     var REG_IGNORE = /\{\{ignore}}([\s\S]*?)\{\{\/ignore}}/ig;
     var regLines = [{
         'n': /\n/g,
         'r': /\r/g,
         't': /\t/g
     }];
+    var namespace = '_donkey_libs_template_';
     var openTag = '{{';
     var closeTag = '}}';
     var configs = {
@@ -54,6 +57,7 @@ define(function (require, exports, module) {
          */
         debug: false
     };
+    var increase = 0;
     var filters = {};
     var Template = klass.create({
         constructor: function (template, options) {
@@ -68,7 +72,23 @@ define(function (require, exports, module) {
          * @private
          */
         _generatorVar: function () {
-            return 'alien_libs_template_' + random.string(20, '0aA');
+            return namespace + increase++;
+        },
+
+
+        /**
+         * 表达式安全包装
+         * @param exp
+         * @returns {string}
+         * @private
+         */
+        _wrapSafe: function (exp) {
+            var the = this;
+
+            exp = exp.replace(REG_F, '');
+            return '(function(){try{' +
+                'if(' + the._selfVarible + '.typeis.empty(' + exp + ') && ' + the._selfVarible + '.options.debug){return String(' + exp + ');}\n' +
+                'return ' + exp + '}catch(e){return ' + the._selfVarible + '.options.debug?e.message:"";}}())';
         },
 
 
@@ -81,7 +101,8 @@ define(function (require, exports, module) {
         _init: function (template) {
             var the = this;
             var _var = the._generatorVar();
-            var fnStr = 'var ' + _var + '="";';
+            var selfVarible = the._generatorVar();
+            var fnStr = 'var ' + _var + '="";\n';
             var output = [];
             var parseTimes = 0;
             // 是否进入忽略状态，true=进入，false=退出
@@ -89,12 +110,13 @@ define(function (require, exports, module) {
             // 是否进入表达式
             var inExp = false;
 
+            fnStr += 'var ' + selfVarible + '=this;\n';
             the._template = {
                 escape: string.escapeHTML,
                 filters: {}
             };
+            the._selfVarible = selfVarible;
             the._useFilters = {};
-
             the._placeholders = {};
 
             template.replace(REG_IGNORE, function ($0, $1) {
@@ -117,12 +139,12 @@ define(function (require, exports, module) {
                     // 多个连续开始符号
                     if (!$0 || $0 === '{') {
                         if (inIgnore) {
-                            output.push(_var + '+=' + _cleanPice(openTag) + ';');
+                            output.push(_var + '+=' + the._cleanPice(openTag) + ';\n');
                         }
                     }
                     // 忽略开始
                     else if ($0.slice(-1) === '\\') {
-                        output.push(_var + '+=' + _cleanPice($0.slice(0, -1) + openTag) + ';');
+                        output.push(_var + '+=' + the._cleanPice($0.slice(0, -1) + openTag) + ';\n');
                         inIgnore = true;
                         parseTimes--;
                     }
@@ -133,7 +155,7 @@ define(function (require, exports, module) {
 
                         inIgnore = false;
                         inExp = true;
-                        output.push(_var + '+=' + _cleanPice($0) + ';');
+                        output.push(_var + '+=' + the._cleanPice($0) + ';\n');
                     }
                 }
                 // 1个结束符
@@ -146,11 +168,11 @@ define(function (require, exports, module) {
                     if (inIgnore) {
                         output.push(
                             _var +
-                            '+=' + _cleanPice((times > 1 ? openTag : '') +
+                            '+=' + the._cleanPice((times > 1 ? openTag : '') +
                                 $0 + closeTag +
                                 (isEndIgnore ? $1.slice(0, -1) : $1)
                             ) +
-                            ';');
+                            ';\n');
                         inIgnore = false;
 
                         // 下一次忽略
@@ -169,40 +191,42 @@ define(function (require, exports, module) {
                         $1 = $1.slice(0, -1);
                     }
 
-                    $1 = _cleanPice($1);
+                    $1 = the._cleanPice($1);
 
                     // if abc
                     if (the._hasPrefix($0, 'if')) {
-                        output.push(the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';');
+                        output.push(the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';\n');
                     }
                     // else if abc
                     else if (REG_ELSE_IF.test($0)) {
-                        output.push('}' + the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';');
+                        output.push('}' + the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';\n');
                     }
                     // else
                     else if ($0 === 'else') {
-                        output.push('}else{' + _var + '+=' + $1 + ';');
+                        output.push('\n}else{\n' + _var + '+=' + $1 + ';\n');
                     }
                     // /if
                     else if ($0 === '/if') {
-                        output.push('}' + _var + '+=' + $1 + ';');
+                        output.push('\n}' + _var + '+=' + $1 + ';\n');
                     }
                     // list list as key,val
                     // list list as val
                     else if (the._hasPrefix($0, 'list')) {
-                        output.push(the._parseList($0) + _var + '+=' + $1 + ';');
+                        output.push(the._parseList($0) + _var + '+=' + $1 + ';\n');
                     }
                     // /list
                     else if ($0 === '/list') {
-                        output.push('}, this);' + _var + '+=' + $1 + ';');
+                        output.push('}, this);\n' + _var + '+=' + $1 + ';\n');
                     }
                     // var
                     else if (the._hasPrefix($0, 'var')) {
                         parseVar = the._parseVar($0);
 
                         if (parseVar) {
-                            output.push(parseVar);
+                            output.push(parseVar + '\n');
                         }
+
+                        output.push(_var + '+=' + $1 + ';\n');
                     }
                     // #
                     else if (REG_HASH.test($0)) {
@@ -217,21 +241,21 @@ define(function (require, exports, module) {
                         parseVar = the._parseExp($0);
 
                         if (parseVar) {
-                            output.push(_var + '+=' + the._parseExp($0) + '+' + $1 + ';');
+                            output.push(_var + '+=' + the._parseExp($0) + '+' + $1 + ';\n');
                         }
                     }
 
                 }
                 // 多个结束符
                 else {
-                    output.push(_var + '+=' + _cleanPice(value) + ';');
+                    output.push(_var + '+=' + the._cleanPice(value) + ';\n');
                     inExp = false;
                     inIgnore = false;
                 }
             });
 
-            fnStr += output.join('') + 'return ' + _var;
-            the._fn = fnStr;
+            fnStr += output.join('') + 'return ' + _var + ';\n';
+            the.fn = fnStr;
 
             return the;
         },
@@ -251,7 +275,7 @@ define(function (require, exports, module) {
 
         /**
          * 渲染数据
-         * @param {Object} [data] 数据
+         * @param {Object} [data={}] 数据
          * @returns {String} 返回渲染后的数据
          *
          * @example
@@ -260,7 +284,7 @@ define(function (require, exports, module) {
         render: function (data) {
             var the = this;
             var options = the._options;
-            var _var = 'alienTemplateData_' + new Date().getTime();
+            var _var = the._generatorVar();
             var vars = [];
             var fn;
             var existFilters = dato.extend(true, {}, filters, the._template.filters);
@@ -268,13 +292,14 @@ define(function (require, exports, module) {
                 each: dato.each,
                 escape: string.escapeHTML,
                 filters: existFilters,
-                configs: configs
+                options: options,
+                typeis: typeis
             });
             var ret;
 
             data = data || {};
             dato.each(data, function (key) {
-                vars.push('var ' + key + '=' + _var + '["' + key + '"];');
+                vars.push('var ' + key + '=' + _var + '["' + key + '"];\n');
             });
 
             dato.each(the._useFilters, function (filter) {
@@ -285,17 +310,24 @@ define(function (require, exports, module) {
 
             try {
                 /* jshint evil: true */
-                fn = new Function(_var, 'try{' + vars.join('') + this._fn + '}catch(err){return this.configs.debug?err.stack || message:"";}');
+                fn = new Function(_var, 'try{\n' +
+                    vars.join('') +
+                    this.fn +
+                    '\n}catch(err){\n' +
+                    'return this.options.debug?message:"";\n' +
+                    '}');
             } catch (err) {
                 fn = function () {
-                    return configs.debug ? err.stack || err.message : '';
+                    return configs.debug ? err.message : '';
                 };
             }
+
+            console.log(fn);
 
             try {
                 ret = fn.call(self, data);
             } catch (err) {
-                ret = configs.debug ? err.stack || err.message : '';
+                ret = configs.debug ? err.message : '';
             }
 
 
@@ -377,11 +409,11 @@ define(function (require, exports, module) {
         /**
          * 解析表达式
          * @param str
-         * @param [pre]
+         * @param [varible]
          * @returns {string}
          * @private
          */
-        _parseExp: function (str, pre) {
+        _parseExp: function (str, varible) {
             var the = this;
 
             str = str.trim();
@@ -421,11 +453,13 @@ define(function (require, exports, module) {
                 });
             }
 
-            if (pre) {
+
+            if (varible) {
                 return exp;
             }
 
-            return (unEscape ?  '(': 'this.escape(') + exp + ')';
+            exp = this._wrapSafe(exp);
+            return (unEscape ? '(' : 'this.escape(') + exp + ')';
         },
 
 
@@ -470,31 +504,33 @@ define(function (require, exports, module) {
             };
 
             return 'this.each(' + parse.list + ', function(' + randomKey1 + ', ' + randomVal + '){' +
-                'var ' + parse.key + ' = ' + randomKey1 + ';' +
-                'var ' + parse.val + '=' + randomVal + ';';
+                'var ' + parse.key + ' = ' + randomKey1 + ';\n' +
+                'var ' + parse.val + '=' + randomVal + ';\n';
+        },
+
+        /**
+         * 片段处理
+         * @param str
+         * @returns {string}
+         * @private
+         */
+        _cleanPice: function (str) {
+            str = str.replace(REG_STRING_WRAP, '\\$1');
+
+            dato.each(regLines, function (index, map) {
+                var key = Object.keys(map)[0];
+                var val = map[key];
+
+                str = str.replace(val, '\\' + key);
+            });
+
+            if (this._options.compress) {
+                str = _cleanHTML(str);
+            }
+
+            return '"' + str + '"';
         }
     });
-
-
-    /**
-     * 片段处理
-     * @param str
-     * @returns {string}
-     * @private
-     */
-    function _cleanPice(str) {
-        str = str
-            .replace(REG_STRING_WRAP, '\\$1');
-
-        dato.each(regLines, function (index, map) {
-            var key = Object.keys(map)[0];
-            var val = map[key];
-
-            str = str.replace(val, '\\' + key);
-        });
-
-        return '"' + str + '"';
-    }
 
 
     /**
@@ -503,7 +539,7 @@ define(function (require, exports, module) {
      * @private
      */
     function _generateKey() {
-        return 'œ' + random.string(40, 'aA0') + 'œ';
+        return 'œ' + namespace + (increase++) + 'œ';
     }
 
 
@@ -527,7 +563,8 @@ define(function (require, exports, module) {
 
         code = code
             .replace(REG_LINES, '')
-            .replace(REG_SPACES, ' ');
+            .replace(REG_SPACES, ' ')
+            .trim();
 
 
         dato.each(preMap, function (key, val) {
