@@ -1,20 +1,26 @@
-.donkey-ui-msg {
-  padding: 20px; }
-  .donkey-ui-msg-content {
-    font-size: 18px; }
-  .donkey-ui-msg-btns {
-    text-align: center;
-    padding-top: 40px; }
-  .donkey-ui-msg-btn {
-    border: 1px solid #15AEED;
-    display: inline-block;
-    background: #15AEED;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 0 10px;
-    line-height: 1;
-    cursor: pointer; }
-    .donkey-ui-msg-btn:hover {
-      background: #0f8cc0; }
+.donkey-ui-msg * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.donkey-ui-msg-content {
+  font-size: 18px; }
+
+.donkey-ui-msg-btns {
+  text-align: center;
+  padding-top: 40px; }
+
+.donkey-ui-msg-btn {
+  color: #fff;
+  height: 34px;
+  border: 1px solid #15AEED;
+  display: inline-block;
+  background: #15AEED;
+  padding: 10px 25px;
+  border-radius: 4px;
+  font-size: 16px;
+  margin: 0 10px;
+  line-height: 0.75;
+  cursor: pointer; }
+  .donkey-ui-msg-btn:hover {
+    background: #119ed8; }

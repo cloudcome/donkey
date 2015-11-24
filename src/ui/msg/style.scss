@@ -1,5 +1,9 @@
 .donkey-ui-msg {
-  padding: 20px;
+  *{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 
   &-content {
     font-size: 18px;
@@ -11,20 +15,26 @@
   }
 
   &-btn {
-    $color: #15AEED;
-    border: 1px solid $color;
-    display: inline-block;
-    background: $color;
+    $btn-bg: #15AEED;
+    $btn-padding-vertical: 10px;
+    $btn-padding-horizontal: 25px;
+    $font-size: 16px;
+    $height: 34px;
+    $border-size: 1px;
     color: #fff;
-    padding: 10px 20px;
+    height: $height;
+    border: $border-size solid $btn-bg;
+    display: inline-block;
+    background: $btn-bg;
+    padding: $btn-padding-vertical $btn-padding-horizontal;
     border-radius: 4px;
     font-size: 16px;
     margin: 0 10px;
-    line-height: 1;
+    line-height: ($height - $btn-padding-vertical * 2 - $border-size * 2)/$font-size;
     cursor: pointer;
 
     &:hover {
-      background: darken($color, 10%);
+      background: darken($btn-bg, 5%);
     }
   }
 }

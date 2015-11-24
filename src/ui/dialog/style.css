@@ -2,17 +2,19 @@
   height: 100%; }
   .donkey-ui-dialog-inner {
     background: #fff;
-    border: 1px solid #26AFE9;
+    border: 1px solid #ccc;
     border-radius: 6px;
     height: 100%;
-    overflow: hidden; }
+    overflow: hidden;
+    box-shadow: 0 0 10px #ccc; }
   .donkey-ui-dialog-head {
     position: relative;
-    background: #26AFE9;
+    background: #f9f9f9;
     height: 40px;
-    line-height: 40px; }
+    line-height: 40px;
+    border-bottom: 1px solid #ccc; }
   .donkey-ui-dialog-title {
-    color: #fff;
+    color: #777;
     font-size: 16px;
     padding: 0 10px;
     text-align: center; }
@@ -21,7 +23,7 @@
     position: absolute;
     right: 0;
     top: 0;
-    color: #fff;
+    color: #888;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -29,11 +31,12 @@
     text-align: center;
     opacity: 0.6; }
     .donkey-ui-dialog-close:hover {
-      color: #fff;
+      color: #444;
       opacity: 1; }
   .donkey-ui-dialog-body {
     overflow: auto;
     border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px; }
+    border-bottom-right-radius: 6px;
+    padding: 15px; }
   .donkey-ui-dialog-nohead .donkey-ui-dialog-body {
     border-radius: 6px; }

@@ -1,24 +1,27 @@
 .donkey-ui-dialog {
   height: 100%;
+  $border: 1px solid #ccc;
 
   &-inner {
     background: #fff;
-    border: 1px solid #26AFE9;
+    border: $border;
     border-radius: 6px;
     //box-shadow: 0 0 10px #15AEED;
     height: 100%;
     overflow: hidden;
+    box-shadow: 0 0 10px #ccc;
   }
 
   &-head {
     position: relative;
-    background: #26AFE9;
+    background: #f9f9f9;
     height: 40px;
     line-height: 40px;
+    border-bottom: $border;
   }
 
   &-title {
-    color: #fff;
+    color: #777;
     font-size: 16px;
     padding: 0 10px;
     text-align: center;
@@ -29,7 +32,7 @@
     position: absolute;
     right: 0;
     top: 0;
-    color: #fff;
+    color: #888;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -38,7 +41,7 @@
     opacity: 0.6;
 
     &:hover{
-      color: #fff;
+      color: #444;
       opacity: 1;
     }
   }
@@ -47,6 +50,7 @@
     overflow: auto;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+    padding: 15px;
   }
 
   &-nohead {

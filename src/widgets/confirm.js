@@ -28,7 +28,8 @@ define(function (require, exports, module) {
             text: '取消',
             addClass: namespace + '-cancel'
         }],
-        sureIndex: 0
+        sureIndex: 0,
+        title: '确认操作'
     };
     module.exports = function (content) {
         var options = {};
