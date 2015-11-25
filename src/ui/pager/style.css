@@ -1,0 +1,42 @@
+.donkey-ui-pager {
+  position: relative;
+  overflow: hidden;
+  line-height: 30px;
+  font-size: 14px; }
+  .donkey-ui-pager > * {
+    float: left;
+    margin-right: 20px; }
+    .donkey-ui-pager > *:last-child {
+      margin-right: 0; }
+  .donkey-ui-pager-action * {
+    float: left;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ddd;
+    margin-right: -1px;
+    cursor: pointer;
+    color: #888; }
+    .donkey-ui-pager-action *:hover {
+      background: #f5f5f5;
+      color: #333; }
+    .donkey-ui-pager-action *.disabled,
+    .donkey-ui-pager-action *.disabled:hover {
+      color: #CACACA;
+      background: #eee;
+      cursor: not-allowed; }
+  .donkey-ui-pager input {
+    height: 20px;
+    padding: 4px;
+    border: 1px solid #ddd;
+    width: 30px;
+    text-align: center;
+    font-size: 14px; }
+  .donkey-ui-pager-sure {
+    background: #15AEED;
+    color: #fff;
+    display: inline-block;
+    padding: 5px 12px;
+    line-height: 1;
+    margin-left: 5px;
+    cursor: pointer; }

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--
+ - 文件描述
+ - @author ydr.me
+ - @create 2015-05-15 15:31
+ -->
+<html>
+<head lang="zh-cn">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,user-scalable=no,maximum-scale=1.0,minimum-scale=1.0,minimal-ui">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="author" content="云淡然;http://ydr.me">
+    <meta name="keywords" content="关键词1,关键词2">
+    <meta name="description" content="描述语句">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <title>Popup.html</title>
+    <style>
+        button{
+            position: absolute;
+            font-size: 40px;
+            padding: 20px 40px;
+        }
+
+        #btn1{
+            top: 0;
+            left: 0;
+        }
+
+        #btn2{
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #btn3{
+            top: 0;
+            right: 0;
+        }
+
+        #btn4{
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0;
+        }
+
+        #btn5{
+            right: 0;
+            bottom: 0;
+        }
+
+        #btn6{
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+        }
+
+        #btn7{
+            left: 0;
+            bottom: 0;
+        }
+
+        #btn8{
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #btn9{
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+    </style>
+</head>
+<body ontouchstart="">
+
+
+<button id="btn1">popup here 1</button>
+<button id="btn2">popup here 2</button>
+<button id="btn3">popup here 3</button>
+<button id="btn4">popup here 4</button>
+<button id="btn5">popup here 5</button>
+<button id="btn6">popup here 6</button>
+<button id="btn7">popup here 7</button>
+<button id="btn8">popup here 8</button>
+<button id="btn9">popup here 9</button>
+
+<script src="/examples/jquery.js"></script>
+<script src="/examples/coolie.min.js"
+        data-config="./coolie-config.js"
+        data-main="./ui/popup.js"></script>
+
+</body>
+</html>

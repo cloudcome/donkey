@@ -18,6 +18,9 @@ define(function (require, exports, module) {
 
 
     var $ = window.jQuery;
+    var elDoc = window.document;
+    var elHtml = elDoc.documentElement;
+    var elBody = elDoc.body;
     require('../../jquery-plugins/jquery.easing.js')($);
     require('../../jquery-plugins/jquery-transit.js')($);
 
@@ -109,7 +112,7 @@ define(function (require, exports, module) {
             position.top += options.offsetTop;
         }
 
-        $('html,body').animate({
+        $([elHtml, elBody]).animate({
             scrollTop: position.top || 0,
             scrollLeft: position.left || 0
         }, options);
