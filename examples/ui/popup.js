@@ -20,9 +20,8 @@ define(function (require, exports, module) {
         var pp = new Popup($btn);
 
         $btn.onclick = function () {
-            pp.setContent('123').open();
-            //pp.setContent('<p style="word-break: break-all;">' +
-            //    random.string(random.number(5, 500), 'aA0') + '。</p>').open();
+            pp.setContent('<p style="word-break: break-all;">' +
+                random.string(random.number(5, 500), 'aA0') + '。</p>').open();
         };
     });
 });

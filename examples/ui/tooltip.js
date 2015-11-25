@@ -1,18 +1,11 @@
-/**
- * 文件描述
- * @author ydr.me
- * @create 2015-11-25 10:20
- */
-
-
-define(function (require, exports, module) {
-    /**
-     * @module parent/tooltips
-     */
-
+define(function (require) {
     'use strict';
 
-    var Tooltips = require('../../src/ui/tooltips/index.js');
+    var Tooltip = require('../../src/ui/tooltip/index.js');
 
-    new Tooltips('.tooltips');
+    new Tooltip({
+        selector: '.tooltip',
+        timeout: 1000,
+        data: 'tooltip'
+    });
 });
