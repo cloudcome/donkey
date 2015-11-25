@@ -64,7 +64,7 @@ define(function (require, exports, module) {
             the._$img.css(the._options);
             the._eleImg = the._$img[0];
             the._eleImg.onload = function () {
-                the.emit('afterload', this.src);
+                the.emit('load', this.src);
             };
 
             if (REG_HTTP.test(fileInput.value)) {
