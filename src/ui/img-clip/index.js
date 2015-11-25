@@ -118,7 +118,7 @@ define(function (require, exports, module) {
                     the.emit('success');
                 }
 
-                the.emit('afterload');
+                the.emit('load');
             };
             var img = new Image();
             the.emit('beforeload');
