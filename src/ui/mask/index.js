@@ -101,7 +101,7 @@ define(function (require, exports, module) {
             }
 
             the._$mask.show();
-            the.emit('afteropen');
+            the.emit('open');
 
             return the;
         },
@@ -127,7 +127,6 @@ define(function (require, exports, module) {
             the.visible = false;
             the._$mask.hide();
             the.emit('close');
-            $($html).removeClass(namespace + '-overflow');
 
             if (_isSameToWindow(the._$parent[0])) {
                 maskWindowLength--;
@@ -142,6 +141,10 @@ define(function (require, exports, module) {
                 });
 
                 maskWindowList.splice(findIndex, 1);
+            }
+
+            if (!maskWindowLength) {
+                $($html).removeClass(namespace + '-overflow');
             }
 
             return the;

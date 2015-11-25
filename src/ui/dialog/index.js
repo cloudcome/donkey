@@ -78,7 +78,7 @@ define(function (require, exports, module) {
             // new Dailog(null, options);
             // new Dailog(options);
             // new Dailog();
-            if (args.length === 0 || typeis.null(args[0]) || typeis.object(args[0])) {
+            if (args.length === 0 || typeis.Null(args[0]) || typeis.plainObject(args[0])) {
                 options = args[args.length - 1];
                 $dialog = null;
             }
