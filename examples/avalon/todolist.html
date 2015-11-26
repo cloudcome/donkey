@@ -36,12 +36,23 @@
 <body ontouchstart="">
 
 <h1>avalon-original</h1>
+
+
 <div id="todoList1">
     <input type="text" name="todo" ms-keypress="add" ms-duplex="todo">
     <ul>
-        <li ms-repeat-item="list" ms-class="done: item.done">
+        <li ms-repeat-item="list" ms-class="done: item.done" ms-class-2="done2: item.done">
             {{$index}}: {{item.text}}
-            <button ms-click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>
+            <button ms-click="check($index, item)" ms-attr-disabled="item.done"
+                    ms-attr-abc="item.done" ms-attr-def="item.done">
+                <span ms-if="item.done">已完成</span>
+                <span ms-if="!item.done">未完成</span>
+            </button>
+        </li>
+    </ul>
+    <ul>
+        <li ms-repeat-item="list2" ms-if-loop="item.indexOf('a') > -1">
+            {{item}}
         </li>
     </ul>
 </div>
@@ -57,16 +68,16 @@
     <!--&lt;!&ndash;</ul>&ndash;&gt;-->
 <!--</div>-->
 
-<!--<h1>vue</h1>-->
-<!--<div id="todoList3">-->
-    <!--<input type="text" name="todo" v-on:keypress="add" v-model="todo">-->
-    <!--<ul>-->
-        <!--<li v-for="item in list" v-bind:class="{'done': item.done}">-->
-            <!--{{$index}}: {{item.text}}-->
-            <!--<button v-on:click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>-->
-        <!--</li>-->
-    <!--</ul>-->
-<!--</div>-->
+<h1>vue</h1>
+<div id="todoList3">
+    <input type="text" name="todo" v-on:keypress="add" v-model="todo">
+    <ul>
+        <li v-for="item in list" v-bind:class="{'done': item.done}">
+            {{$index}}: {{item.text}}
+            <button v-on:click="check($index, item)">{{item.done ? '标记未完成': '标记已完成'}}</button>
+        </li>
+    </ul>
+</div>
 
 <script src="/examples/jquery.js"></script>
 

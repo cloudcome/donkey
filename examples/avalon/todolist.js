@@ -25,9 +25,17 @@ define(function (require, exports, module) {
         }]
     };
 
-    window.vm = avalon.define($.extend(data, {
+    window.data2 = {
         $id: 'todoList1',
-        //$template: '<input ms-duplex="todo"><h1>{{todo}}</h1>',
+        todo: '',
+        list: [{
+            text: 'demo',
+            done: false
+        }],
+        list2: ['abc', 'b890', 'a123', 'a456'],
+        abc: {
+            def: 123
+        },
         add: function (eve) {
             if (eve.which === 13) {
                 vm.list.push({
@@ -40,7 +48,11 @@ define(function (require, exports, module) {
         check: function (index, item) {
             item.done = !item.done;
         }
-    }));
+    };
+    var vm = window.vm = avalon.define(data2);
+    vm.$watch('todo', function (newValue, oldValue, key) {
+        console.log(arguments);
+    });
 
     //window.av = new Avalon({
     //    el: 'todoList2',
@@ -61,22 +73,22 @@ define(function (require, exports, module) {
     //    }
     //});
 
-    //window.vue = new Vue({
-    //    el: '#todoList3',
-    //    data: data,
-    //    methods: {
-    //        add: function (eve) {
-    //            if (eve.which === 13) {
-    //                data.list.push({
-    //                    text: data.todo,
-    //                    done: false
-    //                });
-    //                data.todo = '';
-    //            }
-    //        },
-    //        check: function (index, item) {
-    //            item.done = !item.done;
-    //        }
-    //    }
-    //});
+    window.vue = new Vue({
+        el: '#todoList3',
+        data: data,
+        methods: {
+            add: function (eve) {
+                if (eve.which === 13) {
+                    data.list.push({
+                        text: data.todo,
+                        done: false
+                    });
+                    data.todo = '';
+                }
+            },
+            check: function (index, item) {
+                item.done = !item.done;
+            }
+        }
+    });
 });
