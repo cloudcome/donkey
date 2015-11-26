@@ -1,4 +1,4 @@
-/*!
+/**
  * loading
  * @author ydr.me
  * @create 2015-08-04 15:07
@@ -51,9 +51,7 @@ define(function (require, exports, module) {
             var options = the._options;
 
             if (options.modal) {
-                the._mask = new Mask(window, {
-                    opacity: 0
-                });
+                the._mask = new Mask(window);
             }
 
             the._$loading = $(template).appendTo('body');
