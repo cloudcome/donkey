@@ -52,7 +52,7 @@
     </ul>
     <ul>
         <li ms-repeat-item="list2" ms-if-loop="item.indexOf('a') > -1">
-            {{item}}
+            {{item | uppercase('__')}}
         </li>
     </ul>
 </div>

@@ -49,6 +49,10 @@ define(function (require, exports, module) {
             item.done = !item.done;
         }
     };
+
+    avalon.filter('uppercase', function (value, prefix) {
+        return prefix + value.toUpperCase();
+    });
     var vm = window.vm = avalon.define(data2);
     vm.$watch('todo', function (newValue, oldValue, key) {
         console.log(arguments);
