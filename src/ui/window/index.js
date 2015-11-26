@@ -41,6 +41,8 @@ define(function (require, exports, module) {
         // 当两者都互相相等时，即是一个正方形
         width: 'auto',
         height: 'auto',
+        minWidth: 'none',
+        minHeight: 'none',
         duration: 345,
         addClass: '',
         translateY: 25,
@@ -166,7 +168,7 @@ define(function (require, exports, module) {
                     callback.call(the);
                 }
 
-                the.emit('afteropen');
+                the.emit('open');
             });
 
             return the;
@@ -204,12 +206,10 @@ define(function (require, exports, module) {
 
             the._$parent.css({
                 display: 'block',
-                width: options.width,
-                height: options.height,
+                width: width,
+                height: height,
                 zIndex: ui.getZindex()
             });
-
-            the._$parent.width(width).height(height);
 
             if (widthEheight && heightEWidth) {
                 width = the._$parent.width();
@@ -225,7 +225,10 @@ define(function (require, exports, module) {
             }
 
             the.resize();
-            the.emit('afterupdate');
+            the.emit('update', {
+                width: width,
+                height: height
+            });
 
             return the;
         },
@@ -244,7 +247,7 @@ define(function (require, exports, module) {
 
             the.emit('beforeresize');
             ui.align(the._$parent, window);
-            the.emit('afterresize');
+            the.emit('resize');
 
             return the;
         },
@@ -273,7 +276,7 @@ define(function (require, exports, module) {
                     callback.call(the);
                 }
 
-                the.emit('afterclose');
+                the.emit('close');
             });
         },
 
@@ -334,7 +337,7 @@ define(function (require, exports, module) {
                     callback.call(the);
                 }
 
-                the.emit('afterdestroy');
+                the.emit('destroy');
             });
         }
     });

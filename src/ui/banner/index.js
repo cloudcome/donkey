@@ -127,7 +127,7 @@ define(function (require, exports, module) {
                 the._auto();
             });
 
-            the.after('change', function (index) {
+            the.on('change', function (index) {
                 the._currentIndex = index;
                 the._$navItems.eq(index).addClass(options.activeClass)
                     .siblings().removeClass(options.activeClass);
@@ -143,7 +143,7 @@ define(function (require, exports, module) {
 
             controller.nextTick(function () {
                 the.emit('beforechange', 0, 0);
-                the.emit('afterchange', 0, 0);
+                the.emit('change', 0, 0);
             });
         },
 
@@ -236,7 +236,7 @@ define(function (require, exports, module) {
                     the._$list.css(the._calLeft(endIndex * options.width));
                 }
 
-                the.emit('afterchange', index, the._currentIndex);
+                the.emit('change', index, the._currentIndex);
             };
 
             the.emit('beforechange', index, the._currentIndex);
