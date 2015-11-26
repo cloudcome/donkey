@@ -95,12 +95,11 @@ define(function (require, exports, module) {
                     right: 'auto',
                     bottom: 'auto',
                     top: offset ? offset.top : 0,
-                    left: offset ? offset.left : 0,
-                    zIndex: ui.getZindex()
+                    left: offset ? offset.left : 0
                 });
             }
 
-            the._$mask.show();
+            the._$mask.css('zIndex', ui.getZindex()).show();
             the.emit('open');
 
             return the;
