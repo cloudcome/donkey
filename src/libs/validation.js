@@ -14,6 +14,7 @@ define(function (require, exports, module) {
      * @requires utils/allocation
      * @requires utils/howdo
      * @requires utils/string
+     * @requires utils/random
      * @requires libs/emitter
      */
 
@@ -25,6 +26,7 @@ define(function (require, exports, module) {
     var allocation = require('../utils/allocation.js');
     var howdo = require('../utils/howdo.js');
     var string = require('../utils/string.js');
+    var random = require('../utils/random.js');
     var Emitter = require('./emitter.js');
 
     /**
@@ -123,7 +125,7 @@ define(function (require, exports, module) {
             var params = args.slice(2);
             var index = the._validateIndexMap[path];
 
-            if (typeis.undefined(index)) {
+            if (typeis.Undefined(index)) {
                 index = the._validateIndexMap[path] = the._validateList.length;
                 the._validateList.push({
                     path: path,
@@ -131,7 +133,7 @@ define(function (require, exports, module) {
                 });
             }
 
-            if (typeis.string(nameOrfn)) {
+            if (typeis.String(nameOrfn)) {
                 var name = nameOrfn;
 
                 if (!validationMap[name]) {
@@ -144,7 +146,7 @@ define(function (require, exports, module) {
                     fn: validationMap[name],
                     id: random.guid()
                 });
-            } else if (typeis.function(nameOrfn)) {
+            } else if (typeis.Function(nameOrfn)) {
                 the._validateList[index].rules.push({
                     name: namespace + alienIndex++,
                     params: params,
@@ -261,7 +263,7 @@ define(function (require, exports, module) {
                  */
                 the.emit('afterValidateOne', path);
 
-                if (typeis.function(callback)) {
+                if (typeis.Function(callback)) {
                     callback.call(the, err);
                 }
             });
@@ -299,7 +301,7 @@ define(function (require, exports, module) {
             howdo
             // 遍历验证顺序
                 .each(the._validateList, function (i, item, next) {
-                    if(!(item.path in data)){
+                    if (!(item.path in data)) {
                         return next();
                     }
 
@@ -346,7 +348,9 @@ define(function (require, exports, module) {
                      */
                     the.emit('afterValidateSome');
 
-                    callback.call(the, firstInvlidError, firstInvlidPath);
+                    if (typeis.Function(callback)) {
+                        callback.call(the, firstInvlidError, firstInvlidPath);
+                    }
                 });
 
             return the;
@@ -425,7 +429,9 @@ define(function (require, exports, module) {
                      */
                     the.emit('afterValidateAll');
 
-                    callback.call(the, firstInvlidError, firstInvlidPath);
+                    if (typeis.Function(callback)) {
+                        callback.call(the, firstInvlidError, firstInvlidPath);
+                    }
                 });
 
             return the;
@@ -462,7 +468,7 @@ define(function (require, exports, module) {
                     rule.fn.apply(the, args);
                 })
                 .follow()
-                .try(function () {
+                .done(function () {
                     /**
                      * 验证成功
                      * @event valid
@@ -477,11 +483,11 @@ define(function (require, exports, module) {
                      */
                     the.emit('afterValidate', path);
 
-                    if (typeis.function(callback)) {
+                    if (typeis.Function(callback)) {
                         callback.call(the, null);
                     }
                 })
-                .catch(function (err) {
+                .fail(function (err) {
                     var overrideMsg = the._msgMap[path] && the._msgMap[path][currentRule.name];
                     var args = [overrideMsg || err || options.defaultMsg, the.getAlias(path) || path];
 
@@ -504,7 +510,7 @@ define(function (require, exports, module) {
                      */
                     the.emit('afterValidate', path);
 
-                    if (typeis.function(callback)) {
+                    if (typeis.Function(callback)) {
                         callback.call(the, err);
                     }
                 });
