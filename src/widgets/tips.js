@@ -131,7 +131,7 @@ define(function (require, exports, module) {
     tips.success = function (text) {
         return tips({
             type: 'success',
-            text: text
+            text: text && text.message ? text.message: text
         });
     };
 
@@ -139,7 +139,7 @@ define(function (require, exports, module) {
     tips.danger = function (text) {
         return tips({
             type: 'danger',
-            text: text
+            text: text && text.message ? text.message: text
         });
     };
 
