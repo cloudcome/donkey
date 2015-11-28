@@ -31,14 +31,14 @@ define(function (require, exports, module) {
      * @type {{}}
      * @exmaple
      * {
- *     // val 值
- *     // param 参数值
- *     // done 验证结束回调
- *     minLength: function (val, done, param0, param1, ...) {
- *        // done(null); done(null)表示没有错误
- *        // done('${path}的长度不足xx字符')
- *     }
- * }
+     *     // val 值
+     *     // param 参数值
+     *     // done 验证结束回调
+     *     minLength: function (val, done, param0, param1, ...) {
+     *        // done(null); done(null)表示没有错误
+     *        // done('${path}的长度不足xx字符')
+     *     }
+     * }
      */
     var validationMap = {};
     var namespace = 'donkey-libs-validation';
