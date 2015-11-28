@@ -36,6 +36,8 @@ define(function (require, exports, module) {
 
         if (typeis(content) === 'string') {
             options.content = content;
+        } else if (content && content.message) {
+            options.content = content.message;
         } else {
             options = content;
         }

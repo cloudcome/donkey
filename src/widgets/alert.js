@@ -16,7 +16,7 @@ define(function (require, exports, module) {
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
     var modification = require('../core/dom/modification.js');
-    var style= require('./alert.css', 'css');
+    var style = require('./alert.css', 'css');
 
     var defaults = {
         addClass: 'donkey-widgets-alert',
@@ -30,6 +30,8 @@ define(function (require, exports, module) {
 
         if (typeis(content) === 'string') {
             options.content = content;
+        } else if (content && content.message) {
+            options.content = content.message;
         } else {
             options = content;
         }
