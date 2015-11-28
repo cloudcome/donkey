@@ -31,6 +31,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._options = dato.extend({}, defaults, options);
+            the._paused = false;
         },
 
         _now: function () {
@@ -104,6 +105,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._pause();
+            the._paused = true;
             the._pauseTime = the._now();
             the.emit('pause', the._remain);
 
@@ -122,6 +124,7 @@ define(function (require, exports, module) {
                 the._remain -= the._now() - the._pauseTime;
             }
 
+            the._paused = false;
             the.emit('resume', the._remain);
             the._start();
 
@@ -142,6 +145,21 @@ define(function (require, exports, module) {
             the.emit('stop', 0);
 
             return the;
+        },
+
+
+        /**
+         * 判断是否正在计时
+         * @returns {boolean}
+         */
+        is: function () {
+            var the = this;
+
+            if (the._paused) {
+                return false;
+            }
+
+            return this._remain > 0;
         }
     });
 
