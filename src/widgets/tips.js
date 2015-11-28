@@ -7,7 +7,7 @@
 
 define(function (require, exports, module) {
     /**
-     * @module parent/tips
+     * @module widgets/tips
      */
 
     'use strict';
