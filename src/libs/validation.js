@@ -51,7 +51,7 @@ define(function (require, exports, module) {
         breakOnInvalid: typeof window === 'undefined',
         defaultMsg: '${1}不合法'
     };
-    var Validation = klass.extends(Emitter).create({
+    var Validation = klass.extend(Emitter).create({
         constructor: function (options) {
             var the = this;
 
