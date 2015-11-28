@@ -416,7 +416,7 @@ define(function (require, exports, module) {
             // required => type => minLength => maxLength => pattern => data
 
             if ($(eleInput).attr('required')) {
-                the._validation.addRule(path, 'required');
+                the._validation.addRule(path, 'required', true);
             }
 
             var min = $(eleInput).attr('min');
