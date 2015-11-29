@@ -10,4 +10,10 @@ define(function (require) {
         console.log(page, maxPage);
         this.render();
     });
+    new Pager('#demo2', {
+        total: -1
+    }).on('change', function (page, maxPage) {
+        console.log(page, maxPage);
+        this.render();
+    });
 });

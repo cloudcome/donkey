@@ -30,7 +30,8 @@ define(function (require, exports, module) {
     var tpl = new Template(template);
     var disabledClass = 'disabled';
     var defaults = {
-        statusText: '共有${total}条，${page}/${maxPage}页',
+        hasTotalStatusText: '共有${total}条，${page}/${maxPage}页',
+        noTotalStatusText: '当前第${page}页',
         sureText: '确定',
         navPrev: '<',
         navStart: '<<',
@@ -40,7 +41,8 @@ define(function (require, exports, module) {
         page: 1,
         pageSize: 10,
         // 是否自动渲染，即点击页码之后自动更新页码，而不必等待异步操作
-        autoRender: false
+        autoRender: false,
+        jump: true
     };
     var Pager = ui.create({
         constructor: function ($parent, options) {
@@ -152,24 +154,32 @@ define(function (require, exports, module) {
                 total: options.total,
                 page: options.page,
                 pageSize: options.pageSize,
-                maxPage: Math.max(Math.ceil(options.total / options.pageSize), 1)
+                maxPage: options.total < 0 ? Number.MAX_VALUE : Math.max(Math.ceil(options.total / options.pageSize), 1)
             };
 
-            if (pager.maxPage < 2) {
-                $(the._$actions).addClass(disabledClass);
-            } else {
-                $(the._$actions).removeClass(disabledClass);
-
-                if (pager.page > 1) {
-                    $(the._$actions[0]).removeClass(disabledClass);
-                } else {
+            if (options.total < 0) {
+                if (pager.page < 2) {
                     $(the._$actions[0]).addClass(disabledClass);
-                }
-
-                if (pager.page === pager.maxPage) {
-                    $(the._$actions[3]).addClass(disabledClass);
                 } else {
-                    $(the._$actions[3]).removeClass(disabledClass);
+                    $(the._$actions[0]).removeClass(disabledClass);
+                }
+            } else {
+                if (pager.maxPage < 2) {
+                    $(the._$actions).addClass(disabledClass);
+                } else {
+                    $(the._$actions).removeClass(disabledClass);
+
+                    if (pager.page > 1) {
+                        $(the._$actions[0]).removeClass(disabledClass);
+                    } else {
+                        $(the._$actions[0]).addClass(disabledClass);
+                    }
+
+                    if (pager.page === pager.maxPage) {
+                        $(the._$actions[3]).addClass(disabledClass);
+                    } else {
+                        $(the._$actions[3]).removeClass(disabledClass);
+                    }
                 }
             }
         },
@@ -189,7 +199,7 @@ define(function (require, exports, module) {
 
             dato.extend(options, the._pager, data);
             the._cal();
-            the._$status.html(string.assign(options.statusText, the._pager));
+            the._$status.html(string.assign(the._pager.total < 0 ? options.noTotalStatusText : options.hasTotalStatusText, the._pager));
             the._$input.val(the._pager.page);
 
             return the;

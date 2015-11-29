@@ -1,4 +1,4 @@
-/*!
+/**
  * 选项卡
  * @author ydr.me
  * @create 2014-11-20 23:00
@@ -172,7 +172,7 @@ define(function (require, exports, module) {
             var the = this;
 
             // 卸载事件绑定
-            event.un(the._$tab, the._options.eventType, the._ontrigger);
+            the._$tab.un(the._options.eventType, the._ontrigger);
         }
     });
     Tab.defaults = defaults;
