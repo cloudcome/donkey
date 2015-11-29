@@ -41,7 +41,7 @@ define(function (require, exports, module) {
         page: 1,
         pageSize: 10,
         // 是否自动渲染，即点击页码之后自动更新页码，而不必等待异步操作
-        autoRender: false,
+        autoRender: true,
         jump: true
     };
     var Pager = ui.create({

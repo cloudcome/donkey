@@ -4,16 +4,18 @@ define(function (require) {
 
     var Pager = require('../../src/ui/pager/index.js');
 
-    new Pager('#demo', {
+    new Pager('#demo1', {
         total: 111
-    }).on('change', function (page, maxPage) {
-        console.log(page, maxPage);
-        this.render();
     });
     new Pager('#demo2', {
+        total: 111,
+        jump: false
+    });
+    new Pager('#demo3', {
         total: -1
-    }).on('change', function (page, maxPage) {
-        console.log(page, maxPage);
-        this.render();
+    });
+    new Pager('#demo4', {
+        total: -1,
+        jump: false
     });
 });
