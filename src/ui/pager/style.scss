@@ -7,6 +7,12 @@ $font-size: 14px;
   line-height: $size;
   font-size: $font-size;
 
+  *{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
   > * {
     float: left;
     margin-right: 20px;
@@ -43,19 +49,20 @@ $font-size: 14px;
   }
 
   input {
-    height: 20px;
+    width: 40px;
+    height: 30px;
     padding: 4px;
     border: 1px solid #ddd;
-    width: 30px;
     text-align: center;
     font-size: $font-size;
+    margin: 0 4px;
   }
 
   &-sure {
     background: #15AEED;
     color: #fff;
     display: inline-block;
-    padding: 5px 12px;
+    padding: 8px 15px;
     line-height: 1;
     margin-left: 5px;
     cursor: pointer;

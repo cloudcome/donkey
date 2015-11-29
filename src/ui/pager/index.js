@@ -135,10 +135,16 @@ define(function (require, exports, module) {
             }
 
             if (page === pager.page) {
+                the._$input.val(page);
                 return;
             }
 
             the._pager.page = page;
+
+            if (the._options.autoRender) {
+                the.render();
+            }
+
             the.emit('change', page, pager.maxPage);
         },
 

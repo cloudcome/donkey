@@ -3,6 +3,10 @@
   overflow: hidden;
   line-height: 30px;
   font-size: 14px; }
+  .donkey-ui-pager * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
   .donkey-ui-pager > * {
     float: left;
     margin-right: 20px; }
@@ -26,17 +30,18 @@
       background: #eee;
       cursor: not-allowed; }
   .donkey-ui-pager input {
-    height: 20px;
+    width: 40px;
+    height: 30px;
     padding: 4px;
     border: 1px solid #ddd;
-    width: 30px;
     text-align: center;
-    font-size: 14px; }
+    font-size: 14px;
+    margin: 0 4px; }
   .donkey-ui-pager-sure {
     background: #15AEED;
     color: #fff;
     display: inline-block;
-    padding: 5px 12px;
+    padding: 8px 15px;
     line-height: 1;
     margin-left: 5px;
     cursor: pointer; }
