@@ -147,7 +147,7 @@ define(function (require, exports, module) {
          * @returns {*|HTMLElement}
          */
         getNode: function () {
-            return this._$body;
+            return this._$body[0];
         },
 
 
