@@ -457,7 +457,7 @@ define(function (require, exports, module) {
                     name = matches[1].trim();
                     the._useFilters[name] = 1;
                     args = exp + (matches[3] ? ',' + matches[3] : '');
-                    exp = 'this.filters.' + name + '(' + args + ')';
+                    exp = the._selfVarible + '.filters.' + name + '(' + args + ')';
                 });
             }
 
