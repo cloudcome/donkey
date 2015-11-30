@@ -105,6 +105,9 @@ define(function (require, exports, module) {
                 .on('error', function (err, path) {
                     the.emit('error', err, the._pathMap[path]);
                 })
+                .on('success', function () {
+                    the.emit('success');
+                })
                 .before('validate', function (path) {
                     the.emit('beforevalidate', the._pathMap[path]);
                 })
