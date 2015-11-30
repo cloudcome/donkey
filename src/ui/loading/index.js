@@ -62,7 +62,8 @@ define(function (require, exports, module) {
             the._window = new Window(the._$loading, {
                 modal: options.modal,
                 width: 'height',
-                height: 'width'
+                height: 'width',
+                translateY: 0
             }).on('update', function (size) {
                 var marginTop = (size.height - the._$inner.height() - paddingSize) / 2;
 
