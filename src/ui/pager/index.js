@@ -166,8 +166,10 @@ define(function (require, exports, module) {
             if (options.total < 0) {
                 if (pager.page < 2) {
                     $(the._$actions[0]).addClass(disabledClass);
+                    $(the._$actions[1]).addClass(disabledClass);
                 } else {
                     $(the._$actions[0]).removeClass(disabledClass);
+                    $(the._$actions[1]).removeClass(disabledClass);
                 }
             } else {
                 if (pager.maxPage < 2) {
