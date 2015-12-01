@@ -1,7 +1,8 @@
-/*!
+/**
  * Emitter.js
  * @author ydr.me
- * 2014-09-19 11:20
+ * @create 2014-09-19 11:20
+ * @update 2015年12月01日12:06:20
  */
 
 
@@ -88,22 +89,28 @@ define(function (require, exports, module) {
 
         /**
          * 添加事件触发前事件
-         * @param eventType {String} 事件，只有 emit beforesomeevent 的事件才可以被监听
+         * @param eventType {String} 事件，只有 emit beforeSomeEvent 的事件才可以被监听
          * @param listener {Function} 事件回调
          * @returns {Emitter}
          */
         before: function (eventType, listener) {
+            eventType = eventType.replace(/^\w/, function (word) {
+                return word.toUpperCase();
+            });
             return this.on('before' + eventType, listener);
         },
 
 
         /**
          * 添加事件触发后事件
-         * @param eventType {String} 事件，只有 emit beforesomeevent 的事件才可以被监听
+         * @param eventType {String} 事件，只有 emit afterSomeEvent 的事件才可以被监听
          * @param listener {Function} 事件回调
          * @returns {Emitter}
          */
         after: function (eventType, listener) {
+            eventType = eventType.replace(/^\w/, function (word) {
+                return word.toUpperCase();
+            });
             return this.on('after' + eventType, listener);
         },
 
