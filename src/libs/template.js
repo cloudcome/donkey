@@ -359,13 +359,13 @@ define(function (require, exports, module) {
          * @param {Boolean} [isOverride=false] 覆盖实例的过滤方法，默认为false
          *
          * @example
-         * tp.addFilter('test', function(val, arg1, arg2){
+         * tp.filter('test', function(val, arg1, arg2){
          *     // code
          *     // 规范定义，第1个参数为上一步的值
          *     // 后续参数自定义个数
          * });
          */
-        addFilter: function (name, callback, isOverride) {
+        filter: function (name, callback, isOverride) {
             var instanceFilters = this._template.filters;
 
             if (typeis(name) !== 'string') {
@@ -615,7 +615,7 @@ define(function (require, exports, module) {
      * @param {Boolean} [isOverride=false] 是否强制覆盖，默认 false
      * @static
      */
-    Template.addFilter = function (name, callback, isOverride) {
+    Template.filter = function (name, callback, isOverride) {
         if (typeis(name) !== 'string') {
             throw new Error('filter name must be a string');
         }
@@ -630,23 +630,6 @@ define(function (require, exports, module) {
         }
 
         filters[name] = callback;
-    };
-
-
-    /**
-     * 获取过滤方法
-     * @param {String} [name] 获取过滤方法的名称，为空表示获取全部过滤方法
-     * @returns {Function|Object} 放回过滤方法或过滤方法的集合
-     * @static
-     */
-    Template.getFilter = function (name) {
-        if (!name) {
-            return filters;
-        }
-
-        if (typeis(name) === 'string') {
-            return filters[name];
-        }
     };
 
 
