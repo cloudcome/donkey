@@ -141,23 +141,23 @@ define(function (require, exports, module) {
                     // 多个连续开始符号
                     if (!$0 || $0 === '{') {
                         if (inIgnore) {
-                            output.push(_var + '+=' + the._cleanPice(openTag) + ';\n');
+                            output.push(_var + '+=' + the._cleanPice(openTag) + ';');
                         }
                     }
                     // 忽略开始
                     else if ($0.slice(-1) === '\\') {
-                        output.push(_var + '+=' + the._cleanPice($0.slice(0, -1) + openTag) + ';\n');
+                        output.push(_var + '+=' + the._cleanPice($0.slice(0, -1) + openTag) + ';');
                         inIgnore = true;
                         parseTimes--;
                     }
                     else {
                         if ((parseTimes % 2) === 0) {
-                            throw new Error('find unclose tag ' + openTag);
+                            throw new TypeError('find unclose tag ' + openTag);
                         }
 
                         inIgnore = false;
                         inExp = true;
-                        output.push(_var + '+=' + the._cleanPice($0) + ';\n');
+                        output.push(_var + '+=' + the._cleanPice($0) + ';');
                     }
                 }
                 // 1个结束符
@@ -197,42 +197,43 @@ define(function (require, exports, module) {
 
                     // if abc
                     if (the._hasPrefix($0, 'if')) {
-                        output.push(the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';\n');
+                        output.push(the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';');
                     }
                     // else if abc
                     else if (REG_ELSE_IF.test($0)) {
-                        output.push('}' + the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';\n');
+                        output.push('}' + the._parseIfAndElseIf($0) + _var + '+=' + $1 + ';');
                     }
                     // else
                     else if ($0 === 'else') {
-                        output.push('\n}else{\n' + _var + '+=' + $1 + ';\n');
+                        output.push('\n}else{\n' + _var + '+=' + $1 + ';');
                     }
                     // /if
                     else if ($0 === '/if') {
-                        output.push('\n}' + _var + '+=' + $1 + ';\n');
+                        output.push('\n}' + _var + '+=' + $1 + ';');
                     }
                     // list list as key,val
                     // list list as val
                     else if (the._hasPrefix($0, 'list')) {
-                        output.push(the._parseList($0) + _var + '+=' + $1 + ';\n');
+                        output.push(the._parseList($0) + _var + '+=' + $1 + ';');
                     }
                     // /list
                     else if ($0 === '/list') {
-                        output.push('}, this);\n' + _var + '+=' + $1 + ';\n');
+                        output.push('}, this);\n' + _var + '+=' + $1 + ';');
                     }
                     // var
                     else if (the._hasPrefix($0, 'var')) {
                         parseVar = the._parseVar($0);
 
                         if (parseVar) {
-                            output.push(parseVar + '\n');
+                            output.push(parseVar);
                         }
 
-                        output.push(_var + '+=' + $1 + ';\n');
+                        output.push(_var + '+=' + $1 + ';');
                     }
                     // #
                     else if (REG_HASH.test($0)) {
                         parseVar = the._parseVar($0.replace(REG_HASH, ''));
+                        output.push(_var + '+=' + $1 + ';');
 
                         if (parseVar) {
                             output.push(parseVar);
@@ -243,20 +244,20 @@ define(function (require, exports, module) {
                         parseVar = the._parseExp($0);
 
                         if (parseVar) {
-                            output.push(_var + '+=' + the._parseExp($0) + '+' + $1 + ';\n');
+                            output.push(_var + '+=' + the._parseExp($0) + '+' + $1 + ';');
                         }
                     }
 
                 }
                 // 多个结束符
                 else {
-                    output.push(_var + '+=' + the._cleanPice(value) + ';\n');
+                    output.push(_var + '+=' + the._cleanPice(value) + ';');
                     inExp = false;
                     inIgnore = false;
                 }
             });
 
-            fnStr += output.join('') + 'return ' + _var + ';\n';
+            fnStr += output.join('\n') + 'return ' + _var + ';\n';
             the.fn = fnStr;
 
             return the;

@@ -31,13 +31,16 @@
             border: 1px solid #ccc;
             background: #eee;
             padding: 10px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body ontouchstart="">
 
 <textarea id="textarea">
-    {{phone | blurPhone}}
+    {{var refundDesc = '呵呵$123$哈哈' }}
+    {{# refundDesc = refundDesc.replace('$', '<b class="text-primary">').replace('$', '</b>') }}
+    <p class="text-muted">{{=refundDesc}}</p>
 </textarea>
 
 <pre id="pre1"></pre>
