@@ -14,15 +14,19 @@ define(function (require, exports, module) {
 
     var dato = require('../utils/dato.js');
     var scan = require('./_scan.js');
+    var watch = require('../3rd/watch.js');
     var Directive = require('./_directive.js');
     var defaults = {
         prefix: 'v'
     };
     var directives = [];
-
     var Mvvm = module.exports = function (ele, data, options) {
         options = dato.extend({}, defaults, options);
-        scan(ele, directives, options);
+        var scanner = scan(ele, directives, options);
+
+        dato.each(scanner, function () {
+
+        });
     };
 
     Mvvm.directive = function (directive) {

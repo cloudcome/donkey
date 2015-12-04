@@ -47,7 +47,6 @@ define(function (require, exports, module) {
                 /* jshint ignore: start*/
                 dato.each(directives, function (index, directive) {
                     directive.bind(node, type, attrValue);
-                    directive.update(node, type, attrValue);
                 });
                 /* jshint ignore: end*/
 
