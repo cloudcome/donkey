@@ -26,43 +26,44 @@ define(function (require, exports, module) {
             type: types.join('-')
         };
     };
-
+    var directiveId = 0;
     var defaults = {};
     var Directive = klass.create({
         constructor: function (directive, options) {
             var the = this;
 
+            the._id = directiveId++;
             the._directive = directive;
             the._options = dato.extend({}, defaults, options);
-        },
+            // 复制指令属性到当前实例
+            dato.each(the._directive, function (key, val) {
+                the[key] = val;
+            });
+            the.bind = function (node, type, value) {
+                var the = this;
+                var options = the._options;
+                var ret = parseType(type);
 
+                the._directiveName = ret.name;
+                if (typeis.Function(the._directive.bind) && the._directive.name === ret.name) {
+                    the._directive.bind.call(the, node, ret.type, value);
+                }
+            };
+            the.update = function (newValue) {
+                var the = this;
+                var options = the._options;
+                if (typeis.Function(the._directive.update) && the._directive.name === the._directiveName) {
+                    the._directive.update.call(the, newValue);
+                }
+            };
+            the.destroy = function () {
+                var the = this;
+                var options = the._options;
 
-        bind: function (node, type, value) {
-            var the = this;
-            var options = the._options;
-            var ret = parseType(type);
-
-            the._directiveName = ret.name;
-            if (typeis.Function(the._directive.bind) && the._directive.name === ret.name) {
-                the._directive.bind.call(the._directive, node, ret.type, value);
-            }
-        },
-
-        update: function (newValue) {
-            var the = this;
-            var options = the._options;
-            if (typeis.Function(the._directive.update) && the._directive.name === the._directiveName) {
-                the._directive.update.call(the._directive, newValue);
-            }
-        },
-
-        destroy: function () {
-            var the = this;
-            var options = the._options;
-
-            if (typeis.Function(the._directive.destroy) && the._directive.name === the._directiveName) {
-                the._directive.destroy.call(the._directive);
-            }
+                if (typeis.Function(the._directive.destroy) && the._directive.name === the._directiveName) {
+                    the._directive.destroy.call(the);
+                }
+            };
         }
     });
 

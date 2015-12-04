@@ -44,7 +44,7 @@ define(function (require, exports, module) {
 
         dato.each(data, function (key) {
             if (REG_SAFE_VARIBLE.test(key)) {
-                vars.push('var ' + key + ' = ' + argName + '[' + key + '];');
+                vars.push('var ' + key + ' = ' + argName + '["' + key + '"];');
             }
         });
 

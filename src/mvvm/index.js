@@ -12,25 +12,50 @@ define(function (require, exports, module) {
 
     'use strict';
 
+    var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var scan = require('./_scan.js');
     var watch = require('../3rd/watch.js');
-    var Directive = require('./_directive.js');
     var defaults = {
         prefix: 'v'
     };
     var directives = [];
-    var Mvvm = module.exports = function (ele, data, options) {
-        options = dato.extend({}, defaults, options);
-        var scanner = scan(ele, directives, options);
+    var Mvvm = module.exports = klass.create({
+        constructor: function (ele, data, options) {
+            var the = this;
 
-        dato.each(scanner, function () {
+            the._options = options = dato.extend({}, defaults, options);
+            the._scanner = scan(ele, directives, options);
+            the._render(data);
+        },
 
-        });
-    };
+        directive: function () {
+            // 实例指令
+        },
+
+        _render: function (data) {
+            var the = this;
+            var render = function (scanner) {
+                dato.each(scanner, function (tagName, info) {
+                    dato.each(info.attributes, function (index, meta) {
+                        dato.each(meta.directives, function (index, directive) {
+                            directive.update(data);
+                        });
+                    });
+
+                    dato.each(info.children, function (index, scanner) {
+                        render(scanner, data);
+                    });
+                });
+            };
+
+            render(the._scanner, data);
+        }
+    });
 
     Mvvm.directive = function (directive) {
-        directives.push(new Directive(directive));
+        directives.push(directive);
     };
+    Mvvm.defaults = defaults;
     Mvvm.directives = directives;
 });

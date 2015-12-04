@@ -20,7 +20,7 @@ define(function (require, exports, module) {
             this.expression = expression;
         },
         update: function (newValue) {
-            if (eval2(this.expression)) {
+            if (eval2(this.expression, newValue)) {
                 this.$ele.addClass(this.className);
             }
         }

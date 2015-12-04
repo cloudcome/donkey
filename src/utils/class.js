@@ -114,7 +114,7 @@ define(function (require, exports, module) {
                 superConstructor.apply(the, args);
             }
 
-            the.classId = classId++;
+            the.__classId__ = classId++;
             con.apply(the, args);
         };
 
