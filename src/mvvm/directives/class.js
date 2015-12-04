@@ -10,7 +10,7 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
-    var eval2 = require('../eval.js');
+    var eval2 = require('../_eval.js');
 
     module.exports = {
         name: 'class',
