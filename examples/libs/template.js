@@ -17,7 +17,7 @@ define(function (require, exports, module) {
     var $pre1 = document.getElementById('pre1');
     var $pre2 = document.getElementById('pre2');
 
-    Template.addFilter('blurPhone', function (phone) {
+    Template.filter('blurPhone', function (phone) {
         return phone.slice(0, 2) + '****' + phone.slice(7, 10);
     });
 
