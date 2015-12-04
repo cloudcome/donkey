@@ -18,20 +18,25 @@
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <title>observe.html</title>
+    <style>
+        .big{
+            font-size: 200%;
+        }
+    </style>
 </head>
 <body ontouchstart="">
 
-<div v-class="abc: true" id="demo">
+<div v-class-abc="true" id="demo">
     #demo
     <ul v-class-abc="true" v-class-def="true">
-        <li v-class-abc="true" v-class-def="true">1</li>
+        <li v-class-abc="true" v-class-def="true" v-class-big="big">1</li>
         <li v-class-abc="true" v-class-def="true">2</li>
         <li v-class-abc="true" v-class-def="true">3</li>
     </ul>
 </div>
 
 <script src="/examples/jquery.min.js"></script>
-<script src="/examples/coolie.min.js" data-config="coolie-config.js" data-main="mvvm/_scan.js"></script>
+<script src="/examples/coolie.min.js" data-config="coolie-config.js" data-main="mvvm/index.js"></script>
 
 </body>
 </html>

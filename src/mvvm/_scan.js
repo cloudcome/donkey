@@ -23,11 +23,13 @@ define(function (require, exports, module) {
 
     /**
      * 扫描属性
+     * @param node {Object} 节点
      * @param attributes {Array} 属性列表
+     * @param directives {Array} 指令数组
      * @param options {Object} 配置
      * @returns {Array}
      */
-    var scanAttribute = function (attributes, options) {
+    var scanAttribute = function (node, attributes, directives, options) {
         var length = attributes.length;
         var prefixLength = options.prefix.length + 1;
         var ret = [];
@@ -36,15 +38,25 @@ define(function (require, exports, module) {
             var attribute = attributes[length];
             var attrName = attribute.name;
             var attrValue = attribute.value;
-            var isBind = attrName.slice(0, prefixLength) === options.prefix + '-';
+            var isDirective = attrName.slice(0, prefixLength) === options.prefix + '-';
 
-            if (isBind) {
+            if (isDirective) {
                 var type = attrName.slice(prefixLength);
-                //var expression = attrValue;
+                node.removeAttribute(attribute.name);
 
+                /* jshint ignore: start*/
+                dato.each(directives, function (index, directive) {
+                    directive.bind(node, type, attrValue);
+                    directive.update(node, type, attrValue);
+                });
+                /* jshint ignore: end*/
+
+                // v-class-abc="true"
                 ret.push({
+                    // class-abc
                     type: type,
-                    expression: attrValue
+                    // true
+                    value: attrValue
                 });
             }
         }
@@ -56,18 +68,19 @@ define(function (require, exports, module) {
     /**
      * 扫描节点
      * @param ele {Object} 元素
+     * @param directives {Array} 指令数组
      * @param options {object} 配置
-     * @returns {{tagName: string, ele: *, childNodes: (*|NodeList), directives: Array}}
+     * @returns {{}}
      */
-    var scanNode = function (ele, options) {
+    var scanNode = function (ele, directives, options) {
         var attributes = ele.attributes;
         var tagName = ele.tagName;
 
         return {
             tagName: tagName,
-            ele: ele,
+            node: ele,
             childNodes: ele.childNodes,
-            directives: scanAttribute(attributes, options)
+            attributes: scanAttribute(ele, attributes, directives, options)
         };
     };
 
@@ -75,15 +88,16 @@ define(function (require, exports, module) {
     /**
      * 深度扫描
      * @param ele {Object} 元素
-     * @param options {object} 配置
+     * @param directives {Array} 指令数组
+     * @param [options] {object} 配置
      * @returns {{}}
      */
-    module.exports = function (ele, options) {
+    module.exports = function (ele, directives, options) {
         options = dato.extend({}, defaults, options);
 
         var ret = {};
         var scanDeep = function (ret, ele) {
-            var _ret = scanNode(ele, options);
+            var _ret = scanNode(ele, directives, options);
 
             ret[_ret.tagName] = _ret;
             _ret.children = [];

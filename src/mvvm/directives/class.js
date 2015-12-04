@@ -6,21 +6,23 @@
 
 
 define(function (require, exports, module) {
-    /**
-     * @module parent/_directive-class
-     */
-
     'use strict';
 
+    var $ = window.jQuery;
+
+    var eval2 = require('../eval.js');
+
     module.exports = {
-        bind: function (ele, type, expression) {
-
+        name: 'class',
+        bind: function (ele, className, expression) {
+            this.$ele = $(ele);
+            this.className = className;
+            this.expression = expression;
         },
-        update: function () {
-
-        },
-        unbind: function () {
-
+        update: function (newValue) {
+            if (eval2(this.expression)) {
+                this.$ele.addClass(this.className);
+            }
         }
     };
 });
