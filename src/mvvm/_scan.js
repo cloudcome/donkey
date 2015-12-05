@@ -10,6 +10,7 @@ define(function (require, exports, module) {
 
     var dato = require('../utils/dato.js');
     var Directive = require('./_directive.js');
+    var parser = require('./_parser.js');
 
     var defaults = {
         // 前缀
@@ -34,12 +35,12 @@ define(function (require, exports, module) {
         var length = attributes.length;
         var prefixLength = options.prefix.length + 1;
         var ret = [];
-        var buildDirective = function (dirctiveName) {
+        var buildDirective = function (dirctiveName, dirctiveValue, expression) {
             var findDirective = null;
             dato.each(directives, function (index, directive) {
                 if (directive.name === dirctiveName) {
                     findDirective = new Directive(directive);
-                    findDirective.bind(node, type, attrValue);
+                    findDirective.bind(node, dirctiveName, dirctiveValue, expression);
                     return false;
                 }
             });
@@ -72,15 +73,18 @@ define(function (require, exports, module) {
 
                 // v-class-abc="true"
                 ret.push({
-                    attrName: attrName,
-                    attrValue: attrValue,
-                    // class-abc
+                    name: attrName,
+                    value: attrValue,
+                    // class
                     diractiveName: retType.name,
+                    // abc
                     diractiveValue: retType.value,
                     // true
                     expression: attrValue,
+                    // ["varible"]
+                    varibles: parser(attrValue).varibles,
                     // 指令集
-                    directive: buildDirective(retType.name)
+                    directive: buildDirective(retType.name, retType.value, attrValue)
                 });
             }
         }

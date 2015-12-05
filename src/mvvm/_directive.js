@@ -12,21 +12,7 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
-    var parser = require('./_parser.js');
 
-    var REG_ATTR = /^attr-/;
-
-    var parseType = function (type) {
-        type = type.replace(REG_ATTR, '');
-
-        var types = type.split('-');
-        var name = types.shift();
-
-        return {
-            name: name,
-            type: types.join('-')
-        };
-    };
     var directiveId = 0;
     var defaults = {};
     var Directive = klass.create({
@@ -37,25 +23,22 @@ define(function (require, exports, module) {
             the._directive = directive;
             the._options = dato.extend({}, defaults, options);
             // 复制指令属性到当前实例
+            // name 等
             dato.each(the._directive, function (key, val) {
                 the[key] = val;
             });
-            the.bind = function (node, type, value) {
+            the.bind = function (node, dirctiveName, dirctiveValue, expression) {
                 var the = this;
                 var options = the._options;
-                var retType = parseType(type);
-                var retParser = parser(value);
 
-                the._directiveName = retType.name;
-                the.varibles = retParser.varibles;
-                if (typeis.Function(the._directive.bind) && the._directive.name === retType.name) {
-                    the._directive.bind.call(the, node, retType.type, value);
+                if (typeis.Function(the._directive.bind) && the.name === dirctiveName) {
+                    the._directive.bind.call(the, node, dirctiveValue, expression);
                 }
             };
             the.update = function (newValue) {
                 var the = this;
                 var options = the._options;
-                if (typeis.Function(the._directive.update) && the._directive.name === the._directiveName) {
+                if (typeis.Function(the._directive.update) && the.name === the._directiveName) {
                     the._directive.update.call(the, newValue);
                 }
             };
@@ -63,7 +46,7 @@ define(function (require, exports, module) {
                 var the = this;
                 var options = the._options;
 
-                if (typeis.Function(the._directive.destroy) && the._directive.name === the._directiveName) {
+                if (typeis.Function(the._directive.destroy) && the.name === the._directiveName) {
                     the._directive.destroy.call(the);
                 }
             };

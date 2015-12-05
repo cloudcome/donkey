@@ -38,16 +38,20 @@ define(function (require, exports, module) {
             var the = this;
             var render = function (scanner, data) {
                 dato.each(scanner, function (tagName, info) {
-                    dato.each(info.attributes, function (index, meta) {
-                        dato.each(meta.directives, function (index, directive) {
-                            directive.update(data);
+                    dato.each(info.attributes, function (index, attribute) {
+                        var directive = attribute.directive;
 
-                            if (directive.varibles.length) {
-                                watcher(data, directive.varibles, function () {
-                                    directive.update(data);
-                                });
-                            }
-                        });
+                        if (!directive) {
+                            return;
+                        }
+
+                        directive.update(data);
+
+                        if (attribute.varibles.length) {
+                            watcher(data, attribute.varibles, function () {
+                                directive.update(data);
+                            });
+                        }
                     });
 
                     dato.each(info.children, function (index, _scanner) {
