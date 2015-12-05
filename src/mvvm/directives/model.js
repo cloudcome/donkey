@@ -10,16 +10,18 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
+    var controller = require('../../utils/controller.js');
+
     module.exports = {
         bind: function (ele, token, data) {
             var the = this;
             the.$ele = $(ele);
             the.expression = token.expression;
             the.trigger = false;
-            the.$ele.on('input propertychange', this.oninput = function () {
+            the.$ele.on('input propertychange', this.oninput = controller.debounce(function () {
                 the.trigger = true;
                 the.set(this.value);
-            }).on('blur', this.onblur = function () {
+            })).on('blur', this.onblur = function () {
                 the.trigger = false;
             });
         },

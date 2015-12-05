@@ -11,12 +11,8 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
 
     module.exports = {
-        bind: function (ele, token) {
-            this.$ele = $(ele);
-            this.expression = token.expression;
-        },
-        update: function (newValue) {
-            this.$ele.text(this.exec(this.expression, newValue));
+        update: function () {
+            this.node.textContent = this.node.innerText = this.exec();
         }
     };
 });

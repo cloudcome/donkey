@@ -29,7 +29,7 @@ define(function (require, exports, module) {
 
             // 复制指令属性到当前实例
             // name 等
-            dato.each(the._directive, function (key, val) {
+            dato.each(directive, function (key, val) {
                 the[key] = val;
             });
 
@@ -41,7 +41,7 @@ define(function (require, exports, module) {
                 _directiveName = token.name;
 
                 if (typeis.Function(directive.bind) && the.name === _directiveName) {
-                    ret = the._directive.bind.call(the, node, token);
+                    ret = the.directive.bind.call(the, node, token);
                 }
 
                 return ret;
@@ -52,7 +52,7 @@ define(function (require, exports, module) {
                 var the = this;
 
                 if (typeis.Function(directive.update) && the.name === _directiveName) {
-                    the._directive.update.call(the, newValue);
+                    the.directive.update.call(the, newValue);
                 }
             };
 
@@ -61,7 +61,7 @@ define(function (require, exports, module) {
                 var the = this;
 
                 if (typeis.Function(directive.unbind) && the.name === _directiveName) {
-                    the._directive.unbind.call(the);
+                    the.directive.unbind.call(the);
                 }
             };
 
