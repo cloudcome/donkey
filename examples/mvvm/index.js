@@ -16,9 +16,11 @@ define(function (require, exports, module) {
 
     Mvvm.directive(require('../../src/mvvm/directives/class.js'));
 
-    var v1 = new Mvvm(document.getElementById('demo'), {
+    var data = window.data = {
         big: true
-    });
+    };
+
+    var v1 = new Mvvm(document.getElementById('demo'), data);
 
     //v1.directive(require('../../src/mvvm/directives/class.js'));
 });

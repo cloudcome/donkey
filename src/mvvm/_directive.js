@@ -12,6 +12,7 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
+    var parser = require('./_parser.js');
 
     var REG_ATTR = /^attr-/;
 
@@ -42,11 +43,13 @@ define(function (require, exports, module) {
             the.bind = function (node, type, value) {
                 var the = this;
                 var options = the._options;
-                var ret = parseType(type);
+                var retType = parseType(type);
+                var retParser = parser(value);
 
-                the._directiveName = ret.name;
-                if (typeis.Function(the._directive.bind) && the._directive.name === ret.name) {
-                    the._directive.bind.call(the, node, ret.type, value);
+                the._directiveName = retType.name;
+                the.varibles = retParser.varibles;
+                if (typeis.Function(the._directive.bind) && the._directive.name === retType.name) {
+                    the._directive.bind.call(the, node, retType.type, value);
                 }
             };
             the.update = function (newValue) {

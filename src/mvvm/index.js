@@ -36,16 +36,22 @@ define(function (require, exports, module) {
 
         _render: function (data) {
             var the = this;
-            var render = function (scanner) {
+            var render = function (scanner, data) {
                 dato.each(scanner, function (tagName, info) {
                     dato.each(info.attributes, function (index, meta) {
                         dato.each(meta.directives, function (index, directive) {
                             directive.update(data);
+
+                            if (directive.varibles.length) {
+                                watcher(data, directive.varibles, function () {
+                                    directive.update(data);
+                                });
+                            }
                         });
                     });
 
-                    dato.each(info.children, function (index, scanner) {
-                        render(scanner, data);
+                    dato.each(info.children, function (index, _scanner) {
+                        render(_scanner, data);
                     });
                 });
             };
