@@ -34,13 +34,28 @@ define(function (require, exports, module) {
         var length = attributes.length;
         var prefixLength = options.prefix.length + 1;
         var ret = [];
-        var directives2 = [];
-        var buildDirective = function (directives) {
+        var buildDirective = function (dirctiveName) {
+            var findDirective = null;
             dato.each(directives, function (index, directive) {
-                var directive2 = new Directive(directive);
-                directive2.bind(node, type, attrValue);
-                directives2.push(directive2);
+                if (directive.name === dirctiveName) {
+                    findDirective = new Directive(directive);
+                    findDirective.bind(node, type, attrValue);
+                    return false;
+                }
             });
+            return findDirective;
+        };
+        var REG_ATTR = /^attr-/;
+        var parseType = function (type) {
+            type = type.replace(REG_ATTR, '');
+
+            var types = type.split('-');
+            var name = types.shift();
+
+            return {
+                name: name,
+                value: types.join('-')
+            };
         };
 
         while (length--) {
@@ -51,17 +66,21 @@ define(function (require, exports, module) {
 
             if (isDirective) {
                 var type = attrName.slice(prefixLength);
+                var retType = parseType(type);
                 node.removeAttribute(attribute.name);
-                buildDirective(directives);
+
 
                 // v-class-abc="true"
                 ret.push({
+                    attrName: attrName,
+                    attrValue: attrValue,
                     // class-abc
-                    type: type,
+                    diractiveName: retType.name,
+                    diractiveValue: retType.value,
                     // true
-                    value: attrValue,
+                    expression: attrValue,
                     // 指令集
-                    directives: directives2
+                    directive: buildDirective(retType.name)
                 });
             }
         }
