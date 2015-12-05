@@ -10,15 +10,13 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
-    module.exports = function (Mvvm) {
-        return {
-            bind: function (ele, token) {
-                this.$ele = $(ele);
-                this.expression = token.expression;
-            },
-            update: function (newValue) {
-                this.$ele.text(Mvvm.excute(this.expression, newValue));
-            }
-        };
+    module.exports = {
+        bind: function (ele, token) {
+            this.$ele = $(ele);
+            this.expression = token.expression;
+        },
+        update: function (newValue) {
+            this.$ele.text(this.exec(this.expression, newValue));
+        }
     };
 });

@@ -8,16 +8,14 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var eval2 = require('../_eval.js');
-
     module.exports = {
         name: '#text',
         bind: function (node, token) {
             this.node = node;
             this.expression = token.expression;
         },
-        update: function (data) {
-            this.node.nodeValue = eval2(this.expression, data);
+        update: function () {
+            this.node.nodeValue = this.exec(this.expression);
         }
     };
 });

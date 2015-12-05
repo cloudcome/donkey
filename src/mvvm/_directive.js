@@ -71,7 +71,7 @@ define(function (require, exports, module) {
             };
 
             // 执行表达式
-            the.eval = function () {
+            the.exec = function () {
                 return eval2(token.expression, data);
             };
         }

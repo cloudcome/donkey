@@ -10,20 +10,18 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
-    module.exports = function (Mvvm) {
-        return {
-            bind: function (ele, token) {
-                this.$ele = $(ele);
-                this.className = token.value;
-                this.expression = token.expression;
-            },
-            update: function (newValue) {
-                if (Mvvm.excute(this.expression, newValue)) {
-                    this.$ele.addClass(this.className);
-                } else {
-                    this.$ele.removeClass(this.className);
-                }
+    module.exports = {
+        bind: function (ele, token) {
+            this.$ele = $(ele);
+            this.className = token.value;
+            this.expression = token.expression;
+        },
+        update: function (newValue) {
+            if (this.exec(this.expression, newValue)) {
+                this.$ele.addClass(this.className);
+            } else {
+                this.$ele.removeClass(this.className);
             }
-        };
+        }
     };
 });
