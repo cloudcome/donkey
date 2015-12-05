@@ -8,5 +8,46 @@
 define(function (require, exports, module) {
     'use strict';
 
-    module.exports =  require('../3rd/watch.js').watch;
+
+    var klass = require('../utils/class.js');
+    var dato = require('../utils/dato.js');
+    var Emitter = require('../libs/emitter.js');
+    var watch = require('../3rd/watch.js').watch;
+
+    var defaults = {
+        // 超时时间 50 ms，避免频繁修改 DOM
+        timeout: 50
+    };
+
+    module.exports = klass.extend(Emitter).create({
+        constructor: function (data, options) {
+            var the = this;
+
+            the.data = data;
+            the._options = dato.extend({}, defaults, options);
+        },
+
+        watch: function (attrs, callback) {
+            var the = this;
+            var options = the._options;
+            var timeid = 0;
+
+            watch(the.data, attrs, function (key, pro, neo, old) {
+                the.emit('change', key, neo, old);
+
+                var now = new Date().getTime();
+
+                if (!the._lastTime || now - the._lastTime > options.timeout) {
+                    clearTimeout(timeid);
+                    callback(key, pro, neo, old);
+                } else {
+                    timeid = setTimeout(function () {
+                        callback(key, pro, neo, old);
+                    });
+                }
+
+                the._lastTime = now;
+            });
+        }
+    });
 });

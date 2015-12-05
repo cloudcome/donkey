@@ -11,11 +11,12 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var scan = require('./_scan.js');
-    var watcher = require('./_watcher.js');
+    var Watcher = require('./_watcher.js');
     var defaults = {
         prefix: 'v',
         openTag: '{{',
-        closeTag: '}}'
+        closeTag: '}}',
+        timeout: 50
     };
     var directives = [];
     var Mvvm = module.exports = klass.create({
@@ -24,6 +25,7 @@ define(function (require, exports, module) {
 
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan(ele, directives, options);
+            the._watcher = new Watcher(data, options);
             the._render(data);
         },
 
@@ -44,7 +46,7 @@ define(function (require, exports, module) {
                     directive.update(data);
 
                     if (attribute.varibles.length) {
-                        watcher(data, attribute.varibles, function () {
+                        the._watcher.watch(attribute.varibles, function () {
                             directive.update(data);
                         });
                     }
@@ -54,7 +56,7 @@ define(function (require, exports, module) {
                     scanner.directive.update(data);
 
                     if (scanner.varibles.length) {
-                        watcher(data, scanner.varibles, function () {
+                        the._watcher.watch(scanner.varibles, function () {
                             scanner.directive.update(data);
                         });
                     }

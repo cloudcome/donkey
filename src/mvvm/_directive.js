@@ -17,13 +17,12 @@ define(function (require, exports, module) {
     var directiveId = 0;
     var defaults = {};
     var Directive = klass.create({
-        constructor: function (directive, options) {
+        constructor: function (directive) {
             var the = this;
             var _directiveName = null;
 
             the._id = directiveId++;
             the._directive = directive;
-            the._options = dato.extend({}, defaults, options);
             // 复制指令属性到当前实例
             // name 等
             dato.each(the._directive, function (key, val) {
@@ -31,7 +30,6 @@ define(function (require, exports, module) {
             });
             the.bind = function (node, dirctiveName, dirctiveValue, expression) {
                 var the = this;
-                var options = the._options;
                 var ret = true;
                 var args = allocation.args(arguments);
 
@@ -49,14 +47,13 @@ define(function (require, exports, module) {
             };
             the.update = function (newValue) {
                 var the = this;
-                var options = the._options;
+
                 if (typeis.Function(the._directive.update) && the.name === _directiveName) {
                     the._directive.update.call(the, newValue);
                 }
             };
             the.destroy = function () {
                 var the = this;
-                var options = the._options;
 
                 if (typeis.Function(the._directive.destroy) && the.name === _directiveName) {
                     the._directive.destroy.call(the);

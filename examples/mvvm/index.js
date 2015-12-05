@@ -14,16 +14,18 @@ define(function (require, exports, module) {
     Mvvm.directive('text', require('../../src/mvvm/directives/text.js'));
 
     var data = window.data = {
-        big: true,
+        big: false,
         text: '默认',
-        name: '呵呵'
+        name: '呵呵',
+        html: '<s>html</s>'
     };
 
     new Mvvm(document.getElementById('demo'), data);
 
-    setInterval(function () {
+    setTimeout(function () {
         data.big = !data.big;
-        data.text = Date.now();
-        data.name = Date.now();
-    }, 1000);
+        data.text = Math.random();
+        data.name = Math.random();
+        data.html = '<s>' + Math.random() + '</s>';
+    }, 3000);
 });
