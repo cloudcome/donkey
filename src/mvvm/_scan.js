@@ -16,8 +16,6 @@ define(function (require, exports, module) {
     var namespace = '-donkey-mvvm-';
     var mvvmIndex = 0;
     var defaults = {
-        // 前缀
-        prefix: 'v',
         // 跳过深度检测的属性
         skipDeepOfAttributes: [
             'text',
@@ -124,13 +122,22 @@ define(function (require, exports, module) {
         };
     };
 
+
+    /**
+     * 扫描文本节点
+     * @param node
+     * @param directives
+     * @param options
+     * @returns {Array}
+     */
     var scanTextNode = function (node, directives, options) {
-        var parseRet = parseText(node.nodeValue);
+        var parseRet = parseText(node.nodeValue, options.openTag, options.closeTag);
         var ret = [];
+        var parentNode = node.parentNode;
 
-        node.parentNode.removeChild(node);
-        dato.each(parseRet.tokens, function (index, token) {
-
+        parentNode.removeChild(node);
+        dato.each(parseRet.tokens, function (index, item) {
+            parentNode.appendChild(document.createTextNode(item.token));
         });
 
         return ret;

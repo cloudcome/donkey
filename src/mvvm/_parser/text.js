@@ -34,6 +34,16 @@ define(function (require, exports, module) {
             lastToken += char;
         };
 
+        var pushString = function () {
+            if (end !== start) {
+                ret.push({
+                    token: string.slice(end, start),
+                    start: end,
+                    end: start
+                });
+            }
+        };
+
         for (; index < length; index++) {
             var char = string[index];
 
@@ -67,13 +77,7 @@ define(function (require, exports, module) {
                 inToken = false;
                 var raw = lastToken + close1;
 
-                if(lastChar){
-                    ret.push({
-                        token: string.slice(end, start),
-                        start: end,
-                        end: start
-                    });
-                }
+                pushString();
 
                 lastToken = '';
                 ret.push({
@@ -91,6 +95,9 @@ define(function (require, exports, module) {
             lastLastChar = lastChar;
             lastChar = char;
         }
+
+        start = length;
+        pushString();
 
         return {
             raw: string,
