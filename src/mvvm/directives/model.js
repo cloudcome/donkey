@@ -17,10 +17,10 @@ define(function (require, exports, module) {
                 the.$ele = $(ele);
                 the.expression = token.expression;
                 the.trigger = false;
-                the.$ele.on('input propertychange', function () {
+                the.$ele.on('input propertychange', this.oninput = function () {
                     the.trigger = true;
-                    data[token.expression] = this.value;
-                }).on('blur', function () {
+                    the.set(this.value);
+                }).on('blur', this.onblur = function () {
                     the.trigger = false;
                 });
             },
@@ -28,6 +28,10 @@ define(function (require, exports, module) {
                 if (!this.trigger) {
                     this.$ele.val(Mvvm.excute(this.expression, newValue));
                 }
+            },
+            unbind: function () {
+                this.$ele.off('input propertychange', this.oninput);
+                this.$ele.off('blur', this.onblur);
             }
         };
     };
