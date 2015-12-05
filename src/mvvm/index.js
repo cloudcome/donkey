@@ -23,6 +23,8 @@ define(function (require, exports, module) {
         constructor: function (ele, data, options) {
             var the = this;
 
+            data = data || {};
+            the.data = data;
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan(ele, directives, data, options);
             the._watcher = new Watcher(data, options);
