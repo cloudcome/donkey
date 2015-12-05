@@ -14,7 +14,18 @@ define(function (require, exports, module) {
 
     module.exports = {
         bind: function (ele, token) {
-            debugger;
+            var the = this;
+
+            switch (token.value){
+                case 'enter':
+                    break;
+
+                default:
+                    $(ele).on(token.value, function () {
+                        the.data[token.expression]();
+                    });
+                    break;
+            }
         }
     };
 });

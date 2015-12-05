@@ -13,10 +13,13 @@ define(function (require, exports, module) {
     Mvvm.directive('class', require('../../src/mvvm/directives/class.js'));
     Mvvm.directive('text', require('../../src/mvvm/directives/text.js'));
     Mvvm.directive('model', require('../../src/mvvm/directives/model.js'));
-    Mvvm.directive('click', require('../../src/mvvm/directives/event.js'));
+    Mvvm.directive('event', require('../../src/mvvm/directives/event.js'));
 
     var data = window.data = {
-        username: '#云淡然'
+        username: '#云淡然',
+        onClick: function () {
+            window.alert('你好，MVVM');
+        }
     };
 
     var mv1 = new Mvvm(document.getElementById('demo'), data);

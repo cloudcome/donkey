@@ -18,6 +18,7 @@ define(function (require, exports, module) {
 
     var namespace = '-donkey-mvvm-' + Math.random();
     var mvvmIndex = 0;
+    var eventDirectiveNameList = 'enter click'.split(' ');
     var defaults = {
         // 跳过深度检测的属性
         skipDeepOfAttributes: [
@@ -25,6 +26,11 @@ define(function (require, exports, module) {
             'html'
         ]
     };
+    var eventDirectiveNameMap = {};
+
+    dato.each(eventDirectiveNameList, function (index, eventDirectiveName) {
+        eventDirectiveNameMap[eventDirectiveName] = 1;
+    });
 
 
     /**
@@ -44,6 +50,12 @@ define(function (require, exports, module) {
         var buildDirective = function (dirctiveName, dirctiveValue, expression) {
             var findDirective = null;
             var ret = true;
+
+            if (eventDirectiveNameMap[dirctiveName]) {
+                dirctiveValue = dirctiveName;
+                dirctiveName = 'event';
+            }
+
             dato.each(directives, function (index, directive) {
                 if (directive.name === dirctiveName) {
                     findDirective = new Directive(node, directive, {
