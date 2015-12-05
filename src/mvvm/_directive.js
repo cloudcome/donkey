@@ -71,8 +71,14 @@ define(function (require, exports, module) {
             };
 
             // 执行表达式
-            the.exec = function () {
-                return eval2(token.expression, data);
+            /**
+             * @property exec
+             * @param _expression
+             * @param _data
+             * @returns {*}
+             */
+            the.exec = function (_expression, _data) {
+                return eval2(_expression || token.expression, _data || data);
             };
         }
     });

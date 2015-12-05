@@ -1,5 +1,5 @@
 /**
- * v-class
+ * v-attr
  * @author ydr.me
  * @create 2015-12-04 16:04
  */
@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     module.exports = {
         bind: function (ele, token) {
             this.$ele = $(ele);
-            this.className = token.value;
+            this.attrName = token.value;
         },
         update: function () {
             if (Boolean(this.exec())) {
@@ -21,6 +21,8 @@ define(function (require, exports, module) {
             } else {
                 this.$ele.removeClass(this.className);
             }
+
+            this.$ele.addClass(this.attrName, Boolean(this.exec()) ? '':'');
         }
     };
 });

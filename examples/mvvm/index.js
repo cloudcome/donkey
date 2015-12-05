@@ -13,6 +13,7 @@ define(function (require, exports, module) {
     Mvvm.directive('class', require('../../src/mvvm/directives/class.js'));
     Mvvm.directive('text', require('../../src/mvvm/directives/text.js'));
     Mvvm.directive('model', require('../../src/mvvm/directives/model.js'));
+    Mvvm.directive('click', require('../../src/mvvm/directives/event.js'));
 
     var data = window.data = {
         username: '#云淡然'

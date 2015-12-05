@@ -1,5 +1,5 @@
 /**
- * v-class
+ * v-prop
  * @author ydr.me
  * @create 2015-12-04 16:04
  */
@@ -13,14 +13,10 @@ define(function (require, exports, module) {
     module.exports = {
         bind: function (ele, token) {
             this.$ele = $(ele);
-            this.className = token.value;
+            this.propName = token.value;
         },
         update: function () {
-            if (Boolean(this.exec())) {
-                this.$ele.addClass(this.className);
-            } else {
-                this.$ele.removeClass(this.className);
-            }
+            this.$ele.prop(this.propName, Boolean(this.exec()));
         }
     };
 });
