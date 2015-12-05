@@ -12,10 +12,10 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    var _parser = require('../../src/mvvm/_parser/text.js');
+    var _parser = require('../../../src/mvvm/_parser/expression.js');
 
     document.getElementById('parse').onclick = function () {
-        var ret = _parser(document.getElementById('textarea').value, '{{', '}}');
+        var ret = _parser(document.getElementById('textarea').value);
 
         document.getElementById('ret').innerHTML = JSON.stringify(ret, null, 4);
     };
