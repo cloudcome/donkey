@@ -13,8 +13,8 @@ define(function (require, exports, module) {
     module.exports = {
         bind: function (ele, token) {
             var the = this;
-            var parseRet = the.parseExpression();
-            var eventName = parseRet.varibles.shift();
+            var parseRet = the.parseFunction();
+            var eventName = parseRet.fnName;
 
             switch (token.value) {
                 case 'enter':

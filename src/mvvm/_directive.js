@@ -73,20 +73,24 @@ define(function (require, exports, module) {
                 data[token.expression] = value;
             };
 
-            // 执行表达式
             /**
-             * @property exec
-             * @param _expression
-             * @param _data
+             * 执行表达式
+             * @param [_expression]
+             * @param [_data]
              * @returns {*}
              */
             the.exec = function (_expression, _data) {
+                if (typeis.Object(_expression)) {
+                    _data = _expression;
+                    _expression = null;
+                }
+
                 return eval2(_expression || token.expression, _data || data);
             };
 
             /**
              * 解析表达式
-             * @param _expression
+             * @param [_expression]
              * @returns {*}
              */
             the.parseExpression = function (_expression) {
@@ -95,7 +99,7 @@ define(function (require, exports, module) {
 
             /**
              * 解析表达式
-             * @param _expression
+             * @param [_expression]
              * @returns {*}
              */
             the.parseText = function (_expression) {
@@ -104,16 +108,24 @@ define(function (require, exports, module) {
 
             /**
              * 解析参数
-             * @param _expression
+             * @param [_expression]
              * @returns {*}
              */
-            the.parseArgs = function (_expression) {
-                _expression = _expression || token.expression;
+            the.parseFunction = function (_expression) {
+                var fnName = '';
+                var raw = _expression = _expression || token.expression;
+
                 _expression = _expression
-                    .replace(/^[^(]+\(/, '')
+                    .replace(/^[^(]+\(/, function (_fnName) {
+                        fnName = _fnName.slice(0, -1);
+                        return '';
+                    })
                     .replace(/\)[^)]*$/, '');
 
-                return parseArgs(_expression);
+                var ret = parseArgs(_expression);
+                ret.fnName = fnName;
+                ret.raw = raw;
+                return ret;
             };
         }
     });
