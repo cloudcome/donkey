@@ -53,7 +53,7 @@ define(function (require, exports, module) {
                 lastArg += char;
             } else if (char === ',') {
                 pushArg();
-            } else {
+            } else if(char !== ' ') {
                 lastArg += char;
             }
         }
