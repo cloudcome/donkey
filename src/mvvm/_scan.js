@@ -11,7 +11,10 @@ define(function (require, exports, module) {
     var dato = require('../utils/dato.js');
     var Directive = require('./_directive.js');
     var parseExpression = require('./_parser/expression.js');
+    var parseText = require('./_parser/text.js');
 
+    var namespace = '-donkey-mvvm-';
+    var mvvmIndex = 0;
     var defaults = {
         // 前缀
         prefix: 'v',
@@ -100,13 +103,13 @@ define(function (require, exports, module) {
 
 
     /**
-     * 扫描节点
+     * 扫描元素节点
      * @param ele {Object} 元素
      * @param directives {Array} 指令数组
      * @param options {object} 配置
      * @returns {{}}
      */
-    var scanNode = function (ele, directives, options) {
+    var scanElement = function (ele, directives, options) {
         var attributes = ele.attributes;
         var tagName = ele.tagName;
         var attrbuteRet = scanAttribute(ele, attributes, directives, options);
@@ -121,20 +124,49 @@ define(function (require, exports, module) {
         };
     };
 
+    var scanTextNode = function (node, directives, options) {
+        var parseRet = parseText(node.nodeValue);
+        var ret = [];
+
+        node.parentNode.removeChild(node);
+        dato.each(parseRet.tokens, function (index, token) {
+
+        });
+
+        return ret;
+    };
+
 
     /**
      * 深度扫描
      * @param ele {Object} 元素
      * @param directives {Array} 指令数组
      * @param [options] {object} 配置
-     * @returns {{}}
+     * @returns {object|null}
      */
     module.exports = function (ele, directives, options) {
         options = dato.extend({}, defaults, options);
 
         var ret = {};
-        var scanDeep = function (ret, ele) {
-            var _ret = scanNode(ele, directives, options);
+        var scanDeep = function (ret, node) {
+            var _ret = null;
+
+            switch (node.nodeType) {
+                // #element
+                case 1:
+                    _ret = scanElement(node, directives, options);
+
+                    break;
+
+                // #text
+                case 3:
+                    _ret = scanTextNode(node, directives, options);
+                    break;
+            }
+
+            if (!_ret) {
+                return;
+            }
 
             ret[_ret.tagName] = _ret;
             _ret.children = [];
@@ -143,16 +175,18 @@ define(function (require, exports, module) {
 
             if (_ret.deep) {
                 dato.each(childNodes, function (index, childNode) {
-                    if (childNode.nodeType === 1) {
-                        var _childRet = {};
-
-                        _ret.children.push(_childRet);
-                        scanDeep(_childRet, childNode);
-                    }
+                    var _childRet = {};
+                    _ret.children.push(_childRet);
+                    scanDeep(_childRet, childNode);
                 });
             }
         };
 
+        if (ele[namespace]) {
+            return null;
+        }
+
+        ele[namespace] = mvvmIndex++;
         scanDeep(ret, ele);
 
         return ret;

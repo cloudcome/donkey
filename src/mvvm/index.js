@@ -1,15 +1,11 @@
 /**
- * 文件描述
+ * mvvm
  * @author ydr.me
  * @create 2015-12-04 16:07
  */
 
 
 define(function (require, exports, module) {
-    /**
-     * @module parent/index
-     */
-
     'use strict';
 
     var klass = require('../utils/class.js');
@@ -28,8 +24,8 @@ define(function (require, exports, module) {
 
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan(ele, directives, options);
-            the._render(data);
-            watcher(data, the._scanner);
+            console.dir(the._scanner);
+            //the._render(data);
         },
 
         directive: function () {
@@ -66,6 +62,11 @@ define(function (require, exports, module) {
         }
     });
 
+    /**
+     * 静态指令
+     * @param name
+     * @param directive
+     */
     Mvvm.directive = function (name, directive) {
         directive = directive(Mvvm);
         directive.name = name;
