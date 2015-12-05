@@ -46,12 +46,12 @@ define(function (require, exports, module) {
             var ret = true;
             dato.each(directives, function (index, directive) {
                 if (directive.name === dirctiveName) {
-                    findDirective = new Directive(directive);
-                    ret = findDirective.bind(node, {
+                    findDirective = new Directive(node, directive, {
                         name: dirctiveName,
                         value: dirctiveValue,
                         expression: expression
                     }, data);
+                    ret = findDirective.bind();
                     return false;
                 }
             });
@@ -152,11 +152,11 @@ define(function (require, exports, module) {
             var expression = item.expression;
 
             if (expression) {
-                directive = new Directive(textNodeDirective);
-                directive.bind(textNode, {
+                directive = new Directive(textNode, textNodeDirective, {
                     name: text,
                     expression: expression
                 }, data);
+                directive.bind();
             }
 
             parentNode.insertBefore(textNode, node);
