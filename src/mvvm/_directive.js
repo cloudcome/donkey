@@ -15,6 +15,7 @@ define(function (require, exports, module) {
     var eval2 = require('./_eval.js');
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
+    var parseArgs = require('./_parser/args.js');
 
     var directiveId = 0;
     var defaults = {};
@@ -99,6 +100,20 @@ define(function (require, exports, module) {
              */
             the.parseText = function (_expression) {
                 return parseText(_expression || token.expression);
+            };
+
+            /**
+             * 解析参数
+             * @param _expression
+             * @returns {*}
+             */
+            the.parseArgs = function (_expression) {
+                _expression = _expression || token.expression;
+                _expression = _expression
+                    .replace(/^[^(]+\(/, '')
+                    .replace(/\)[^)]*$/, '');
+
+                return parseArgs(_expression);
             };
         }
     });

@@ -1,15 +1,11 @@
 /**
- * 文件描述
+ * 解析逗号分隔的参数
  * @author ydr.me
  * @create 2015-12-05 22:51
  */
 
 
 define(function (require, exports, module) {
-    /**
-     * @module parent/args
-     */
-
     'use strict';
 
     module.exports = function (string) {
@@ -47,13 +43,12 @@ define(function (require, exports, module) {
             } else if (char === '"') {
                 inDoubleQuote = true;
                 lastArg += char;
-            }
-            else if (char === '\'') {
+            } else if (char === '\'') {
                 inSingleQuote = true;
                 lastArg += char;
             } else if (char === ',') {
                 pushArg();
-            } else if(char !== ' ') {
+            } else if (char !== ' ') {
                 lastArg += char;
             }
         }
