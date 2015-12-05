@@ -22,6 +22,8 @@ define(function (require, exports, module) {
         update: function (newValue) {
             if (eval2(this.expression, newValue)) {
                 this.$ele.addClass(this.className);
+            }else{
+                this.$ele.removeClass(this.className);
             }
         }
     };

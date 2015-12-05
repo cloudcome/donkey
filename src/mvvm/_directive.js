@@ -18,6 +18,7 @@ define(function (require, exports, module) {
     var Directive = klass.create({
         constructor: function (directive, options) {
             var the = this;
+            var _directiveName = null;
 
             the._id = directiveId++;
             the._directive = directive;
@@ -31,6 +32,7 @@ define(function (require, exports, module) {
                 var the = this;
                 var options = the._options;
 
+                _directiveName = dirctiveName;
                 if (typeis.Function(the._directive.bind) && the.name === dirctiveName) {
                     the._directive.bind.call(the, node, dirctiveValue, expression);
                 }
@@ -38,7 +40,7 @@ define(function (require, exports, module) {
             the.update = function (newValue) {
                 var the = this;
                 var options = the._options;
-                if (typeis.Function(the._directive.update) && the.name === the._directiveName) {
+                if (typeis.Function(the._directive.update) && the.name === _directiveName) {
                     the._directive.update.call(the, newValue);
                 }
             };
@@ -46,7 +48,7 @@ define(function (require, exports, module) {
                 var the = this;
                 var options = the._options;
 
-                if (typeis.Function(the._directive.destroy) && the.name === the._directiveName) {
+                if (typeis.Function(the._directive.destroy) && the.name === _directiveName) {
                     the._directive.destroy.call(the);
                 }
             };
