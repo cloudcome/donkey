@@ -40,6 +40,7 @@ define(function (require, exports, module) {
                     if (args.length === 4) {
                         ret = the._directive.bind.call(the, node, dirctiveValue, expression);
                     } else {
+                        expression = args[2];
                         ret = the._directive.bind.call(the, node, expression);
                     }
                 }
