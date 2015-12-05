@@ -78,7 +78,6 @@ define(function (require, exports, module) {
      * @param directive
      */
     Mvvm.directive = function (name, directive) {
-        directive = directive(Mvvm);
         directive.name = name;
         directives.push(directive);
     };
