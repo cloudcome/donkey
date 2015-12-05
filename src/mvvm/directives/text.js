@@ -12,9 +12,9 @@ define(function (require, exports, module) {
 
     module.exports = function (Mvvm) {
         return {
-            bind: function (ele, attrValue, expression) {
+            bind: function (ele, token) {
                 this.$ele = $(ele);
-                this.expression = expression;
+                this.expression = token.expression;
             },
             update: function (newValue) {
                 this.$ele.text(Mvvm.excute(this.expression, newValue));

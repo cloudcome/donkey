@@ -30,9 +30,10 @@
 </head>
 <body ontouchstart="">
 
-<div id="demo">
+<div id="demo" v-class-big="big">
     <input type="text" v-model="username">
     Hello {{username}}
+    <p>你好，<b v-text="username"></b></p>
 </div>
 
 <script src="/examples/jquery.min.js"></script>

@@ -27,14 +27,14 @@ define(function (require, exports, module) {
             dato.each(the._directive, function (key, val) {
                 the[key] = val;
             });
-            the.bind = function (node, token) {
+            the.bind = function (node, token, data) {
                 var the = this;
                 var ret = true;
 
                 _directiveName = token.name;
 
                 if (typeis.Function(the._directive.bind) && the.name === _directiveName) {
-                    ret = the._directive.bind.call(the, node, token);
+                    ret = the._directive.bind.call(the, node, token, data);
                 }
 
                 return ret;
