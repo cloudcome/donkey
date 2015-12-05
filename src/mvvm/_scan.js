@@ -18,7 +18,7 @@ define(function (require, exports, module) {
 
     var namespace = '-donkey-mvvm-' + Math.random();
     var mvvmIndex = 0;
-    var eventDirectiveNameList = 'enter click'.split(' ');
+    var eventDirectiveNameList = 'enter click keydown keypress keyup'.split(' ');
     var defaults = {
         // 跳过深度检测的属性
         skipDeepOfAttributes: [
