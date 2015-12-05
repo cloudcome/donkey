@@ -24,8 +24,7 @@ define(function (require, exports, module) {
 
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan(ele, directives, options);
-            console.dir(the._scanner);
-            //the._render(data);
+            the._render(data);
         },
 
         directive: function () {
@@ -35,27 +34,36 @@ define(function (require, exports, module) {
         _render: function (data) {
             var the = this;
             var render = function (scanner, data) {
-                dato.each(scanner, function (tagName, info) {
-                    dato.each(info.attributes, function (index, attribute) {
-                        var directive = attribute.directive;
+                dato.each(scanner.attributes, function (index, attribute) {
+                    var directive = attribute.directive;
 
-                        if (!directive) {
-                            return;
-                        }
+                    if (!directive) {
+                        return;
+                    }
 
-                        directive.update(data);
+                    directive.update(data);
 
-                        if (attribute.varibles.length) {
-                            watcher(data, attribute.varibles, function () {
-                                directive.update(data);
-                            });
-                        }
-                    });
-
-                    dato.each(info.children, function (index, _scanner) {
-                        render(_scanner, data);
-                    });
+                    if (attribute.varibles.length) {
+                        watcher(data, attribute.varibles, function () {
+                            directive.update(data);
+                        });
+                    }
                 });
+
+                if (scanner.directive) {
+                    scanner.directive.update(data);
+
+                    if (scanner.varibles.length) {
+                        watcher(data, scanner.varibles, function () {
+                            scanner.directive.update(data);
+                        });
+                    }
+                }
+
+                dato.each(scanner.children, function (index, _scanner) {
+                    render(_scanner, data);
+                });
+
             };
 
             render(the._scanner, data);

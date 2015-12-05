@@ -13,10 +13,11 @@ define(function (require, exports, module) {
     module.exports = {
         name: '#text',
         bind: function (node, expression) {
+            this.node = node;
             this.expression = expression;
         },
-        update: function (node, data) {
-            node.nodeValue = eval2(this.expression, data);
+        update: function (data) {
+            this.node.nodeValue = eval2(this.expression, data);
         }
     };
 });

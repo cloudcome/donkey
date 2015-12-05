@@ -41,6 +41,8 @@ define(function (require, exports, module) {
      * @example
      */
     module.exports = function (expression) {
+        expression = expression || '';
+
         // ""
         var inDoubleQuote = false;
         // ''

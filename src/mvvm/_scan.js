@@ -141,15 +141,21 @@ define(function (require, exports, module) {
         dato.each(parseRet.tokens, function (index, item) {
             var textNode = document.createTextNode(item.token);
             var directive = null;
+            var expression = item.expression;
 
-            if (item.expression) {
+            if (expression) {
                 directive = new Directive(textNodeDirective);
-                directive.bind(node, '#text', item.expression);
+                directive.bind(textNode, '#text', expression);
             }
 
             parentNode.appendChild(textNode);
             ret.push({
                 node: textNode,
+                token: item.token,
+                expression: expression,
+                varibles: parseExpression(expression).varibles,
+                start: item.start,
+                end: item.end,
                 directive: directive
             });
         });
@@ -169,6 +175,7 @@ define(function (require, exports, module) {
         options = dato.extend({}, defaults, options);
 
         var ret = {};
+        var tagName = '';
         var scanDeep = function (ret, node) {
             var _ret = null;
 
@@ -198,6 +205,7 @@ define(function (require, exports, module) {
                     ret.push(_ret);
                 } else {
                     ret[_ret.tagName] = _ret;
+                    tagName = _ret.tagName;
                 }
 
                 var children = dato.toArray(_ret.childNodes);
@@ -218,6 +226,6 @@ define(function (require, exports, module) {
         ele[namespace] = mvvmIndex++;
         scanDeep(ret, ele);
 
-        return ret;
+        return ret[tagName];
     };
 });

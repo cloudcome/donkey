@@ -24,5 +24,6 @@ define(function (require, exports, module) {
     setInterval(function () {
         data.big = !data.big;
         data.text = Date.now();
+        data.name = Date.now();
     }, 1000);
 });
