@@ -23,6 +23,7 @@ define(function (require, exports, module) {
         var close0 = closeTag[0];
         var close1 = closeTag[1];
         var start = 0;
+        var end = 0;
 
         var pushToken = function () {
             if (!lastToken) {
@@ -66,12 +67,20 @@ define(function (require, exports, module) {
                 inToken = false;
                 var raw = lastToken + close1;
 
+                if(lastChar){
+                    ret.push({
+                        token: string.slice(end, start),
+                        start: end,
+                        end: start
+                    });
+                }
+
                 lastToken = '';
                 ret.push({
                     token: raw,
                     expression: raw.slice(2, -2),
                     start: start,
-                    end: index + 1
+                    end: end = index + 1
                 });
             }
             // in token
