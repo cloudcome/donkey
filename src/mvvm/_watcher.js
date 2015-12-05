@@ -8,7 +8,6 @@
 define(function (require, exports, module) {
     'use strict';
 
-
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var Emitter = require('../libs/emitter.js');
@@ -19,7 +18,7 @@ define(function (require, exports, module) {
         timeout: 50
     };
 
-    module.exports = klass.extend(Emitter).create({
+    var Watcher = klass.extend(Emitter).create({
         constructor: function (data, options) {
             var the = this;
 
@@ -27,6 +26,12 @@ define(function (require, exports, module) {
             the._options = dato.extend({}, defaults, options);
         },
 
+        /**
+         * 监听数据变化
+         * @param attrs
+         * @param callback
+         * @returns {Watcher}
+         */
         watch: function (attrs, callback) {
             var the = this;
             var options = the._options;
@@ -48,6 +53,11 @@ define(function (require, exports, module) {
 
                 the._lastTime = now;
             });
+
+            return the;
         }
     });
+
+    Watcher.defaults = defaults;
+    module.exports = Watcher;
 });
