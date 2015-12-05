@@ -24,7 +24,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._options = options = dato.extend({}, defaults, options);
-            the._scanner = scan(ele, directives, options);
+            the._scanner = scan(ele, directives, data, options);
             the._watcher = new Watcher(data, options);
             the._render(data);
         },

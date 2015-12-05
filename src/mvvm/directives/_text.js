@@ -12,9 +12,9 @@ define(function (require, exports, module) {
 
     module.exports = {
         name: '#text',
-        bind: function (node, expression) {
+        bind: function (node, token) {
             this.node = node;
-            this.expression = expression;
+            this.expression = token.expression;
         },
         update: function (data) {
             this.node.nodeValue = eval2(this.expression, data);

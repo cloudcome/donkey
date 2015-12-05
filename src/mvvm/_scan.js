@@ -31,10 +31,11 @@ define(function (require, exports, module) {
      * @param node {Object} 节点
      * @param attributes {Array} 属性列表
      * @param directives {Array} 指令数组
+     * @param data {Object} 监听的数据
      * @param options {Object} 配置
      * @returns {Array}
      */
-    var scanAttribute = function (node, attributes, directives, options) {
+    var scanAttribute = function (node, attributes, directives, data, options) {
         var length = attributes.length;
         var prefixLength = options.prefix.length + 1;
         var scanRet = [];
@@ -45,7 +46,11 @@ define(function (require, exports, module) {
             dato.each(directives, function (index, directive) {
                 if (directive.name === dirctiveName) {
                     findDirective = new Directive(directive);
-                    ret = findDirective.bind(node, dirctiveName, dirctiveValue, expression);
+                    ret = findDirective.bind(node, {
+                        name: dirctiveName,
+                        value: dirctiveValue,
+                        expression: expression
+                    }, data);
                     return false;
                 }
             });
@@ -106,13 +111,14 @@ define(function (require, exports, module) {
      * 扫描元素节点
      * @param ele {Object} 元素
      * @param directives {Array} 指令数组
+     * @param data {Object} 监听的数据
      * @param options {object} 配置
      * @returns {{}}
      */
-    var scanElement = function (ele, directives, options) {
+    var scanElement = function (ele, directives, data, options) {
         var attributes = ele.attributes;
         var tagName = ele.tagName;
-        var attrbuteRet = scanAttribute(ele, attributes, directives, options);
+        var attrbuteRet = scanAttribute(ele, attributes, directives, data, options);
 
         return {
             tagName: tagName,
@@ -129,10 +135,11 @@ define(function (require, exports, module) {
      * 扫描文本节点
      * @param node
      * @param directives
+     * @param data {Object} 监听的数据
      * @param options
      * @returns {Array}
      */
-    var scanTextNode = function (node, directives, options) {
+    var scanTextNode = function (node, directives, data, options) {
         var parseRet = parseText(node.nodeValue, options.openTag, options.closeTag);
         var ret = [];
         var parentNode = node.parentNode;
@@ -145,7 +152,10 @@ define(function (require, exports, module) {
 
             if (expression) {
                 directive = new Directive(textNodeDirective);
-                directive.bind(textNode, '#text', expression);
+                directive.bind(textNode, {
+                    name: '#text',
+                    expression: expression
+                }, data);
             }
 
             parentNode.appendChild(textNode);
@@ -168,10 +178,11 @@ define(function (require, exports, module) {
      * 深度扫描
      * @param ele {Object} 元素
      * @param directives {Array} 指令数组
+     * @param data {Object} 监听的数据
      * @param [options] {object} 配置
      * @returns {object|null}
      */
-    module.exports = function (ele, directives, options) {
+    module.exports = function (ele, directives, data, options) {
         options = dato.extend({}, defaults, options);
 
         var ret = {};
@@ -182,13 +193,13 @@ define(function (require, exports, module) {
             switch (node.nodeType) {
                 // #element
                 case 1:
-                    _ret = scanElement(node, directives, options);
+                    _ret = scanElement(node, directives, data, options);
                     _ret.children = [];
                     break;
 
                 // #text
                 case 3:
-                    _ret = scanTextNode(node, directives, options);
+                    _ret = scanTextNode(node, directives, data, options);
                     break;
             }
 

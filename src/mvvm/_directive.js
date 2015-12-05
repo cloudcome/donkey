@@ -12,7 +12,6 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
-    var allocation = require('../utils/allocation.js');
 
     var directiveId = 0;
     var defaults = {};
@@ -28,19 +27,14 @@ define(function (require, exports, module) {
             dato.each(the._directive, function (key, val) {
                 the[key] = val;
             });
-            the.bind = function (node, dirctiveName, dirctiveValue, expression) {
+            the.bind = function (node, token) {
                 var the = this;
                 var ret = true;
-                var args = allocation.args(arguments);
 
-                _directiveName = dirctiveName;
-                if (typeis.Function(the._directive.bind) && the.name === dirctiveName) {
-                    if (args.length === 4) {
-                        ret = the._directive.bind.call(the, node, dirctiveValue, expression);
-                    } else {
-                        expression = args[2];
-                        ret = the._directive.bind.call(the, node, expression);
-                    }
+                _directiveName = token.name;
+
+                if (typeis.Function(the._directive.bind) && the.name === _directiveName) {
+                    ret = the._directive.bind.call(the, node, token);
                 }
 
                 return ret;
