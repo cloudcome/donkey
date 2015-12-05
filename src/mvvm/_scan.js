@@ -9,6 +9,7 @@ define(function (require, exports, module) {
     'use strict';
 
     var dato = require('../utils/dato.js');
+    var typeis = require('../utils/typeis.js');
     var Directive = require('./_directive.js');
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
@@ -137,7 +138,11 @@ define(function (require, exports, module) {
 
         parentNode.removeChild(node);
         dato.each(parseRet.tokens, function (index, item) {
-            parentNode.appendChild(document.createTextNode(item.token));
+            var textNode = document.createTextNode(item.token);
+            parentNode.appendChild(textNode);
+            ret.push({
+                node: textNode
+            });
         });
 
         return ret;
@@ -162,7 +167,7 @@ define(function (require, exports, module) {
                 // #element
                 case 1:
                     _ret = scanElement(node, directives, options);
-
+                    _ret.children = [];
                     break;
 
                 // #text
@@ -175,17 +180,25 @@ define(function (require, exports, module) {
                 return;
             }
 
-            ret[_ret.tagName] = _ret;
-            _ret.children = [];
-            var childNodes = _ret.childNodes;
-            delete(_ret.childNodes);
-
-            if (_ret.deep) {
-                dato.each(childNodes, function (index, childNode) {
-                    var _childRet = {};
-                    _ret.children.push(_childRet);
-                    scanDeep(_childRet, childNode);
+            if (typeis.Array(_ret)) {
+                dato.each(_ret, function (index, item) {
+                    ret.push(item);
                 });
+            } else {
+                if (typeis.Array(ret)) {
+                    ret.push(_ret);
+                } else {
+                    ret[_ret.tagName] = _ret;
+                }
+
+                var children = dato.toArray(_ret.childNodes);
+                delete(_ret.childNodes);
+
+                if (_ret.deep) {
+                    dato.each(children, function (index, childNode) {
+                        scanDeep(_ret.children, childNode);
+                    });
+                }
             }
         };
 
