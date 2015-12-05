@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     var Directive = require('./_directive.js');
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
-    var textNodeDirective = require('../directives/_text.js');
+    var textNodeDirective = require('./directives/_text.js');
 
     var namespace = '-donkey-mvvm-';
     var mvvmIndex = 0;
@@ -144,7 +144,7 @@ define(function (require, exports, module) {
 
             if (item.expression) {
                 directive = new Directive(textNodeDirective);
-                directive.bind(node, item.expression);
+                directive.bind(node, '#text', item.expression);
             }
 
             parentNode.appendChild(textNode);

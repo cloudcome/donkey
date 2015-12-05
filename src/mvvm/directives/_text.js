@@ -11,6 +11,7 @@ define(function (require, exports, module) {
     var eval2 = require('../_eval.js');
 
     module.exports = {
+        name: '#text',
         bind: function (node, expression) {
             this.expression = expression;
         },

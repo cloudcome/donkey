@@ -12,6 +12,7 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
+    var allocation = require('../utils/allocation.js');
 
     var directiveId = 0;
     var defaults = {};
@@ -32,10 +33,15 @@ define(function (require, exports, module) {
                 var the = this;
                 var options = the._options;
                 var ret = true;
+                var args = allocation.args(arguments);
 
                 _directiveName = dirctiveName;
                 if (typeis.Function(the._directive.bind) && the.name === dirctiveName) {
-                    ret = the._directive.bind.call(the, node, dirctiveValue, expression);
+                    if (args.length === 4) {
+                        ret = the._directive.bind.call(the, node, dirctiveValue, expression);
+                    } else {
+                        ret = the._directive.bind.call(the, node, expression);
+                    }
                 }
 
                 return ret;
