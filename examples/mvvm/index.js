@@ -20,8 +20,11 @@ define(function (require, exports, module) {
         statistic: {
             views: 1
         },
-        onClick: function (statistic, eve, text) {
+        onClick1: function (statistic, eve, text) {
             data.statistic.views++;
+            console.log(arguments);
+        },
+        onClick2: function () {
             console.log(arguments);
         }
     };

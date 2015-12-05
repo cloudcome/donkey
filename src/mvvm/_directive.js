@@ -122,8 +122,8 @@ define(function (require, exports, module) {
                     })
                     .replace(/\)[^)]*$/, '');
 
-                var ret = parseArgs(_expression);
-                ret.fnName = fnName;
+                var ret = parseArgs(fnName ? _expression : '');
+                ret.fnName = fnName || _expression.trim();
                 ret.raw = raw;
                 return ret;
             };

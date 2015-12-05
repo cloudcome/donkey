@@ -34,7 +34,8 @@
     <input type="text" v-model="username">
     [上]Hello {{username}}
     <p>[下]你好，<b v-text="username"></b></p>
-    <button v-click="onClick(statistic, $event, 'eee')">弹出你好</button>
+    <button v-click="onClick1(statistic, $event, 'eee')">点我1</button>
+    <button v-click="onClick2">点我2</button>
 </div>
 
 <script src="/examples/jquery.min.js"></script>
