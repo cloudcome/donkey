@@ -13,6 +13,7 @@ define(function (require, exports, module) {
     var Directive = require('./_directive.js');
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
+    var textNodeDirective = require('../directives/_text.js');
 
     var namespace = '-donkey-mvvm-';
     var mvvmIndex = 0;
@@ -139,9 +140,17 @@ define(function (require, exports, module) {
         parentNode.removeChild(node);
         dato.each(parseRet.tokens, function (index, item) {
             var textNode = document.createTextNode(item.token);
+            var directive = null;
+
+            if (item.expression) {
+                directive = new Directive(textNodeDirective);
+                directive.bind(node, item.expression);
+            }
+
             parentNode.appendChild(textNode);
             ret.push({
-                node: textNode
+                node: textNode,
+                directive: directive
             });
         });
 
