@@ -15,7 +15,7 @@ define(function (require, exports, module) {
     var parseText = require('./_parser/text.js');
     var textNodeDirective = require('./directives/_text.js');
 
-    var namespace = '-donkey-mvvm-';
+    var namespace = '-donkey-mvvm-' + Math.random();
     var mvvmIndex = 0;
     var defaults = {
         // 跳过深度检测的属性
@@ -211,7 +211,7 @@ define(function (require, exports, module) {
                 var children = dato.toArray(_ret.childNodes);
                 delete(_ret.childNodes);
 
-                if (_ret.deep) {
+                if (_ret.deep && !node[namespace]) {
                     dato.each(children, function (index, childNode) {
                         scanDeep(_ret.children, childNode);
                     });
