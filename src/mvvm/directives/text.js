@@ -10,21 +10,15 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
-    var eval2 = require('../_eval.js');
-
-    module.exports = {
-        name: 'text',
-        bind: function (ele, className, expression) {
-            this.$ele = $(ele);
-            this.className = className;
-            this.expression = expression;
-        },
-        update: function (newValue) {
-            if (eval2(this.expression, newValue)) {
-                this.$ele.addClass(this.className);
-            }else{
-                this.$ele.removeClass(this.className);
+    module.exports = function (Mvvm) {
+        return {
+            bind: function (ele, attrValue, expression) {
+                this.$ele = $(ele);
+                this.expression = expression;
+            },
+            update: function (newValue) {
+                this.$ele.text(Mvvm.excute(this.expression, newValue));
             }
-        }
+        };
     };
 });

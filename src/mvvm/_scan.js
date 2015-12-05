@@ -10,7 +10,7 @@ define(function (require, exports, module) {
 
     var dato = require('../utils/dato.js');
     var Directive = require('./_directive.js');
-    var parser = require('./_parser.js');
+    var parseExpression = require('./_parser/expression.js');
 
     var defaults = {
         // 前缀
@@ -88,7 +88,7 @@ define(function (require, exports, module) {
                     // true
                     expression: attrValue,
                     // ["varible"]
-                    varibles: parser(attrValue).varibles,
+                    varibles: parseExpression(attrValue).varibles,
                     // 指令集
                     directive: buildRet[0]
                 });

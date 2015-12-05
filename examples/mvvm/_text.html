@@ -17,21 +17,44 @@
     <meta name="keywords" content="关键词1,关键词2">
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>index.html</title>
+    <title>_parser.html</title>
     <style>
-        .big{
-            font-size: 200%;
+        *{
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        #textarea{
+            font-size: 20px;
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        #parse{
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 20px;
+        }
+        #ret{
+            border: 2px solid #ccc;
+            font-family: Monaco;
+            font-size: 20px;
+            padding: 10px;
         }
     </style>
 </head>
 <body ontouchstart="">
 
-<div id="demo">
-    {{name}}
-</div>
+<textarea id="textarea" rows="3">你好{{aa}}呵呵{{bb}}</textarea>
+
+<button id="parse">简单语法分析</button>
+
+<pre id="ret">[分析结果]</pre>
+
+
 
 <script src="/examples/jquery.min.js"></script>
-<script src="/examples/coolie.min.js" data-config="coolie-config.js" data-main="mvvm/index.js"></script>
+<script src="/examples/coolie.min.js" data-config="coolie-config.js" data-main="mvvm/_text.js"></script>
 
 </body>
 </html>

@@ -8,7 +8,7 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var dato = require('../utils/dato.js');
+    var dato = require('../../utils/dato.js');
 
     var allowedKeywords =
         'Math,Date,this,true,false,null,undefined,Infinity,NaN,' +

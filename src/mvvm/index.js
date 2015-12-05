@@ -17,7 +17,9 @@ define(function (require, exports, module) {
     var scan = require('./_scan.js');
     var watcher = require('./_watcher.js');
     var defaults = {
-        prefix: 'v'
+        prefix: 'v',
+        openTag: '{{',
+        closeTag: '}}'
     };
     var directives = [];
     var Mvvm = module.exports = klass.create({
@@ -64,9 +66,12 @@ define(function (require, exports, module) {
         }
     });
 
-    Mvvm.directive = function (directive) {
+    Mvvm.directive = function (name, directive) {
+        directive = directive(Mvvm);
+        directive.name = name;
         directives.push(directive);
     };
     Mvvm.defaults = defaults;
     Mvvm.directives = directives;
+    Mvvm.excute = require('./_eval.js');
 });
