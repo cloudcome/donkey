@@ -13,6 +13,8 @@ define(function (require, exports, module) {
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
     var eval2 = require('./_eval.js');
+    var parseExpression = require('./_parser/expression.js');
+    var parseText = require('./_parser/text.js');
 
     var directiveId = 0;
     var defaults = {};
@@ -79,6 +81,24 @@ define(function (require, exports, module) {
              */
             the.exec = function (_expression, _data) {
                 return eval2(_expression || token.expression, _data || data);
+            };
+
+            /**
+             * 解析表达式
+             * @param _expression
+             * @returns {*}
+             */
+            the.parseExpression = function (_expression) {
+                return parseExpression(_expression || token.expression);
+            };
+
+            /**
+             * 解析表达式
+             * @param _expression
+             * @returns {*}
+             */
+            the.parseText = function (_expression) {
+                return parseText(_expression || token.expression);
             };
         }
     });

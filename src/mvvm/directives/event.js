@@ -13,13 +13,15 @@ define(function (require, exports, module) {
     module.exports = {
         bind: function (ele, token) {
             var the = this;
+            var parseRet = the.parseExpression();
+            var eventName = parseRet.varibles.shift();
 
             switch (token.value) {
                 case 'enter':
                     $(ele).on('keypress', function (eve) {
                         if (eve.keyCode === 13) {
-                            if (typeis.Function(the.data[token.expression])) {
-                                the.data[token.expression].call(this, eve.originalEvent);
+                            if (typeis.Function(the.data[eventName])) {
+                                the.data[eventName].call(this, eve.originalEvent);
                             }
                         }
                     });
@@ -27,8 +29,8 @@ define(function (require, exports, module) {
 
                 default:
                     $(ele).on(token.value, function (eve) {
-                        if (typeis.Function(the.data[token.expression])) {
-                            the.data[token.expression].call(this, eve.originalEvent);
+                        if (typeis.Function(the.data[eventName])) {
+                            the.data[eventName].call(this, eve.originalEvent);
                         }
                     });
                     break;
