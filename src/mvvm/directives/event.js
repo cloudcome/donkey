@@ -14,14 +14,15 @@ define(function (require, exports, module) {
         bind: function (ele, token) {
             var the = this;
             var parseRet = the.parseFunction();
-            var eventName = parseRet.fnName;
+            var cbName = parseRet.fnName;
+            var cbArgs = parseRet.args;
 
             switch (token.value) {
                 case 'enter':
                     $(ele).on('keypress', function (eve) {
                         if (eve.keyCode === 13) {
-                            if (typeis.Function(the.data[eventName])) {
-                                the.data[eventName].call(this, eve.originalEvent);
+                            if (typeis.Function(the.data[cbName])) {
+                                the.data[cbName].call(this, eve.originalEvent);
                             }
                         }
                     });
@@ -29,8 +30,8 @@ define(function (require, exports, module) {
 
                 default:
                     $(ele).on(token.value, function (eve) {
-                        if (typeis.Function(the.data[eventName])) {
-                            the.data[eventName].call(this, eve.originalEvent);
+                        if (typeis.Function(the.data[cbName])) {
+                            the.data[cbName].call(this, eve.originalEvent);
                         }
                     });
                     break;

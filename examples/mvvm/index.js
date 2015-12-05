@@ -20,9 +20,9 @@ define(function (require, exports, module) {
         statistic: {
             views: 1
         },
-        onClick: function (statistic) {
-            alert(JSON.stringify(statistic));
+        onClick: function (statistic, eve, text) {
             data.statistic.views++;
+            console.log(arguments);
         }
     };
 
