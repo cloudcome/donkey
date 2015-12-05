@@ -15,11 +15,16 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var dato = require('../utils/dato.js');
     var watch = require('../3rd/watch.js');
+    var parser = require('./_parser.js');
 
-    module.exports = function (obj, callback) {
+    module.exports = function (obj, scanner) {
         dato.each(obj, function (key, val) {
             if (key[0] !== '$' && key[0] !== '_') {
-                watch.watch(obj, key, callback);
+                scanner;
+                debugger;
+                watch.watch(obj, key, function () {
+                    //
+                });
             }
         });
     };

@@ -15,7 +15,7 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var scan = require('./_scan.js');
-    var watch = require('../3rd/watch.js');
+    var watcher = require('./_watcher.js');
     var defaults = {
         prefix: 'v'
     };
@@ -27,6 +27,7 @@ define(function (require, exports, module) {
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan(ele, directives, options);
             the._render(data);
+            watcher(data, the._scanner);
         },
 
         directive: function () {
