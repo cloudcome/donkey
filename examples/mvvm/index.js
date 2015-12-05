@@ -17,8 +17,12 @@ define(function (require, exports, module) {
 
     var data = window.data = {
         username: '#云淡然',
-        onClick: function () {
-            window.alert('你好，MVVM');
+        statistic: {
+            views: 1
+        },
+        onClick: function (statistic) {
+            alert(JSON.stringify(statistic));
+            data.statistic.views++;
         }
     };
 

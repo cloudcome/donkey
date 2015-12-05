@@ -19,7 +19,7 @@ define(function (require, exports, module) {
                     $(ele).on('keypress', function (eve) {
                         if (eve.keyCode === 13) {
                             if (typeis.Function(the.data[token.expression])) {
-                                the.data[token.expression].call(this, eve.orginalEvent);
+                                the.data[token.expression].call(this, eve.originalEvent);
                             }
                         }
                     });
@@ -28,7 +28,7 @@ define(function (require, exports, module) {
                 default:
                     $(ele).on(token.value, function (eve) {
                         if (typeis.Function(the.data[token.expression])) {
-                            the.data[token.expression].call(this, eve.orginalEvent);
+                            the.data[token.expression].call(this, eve.originalEvent);
                         }
                     });
                     break;

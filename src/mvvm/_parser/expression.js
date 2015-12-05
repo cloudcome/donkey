@@ -26,11 +26,11 @@ define(function (require, exports, module) {
     var REG_IMPROPER_KEYWORDS =
         new RegExp('^(' + improperKeywords.replace(/,/g, '\\b|') + '\\b)');
     var REG_VAR = /^[a-z_$]/i;
-    var operators = [' ', '+', '-', '*', '/', '>', '<', '=', '!', '(', '[', ';'];
+    var operators = [' ', '+', '-', '*', '/', '>', '<', '=', '!', '(', '[', ';', ','];
     var operatorsMap = {};
 
     dato.each(operators, function (index, token) {
-        operatorsMap[token] = true;
+        operatorsMap[token] = 1;
     });
 
 
@@ -91,11 +91,9 @@ define(function (require, exports, module) {
                     inSquareBrackets = false;
                 } else if (char === ')') {
                     inBrackets = false;
-                } else if (!inDoubleQuote && !inSingleQuote) {
-                    if (lastChar === '[' || lastChar === '(') {
-                        pushVar();
-                    }
-
+                } else if (operatorsMap[char]) {
+                    pushVar();
+                } else {
                     lastVar += char;
                 }
             } else if (char === '.') {
@@ -107,19 +105,13 @@ define(function (require, exports, module) {
                     inSquareBrackets = true;
                 }
 
-                if (inPoint) {
-                    pushVar();
-                    inPoint = false;
-                }
+                pushVar();
             } else if (char === '(') {
                 if (lastChar && lastChar !== ' ') {
                     inBrackets = true;
                 }
 
-                if (inPoint) {
-                    pushVar();
-                    inPoint = false;
-                }
+                pushVar();
             } else if (inPoint) {
                 if (operatorsMap[char]) {
                     inPoint = false;
