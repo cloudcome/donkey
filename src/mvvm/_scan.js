@@ -34,17 +34,19 @@ define(function (require, exports, module) {
     var scanAttribute = function (node, attributes, directives, options) {
         var length = attributes.length;
         var prefixLength = options.prefix.length + 1;
-        var ret = [];
+        var scanRet = [];
+        var directRet = true;
         var buildDirective = function (dirctiveName, dirctiveValue, expression) {
             var findDirective = null;
+            var ret = true;
             dato.each(directives, function (index, directive) {
                 if (directive.name === dirctiveName) {
                     findDirective = new Directive(directive);
-                    findDirective.bind(node, dirctiveName, dirctiveValue, expression);
+                    ret = findDirective.bind(node, dirctiveName, dirctiveValue, expression);
                     return false;
                 }
             });
-            return findDirective;
+            return [findDirective, ret];
         };
         var REG_ATTR = /^attr-/;
         var parseType = function (type) {
@@ -68,11 +70,15 @@ define(function (require, exports, module) {
             if (isDirective) {
                 var type = attrName.slice(prefixLength);
                 var retType = parseType(type);
+                var buildRet = buildDirective(retType.name, retType.value, attrValue);
                 node.removeAttribute(attribute.name);
 
+                if (buildRet[1] === false) {
+                    directRet = false;
+                }
 
                 // v-class-abc="true"
-                ret.push({
+                scanRet.push({
                     name: attrName,
                     value: attrValue,
                     // class
@@ -84,12 +90,12 @@ define(function (require, exports, module) {
                     // ["varible"]
                     varibles: parser(attrValue).varibles,
                     // 指令集
-                    directive: buildDirective(retType.name, retType.value, attrValue)
+                    directive: buildRet[0]
                 });
             }
         }
 
-        return ret;
+        return [scanRet, directRet];
     };
 
 
@@ -103,12 +109,15 @@ define(function (require, exports, module) {
     var scanNode = function (ele, directives, options) {
         var attributes = ele.attributes;
         var tagName = ele.tagName;
+        var attrbuteRet = scanAttribute(ele, attributes, directives, options);
 
         return {
             tagName: tagName,
             node: ele,
             childNodes: ele.childNodes,
-            attributes: scanAttribute(ele, attributes, directives, options)
+            attributes: attrbuteRet[0],
+            // 是否深度遍历
+            deep: attrbuteRet[1] !== false
         };
     };
 
@@ -132,14 +141,16 @@ define(function (require, exports, module) {
             var childNodes = _ret.childNodes;
             delete(_ret.childNodes);
 
-            dato.each(childNodes, function (index, childNode) {
-                if (childNode.nodeType === 1) {
-                    var _childRet = {};
+            if (_ret.deep) {
+                dato.each(childNodes, function (index, childNode) {
+                    if (childNode.nodeType === 1) {
+                        var _childRet = {};
 
-                    _ret.children.push(_childRet);
-                    scanDeep(_childRet, childNode);
-                }
-            });
+                        _ret.children.push(_childRet);
+                        scanDeep(_childRet, childNode);
+                    }
+                });
+            }
         };
 
         scanDeep(ret, ele);

@@ -26,7 +26,7 @@ define(function (require, exports, module) {
     var REG_IMPROPER_KEYWORDS =
         new RegExp('^(' + improperKeywords.replace(/,/g, '\\b|') + '\\b)');
     var REG_VAR = /^[a-z_$]/i;
-    var operators = [' ', '+', '-', '*', '/', '>', '<', '=', '!', '(', '['];
+    var operators = [' ', '+', '-', '*', '/', '>', '<', '=', '!', '(', '[', ';'];
     var operatorsMap = {};
 
     dato.each(operators, function (index, token) {

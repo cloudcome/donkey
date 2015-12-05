@@ -6,21 +6,19 @@
 
 
 define(function (require, exports, module) {
-    /**
-     * @module parent/observe
-     */
-
     'use strict';
 
     var Mvvm = require('../../src/mvvm/index.js');
 
-    Mvvm.directive(require('../../src/mvvm/directives/class.js'));
+    Mvvm.directive('class', require('../../src/mvvm/directives/class.js'));
 
     var data = window.data = {
         big: true
     };
 
-    var v1 = new Mvvm(document.getElementById('demo'), data);
+    new Mvvm(document.getElementById('demo'), data);
 
-    //v1.directive(require('../../src/mvvm/directives/class.js'));
+    setInterval(function () {
+        data.big = !data.big;
+    }, 1000);
 });

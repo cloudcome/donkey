@@ -31,11 +31,14 @@ define(function (require, exports, module) {
             the.bind = function (node, dirctiveName, dirctiveValue, expression) {
                 var the = this;
                 var options = the._options;
+                var ret = true;
 
                 _directiveName = dirctiveName;
                 if (typeis.Function(the._directive.bind) && the.name === dirctiveName) {
-                    the._directive.bind.call(the, node, dirctiveValue, expression);
+                    ret = the._directive.bind.call(the, node, dirctiveValue, expression);
                 }
+
+                return ret;
             };
             the.update = function (newValue) {
                 var the = this;
