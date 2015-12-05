@@ -14,6 +14,7 @@ define(function (require, exports, module) {
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
     var textNodeDirective = require('./directives/_text.js');
+    var modification = require('../core/dom/modification.js');
 
     var namespace = '-donkey-mvvm-' + Math.random();
     var mvvmIndex = 0;
@@ -143,22 +144,22 @@ define(function (require, exports, module) {
         var parseRet = parseText(node.nodeValue, options.openTag, options.closeTag);
         var ret = [];
         var parentNode = node.parentNode;
+        var text = '#text';
 
-        parentNode.removeChild(node);
         dato.each(parseRet.tokens, function (index, item) {
-            var textNode = document.createTextNode(item.token);
+            var textNode = modification.create(text, item.token);
             var directive = null;
             var expression = item.expression;
 
             if (expression) {
                 directive = new Directive(textNodeDirective);
                 directive.bind(textNode, {
-                    name: '#text',
+                    name: text,
                     expression: expression
                 }, data);
             }
 
-            parentNode.appendChild(textNode);
+            parentNode.insertBefore(textNode, node);
             ret.push({
                 node: textNode,
                 token: item.token,
@@ -170,6 +171,7 @@ define(function (require, exports, module) {
             });
         });
 
+        node.nodeValue = '';
         return ret;
     };
 
