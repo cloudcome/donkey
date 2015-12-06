@@ -240,9 +240,11 @@ define(function (require, exports, module) {
                 var children = dato.toArray(_ret.childNodes);
                 delete(_ret.childNodes);
 
-                if (_ret.deep && !node[namespace]) {
+                if (_ret.deep) {
                     dato.each(children, function (index, childNode) {
-                        scanDeep(_ret.children, childNode);
+                        if (!childNode[namespace]) {
+                            scanDeep(_ret.children, childNode);
+                        }
                     });
                 }
             }

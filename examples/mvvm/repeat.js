@@ -24,5 +24,5 @@ define(function (require, exports, module) {
         ]
     };
 
-    var mv1 = new Mvvm(document.getElementById('demo'), data);
+    new Mvvm(document.getElementById('demo'), data);
 });
