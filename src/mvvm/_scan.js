@@ -43,7 +43,7 @@ define(function (require, exports, module) {
      * @returns {Array}
      */
     var scanAttribute = function (node, attributes, directives, data, options) {
-        var vm = this;
+        var mvvm = this;
         var length = attributes.length;
         var prefixLength = options.prefix.length + 1;
         var scanRet = [];
@@ -63,7 +63,7 @@ define(function (require, exports, module) {
                         name: dirctiveName,
                         value: dirctiveValue,
                         expression: expression
-                    }, data, vm);
+                    }, data, mvvm);
                     ret = findDirective.bind();
                     return false;
                 }
@@ -130,10 +130,10 @@ define(function (require, exports, module) {
      * @returns {{}}
      */
     var scanElement = function (ele, directives, data, options) {
-        var vm = this;
+        var mvvm = this;
         var attributes = ele.attributes;
         var tagName = ele.tagName;
-        var attrbuteRet = scanAttribute.call(vm, ele, attributes, directives, data, options);
+        var attrbuteRet = scanAttribute.call(mvvm, ele, attributes, directives, data, options);
 
         return {
             tagName: tagName,
@@ -155,7 +155,7 @@ define(function (require, exports, module) {
      * @returns {Array}
      */
     var scanTextNode = function (node, directives, data, options) {
-        var vm = this;
+        var mvvm = this;
         var parseRet = parseText(node.nodeValue, options.openTag, options.closeTag);
         var ret = [];
         var parentNode = node.parentNode;
@@ -170,7 +170,7 @@ define(function (require, exports, module) {
                 directive = new Directive(textNode, textNodeDirective, {
                     name: text,
                     expression: expression
-                }, data, vm);
+                }, data, mvvm);
                 directive.bind();
             }
 
@@ -202,7 +202,7 @@ define(function (require, exports, module) {
     module.exports = function (ele, directives, data, options) {
         options = dato.extend({}, defaults, options);
 
-        var vm = this;
+        var mvvm = this;
         var ret = {};
         var tagName = '';
         var scanDeep = function (ret, node) {
@@ -211,13 +211,13 @@ define(function (require, exports, module) {
             switch (node.nodeType) {
                 // #element
                 case 1:
-                    _ret = scanElement.call(vm, node, directives, data, options);
+                    _ret = scanElement.call(mvvm, node, directives, data, options);
                     _ret.children = [];
                     break;
 
                 // #text
                 case 3:
-                    _ret = scanTextNode.call(vm, node, directives, data, options);
+                    _ret = scanTextNode.call(mvvm, node, directives, data, options);
                     break;
             }
 

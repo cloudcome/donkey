@@ -20,7 +20,7 @@ define(function (require, exports, module) {
     var directiveId = 0;
     var defaults = {};
     var Directive = klass.create({
-        constructor: function (node, directive, token, data) {
+        constructor: function (node, directive, token, data, mvvm) {
             var the = this;
             var _directiveName = null;
 
@@ -29,6 +29,7 @@ define(function (require, exports, module) {
             the.directive = directive;
             the.token = token;
             the.data = data;
+            the.mvvm = mvvm;
 
             // 复制指令属性到当前实例
             // name 等
