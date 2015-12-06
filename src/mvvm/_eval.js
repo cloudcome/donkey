@@ -58,26 +58,26 @@ define(function (require, exports, module) {
     };
 
 
-    ///**
-    // * 执行数据路径
-    // * @param paths {Array} 路径
-    // * @param data
-    // * @returns {*}
-    // */
-    //exports.path = function (paths, data) {
-    //    var ret = data;
-    //
-    //    dato.each(paths, function (index, path) {
-    //        var d = ret[path];
-    //
-    //        if (typeof d === 'object') {
-    //            ret = d;
-    //            return true;
-    //        }
-    //
-    //        return false;
-    //    });
-    //
-    //    return ret === data ? undefined : ret;
-    //};
+    /**
+     * 执行数据路径
+     * @param paths {Array} 路径
+     * @param data
+     * @returns {*}
+     */
+    exports.path = function (paths, data) {
+        var ret = data;
+
+        dato.each(paths, function (index, path) {
+            var d = ret[path];
+
+            if (typeof d === 'object') {
+                ret = d;
+                return true;
+            }
+
+            return false;
+        });
+
+        return ret === data ? undefined : ret;
+    };
 });

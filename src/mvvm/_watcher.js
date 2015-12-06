@@ -12,6 +12,8 @@ define(function (require, exports, module) {
     var dato = require('../utils/dato.js');
     var Emitter = require('../libs/emitter.js');
     var watch = require('../3rd/watch.js');
+    var observe = require('../3rd/observe.js');
+    var eval2 = require('./_eval.js');
 
     var defaults = {
         // 超时时间 50 ms，避免频繁修改 DOM
@@ -63,6 +65,13 @@ define(function (require, exports, module) {
         }
     });
 
+    Watcher.observe = function (obj, callback) {
+        observe(obj, function(key, neo, old, path){
+            var paths = path.replace(/^#-/, '').split('-');
+            var parent = eval2.path(paths, obj);
+            callback(neo, old, parent);
+        });
+    };
     Watcher.defaults = defaults;
     module.exports = Watcher;
 });
