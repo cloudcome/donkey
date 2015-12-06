@@ -55,17 +55,14 @@ define(function (require, exports, module) {
         var inPoint = false;
         var index = 0;
         var length = expression.length;
-        var ret = {
-            raw: expression,
-            varibles: []
-        };
+        var varibles = [];
         var lastChar = '';
         var lastVar = '';
         var pushVar = function () {
             if (lastVar && !REG_ALLOWED_KEYWORDS.test(lastVar) && !REG_IMPROPER_KEYWORDS.test(lastVar) &&
                 REG_VAR.test(lastVar)
             ) {
-                ret.varibles.push(lastVar);
+                varibles.push(lastVar);
             }
 
             lastVar = '';
@@ -130,6 +127,9 @@ define(function (require, exports, module) {
 
         pushVar();
 
-        return ret;
+        return {
+            raw: expression,
+            varibles: varibles
+        };
     };
 });

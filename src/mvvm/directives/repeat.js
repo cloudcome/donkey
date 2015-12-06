@@ -11,6 +11,7 @@ define(function (require, exports, module) {
     require('../../polyfill/string.js');
     var modification = require('../../core/dom/modification.js');
     var dato = require('../../utils/dato.js');
+
     var repeatId = 0;
     var namespace = '-donkey-mvvm-directive-repeat-' + Math.random();
 

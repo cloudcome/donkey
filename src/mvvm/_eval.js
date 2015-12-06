@@ -13,6 +13,7 @@ define(function (require, exports, module) {
     'use strict';
 
     var dato = require('../utils/dato.js');
+    var typeis = require('../utils/typeis.js');
     var random = require('../utils/random.js');
 
     var REG_SAFE_VARIBLE = /^[a-z_$]/;
@@ -61,9 +62,22 @@ define(function (require, exports, module) {
      * 执行数据路径
      * @param paths {Array} 路径
      * @param data
-     * @returns {{}}
+     * @returns {*}
      */
     exports.path = function (paths, data) {
-        return {};
+        var ret = data;
+
+        dato.each(paths, function (index, path) {
+            var d = ret[path];
+
+            if (typeof d === 'object') {
+                ret = d;
+                return true;
+            }
+
+            return false;
+        });
+
+        return ret === data ? undefined : ret;
     };
 });

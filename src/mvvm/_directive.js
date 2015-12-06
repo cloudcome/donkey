@@ -16,6 +16,7 @@ define(function (require, exports, module) {
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
     var parseArgs = require('./_parser/args.js');
+    var parsePath = require('./_parser/path.js');
 
     var directiveId = 0;
     var defaults = {};
@@ -86,7 +87,7 @@ define(function (require, exports, module) {
                     _expression = null;
                 }
 
-                return eval2(_expression || token.expression, _data || data);
+                return eval2.expression(_expression || token.expression, _data || data);
             };
 
             /**
@@ -128,6 +129,21 @@ define(function (require, exports, module) {
                 ret.raw = raw;
                 return ret;
             };
+
+
+            ///**
+            // * 根据路径获取数据
+            // * @param _path
+            // * @param _data
+            // * @returns {*}
+            // */
+            //the.getValue = function (_path, _data) {
+            //    _path = _path || token.expression;
+            //    _data = _data || data;
+            //
+            //    var paths = parsePath(_path).paths;
+            //    return eval2.path(paths, _data);
+            //};
         }
     });
 
