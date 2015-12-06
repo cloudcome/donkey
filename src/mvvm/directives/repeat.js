@@ -37,7 +37,7 @@ define(function (require, exports, module) {
             var the = this;
             var node = the.node;
             var flag = the.flag;
-            var list = data[the.listVar] || [];
+            var list = the.exec(the.listVar, the.data) || [];
 
             dato.each(list, function (index, item) {
                 var clone = node.cloneNode(true);
