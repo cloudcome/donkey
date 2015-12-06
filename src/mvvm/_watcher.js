@@ -11,7 +11,7 @@ define(function (require, exports, module) {
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var Emitter = require('../libs/emitter.js');
-    var watch = require('../3rd/watch.js').watch;
+    var watch = require('../3rd/watch.js');
 
     var defaults = {
         // 超时时间 50 ms，避免频繁修改 DOM
@@ -24,6 +24,13 @@ define(function (require, exports, module) {
 
             the.data = data;
             the._options = dato.extend({}, defaults, options);
+            watch.watch(function () {
+                console.log(arguments);
+            });
+            watch.onChange(function () {
+                console.log(arguments);
+                the.emit('change');
+            });
         },
 
         /**
@@ -37,9 +44,7 @@ define(function (require, exports, module) {
             var options = the._options;
             var timeid = 0;
 
-            watch(the.data, attrs, function (key, pro, neo, old) {
-                the.emit('change', key, neo, old);
-
+            watch.watch(the.data, attrs, function (key, pro, neo, old) {
                 var now = new Date().getTime();
 
                 if (!the._lastTime || now - the._lastTime > options.timeout) {

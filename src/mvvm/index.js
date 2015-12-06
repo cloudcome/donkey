@@ -33,6 +33,7 @@ define(function (require, exports, module) {
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan.call(the, ele, directives, data, options);
             the._watcher = new Watcher(data, options);
+            Emitter.pipe(the._watcher, the);
             the._render(data);
         },
 
@@ -58,6 +59,11 @@ define(function (require, exports, module) {
             the.children = the.children || [];
             the.children.push(child);
             return child;
+        },
+
+
+        watch: function () {
+
         },
 
 

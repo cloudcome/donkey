@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     //Mvvm.directive('class', require('../../src/mvvm/directives/class.js'));
     //Mvvm.directive('text', require('../../src/mvvm/directives/text.js'));
     //Mvvm.directive('model', require('../../src/mvvm/directives/model.js'));
-    //Mvvm.directive('event', require('../../src/mvvm/directives/event.js'));
+    Mvvm.directive('event', require('../../src/mvvm/directives/event.js'));
     Mvvm.directive('repeat', require('../../src/mvvm/directives/repeat.js'));
 
     var data = window.data = {
@@ -32,8 +32,15 @@ define(function (require, exports, module) {
                 '富',
                 '帅'
             ]
-        }]
+        }],
+        onChange: function () {
+            data.users[0].tags[0] = Math.random();
+        }
     };
 
-    window.vm = new Mvvm(document.getElementById('demo'), data);
+    var vm = window.vm = new Mvvm(document.getElementById('demo'), data);
+
+    vm.on('change', function () {
+        console.log(arguments);
+    });
 });
