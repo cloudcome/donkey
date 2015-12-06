@@ -10,6 +10,9 @@ define(function (require, exports, module) {
 
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
+    /**
+     * @type {Function}
+     */
     var scan = require('./_scan.js');
     var Watcher = require('./_watcher.js');
     var defaults = {
@@ -25,16 +28,43 @@ define(function (require, exports, module) {
 
             data = data || {};
             the.data = data;
+            the.parent = null;
             the._options = options = dato.extend({}, defaults, options);
-            the._scanner = scan(ele, directives, data, options);
+            the._scanner = scan.call(the, ele, directives, data, options);
             the._watcher = new Watcher(data, options);
             the._render(data);
         },
 
+        /**
+         * 实例指令
+         */
         directive: function () {
             // 实例指令
         },
 
+
+        /**
+         * 创建子 vm
+         * @params ele
+         * @params data
+         * @returns {Mvvm}
+         */
+        child: function (ele, data) {
+            var the = this;
+            var child = new Mvvm(ele, data, the._options);
+
+            child.parent = the;
+            the.children = the.children || [];
+            the.children.push(child);
+            return child;
+        },
+
+
+        /**
+         * 渲染
+         * @param data
+         * @private
+         */
         _render: function (data) {
             var the = this;
             var render = function (scanner, data) {

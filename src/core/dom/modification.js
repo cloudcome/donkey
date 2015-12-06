@@ -21,6 +21,21 @@ define(function (require, exports, module) {
 
 
     /**
+     * 解析字符串为节点，兼容IE10+
+     * @link https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
+     * @param {String} htmlString
+     * @returns {NodeList|HTMLElement}
+     *
+     * @example
+     * modification.parse('&lt;div/>');
+     * // => HTMLDIVElement
+     */
+    exports.parse = function (htmlString) {
+        return $(htmlString)[0];
+    };
+
+
+    /**
      * 创建节点
      * @param {String}       nodeName       节点名称，可以为#text、#comment、tagName
      * @param {String|Object} [attributes]   节点属性
@@ -83,6 +98,51 @@ define(function (require, exports, module) {
 
 
     /**
+     * 将源插入到指定的目标位置，并返回指定的元素
+     * @param {Object|String} source 源
+     * @param {Object} target 目标
+     * @param {String} [position="beforeend"] 插入位置，分别为：beforebegin、afterbegin、beforeend、afterend
+     * @returns {Object|null}
+     *
+     * @example
+     * // - beforebegin
+     * // - <target>
+     * //   - afterbegin
+     * //   - beforeend
+     * // - afterend
+     *
+     * // default return target
+     * modification.insert(source, target, 'beforebegin');
+     * modification.insert(source, target, 'afterbegin');
+     * modification.insert(source, target, 'beforeend');
+     * modification.insert(source, target, 'afterend');
+     */
+    exports.insert = function (source, target, position) {
+        position = position || 'beforeend';
+
+        switch (position) {
+            case 'beforebegin':
+                $(source).insertBefore(target);
+                break;
+
+            case 'afterbegin':
+                $(source).prependTo(target);
+                break;
+
+            case 'beforeend':
+                $(source).appendTo(target);
+                break;
+
+            case 'afterend':
+                $(source).insertAfter(target);
+                break;
+        }
+
+        return target;
+    };
+
+
+    /**
      * 添加样式
      * @param {String} styleText 样式内容
      * @param {String|HTMLElement|Node} [selector=null] 选择器
@@ -132,5 +192,14 @@ define(function (require, exports, module) {
         }
 
         return $style;
+    };
+
+
+    /**
+     * 移除某节点
+     * @param node
+     */
+    exports.remove = function (node) {
+        $(node).remove();
     };
 });
