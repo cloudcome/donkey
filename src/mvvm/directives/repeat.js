@@ -33,7 +33,7 @@ define(function (require, exports, module) {
 
             return false;
         },
-        update: function () {
+        update: function (key, newValue, oldValue, paths) {
             var the = this;
             var node = the.node;
             var flag = the.flag;

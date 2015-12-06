@@ -14,7 +14,6 @@ define(function (require, exports, module) {
     var controller = require('../utils/controller.js');
     var Emitter = require('../libs/emitter.js');
     var observe = require('../3rd/observe.js');
-    var eval2 = require('./_eval.js');
 
     var defaults = {
         // 超时时间 50 ms，避免频繁修改 DOM
@@ -41,10 +40,9 @@ define(function (require, exports, module) {
 
             observe(the.data, attrs, controller.debounce(function (key, neo, old, path) {
                 var paths = path.replace(/^#-/, '').split('-');
-                var parent = eval2.path(paths, the.data);
 
-                the.emit('change', key, neo, old, parent);
-                callback.call(the, key, neo, old, parent);
+                the.emit('change', key, neo, old, paths);
+                callback.call(the, key, neo, old, paths);
             }, the._options.timeout, false));
 
             return the;

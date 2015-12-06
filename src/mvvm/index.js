@@ -85,8 +85,8 @@ define(function (require, exports, module) {
                     directive.update();
 
                     if (attribute.varibles.length) {
-                        the._watcher.watch(attribute.varibles, function (key, newValue, oldValue, parent) {
-                            directive.update(key, newValue, oldValue, parent);
+                        the._watcher.watch(attribute.varibles, function (key, newValue, oldValue, paths) {
+                            directive.update(key, newValue, oldValue, paths);
                         });
                     }
                 });

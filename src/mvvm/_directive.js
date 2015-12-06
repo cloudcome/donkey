@@ -53,11 +53,11 @@ define(function (require, exports, module) {
             };
 
             // 更新指令
-            the.update = function (key, newValue, oldValue, parent) {
+            the.update = function (key, newValue, oldValue, paths) {
                 var the = this;
 
                 if (typeis.Function(directive.update) && the.name === _directiveName) {
-                    the.directive.update.call(the, key, newValue, oldValue, parent);
+                    the.directive.update.call(the, key, newValue, oldValue, paths);
                 }
             };
 
