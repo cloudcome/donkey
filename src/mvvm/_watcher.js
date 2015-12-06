@@ -9,9 +9,10 @@ define(function (require, exports, module) {
     'use strict';
 
     var klass = require('../utils/class.js');
+    var typeis = require('../utils/typeis.js');
     var dato = require('../utils/dato.js');
+    var controller = require('../utils/controller.js');
     var Emitter = require('../libs/emitter.js');
-    var watch = require('../3rd/watch.js');
     var observe = require('../3rd/observe.js');
     var eval2 = require('./_eval.js');
 
@@ -26,13 +27,7 @@ define(function (require, exports, module) {
 
             the.data = data;
             the._options = dato.extend({}, defaults, options);
-            watch.watch(function () {
-                console.log(arguments);
-            });
-            watch.onChange(function () {
-                console.log(arguments);
-                the.emit('change');
-            });
+            the._callbacks = {};
         },
 
         /**
@@ -43,35 +38,19 @@ define(function (require, exports, module) {
          */
         watch: function (attrs, callback) {
             var the = this;
-            var options = the._options;
-            var timeid = 0;
 
-            watch.watch(the.data, attrs, function (key, pro, neo, old) {
-                var now = new Date().getTime();
+            observe(the.data, attrs, controller.debounce(function (key, neo, old, path) {
+                var paths = path.replace(/^#-/, '').split('-');
+                var parent = eval2.path(paths, the.data);
 
-                if (!the._lastTime || now - the._lastTime > options.timeout) {
-                    clearTimeout(timeid);
-                    callback(key, pro, neo, old);
-                } else {
-                    timeid = setTimeout(function () {
-                        callback(key, pro, neo, old);
-                    });
-                }
-
-                the._lastTime = now;
-            });
+                the.emit('change', key, neo, old, parent);
+                callback.call(the, key, neo, old, parent);
+            }, the._options.timeout, false));
 
             return the;
         }
     });
 
-    Watcher.observe = function (obj, callback) {
-        observe(obj, function(key, neo, old, path){
-            var paths = path.replace(/^#-/, '').split('-');
-            var parent = eval2.path(paths, obj);
-            callback(neo, old, parent);
-        });
-    };
     Watcher.defaults = defaults;
     module.exports = Watcher;
 });

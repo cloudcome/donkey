@@ -9,6 +9,17 @@ define(function (require, exports, module) {
     'use strict';
 
     require('../polyfill/object.js');
+    var typeis = require('../utils/typeis.js');
+
+    var hideProp = function (obj, pro, value) {
+        Object.defineProperty(obj, pro, {
+            value: value,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        });
+    };
+
 
     /* observejs --- By dnt http://kmdjs.github.io/
      * Github: https://github.com/kmdjs/observejs
@@ -16,24 +27,29 @@ define(function (require, exports, module) {
      */
     var observe = function (target, arr, callback) {
         var _observe = function (target, arr, callback) {
-            if (!target.$observer)target.$observer = this;
+            if (!target.$observer) {
+                hideProp(target, '$observer', this);
+            }
+
             var $observer = target.$observer;
             var eventPropArr = [];
+
             if (observe.isArray(target)) {
                 if (target.length === 0) {
                     target.$observeProps = {};
                     target.$observeProps.$observerPath = "#";
                 }
-                $observer.mock(target);
 
+                $observer.mock(target);
             }
+
             for (var prop in target) {
                 if (target.hasOwnProperty(prop)) {
                     if (callback) {
                         if (observe.isArray(arr) && observe.isInArray(arr, prop)) {
                             eventPropArr.push(prop);
                             $observer.watch(target, prop);
-                        } else if (observe.isString(arr) && prop == arr) {
+                        } else if (observe.isString(arr) && prop === arr) {
                             eventPropArr.push(prop);
                             $observer.watch(target, prop);
                         }
@@ -43,15 +59,21 @@ define(function (require, exports, module) {
                     }
                 }
             }
+
             $observer.target = target;
-            if (!$observer.propertyChangedHandler)$observer.propertyChangedHandler = [];
+
+            if (!$observer.propertyChangedHandler) {
+                $observer.propertyChangedHandler = [];
+            }
+
             var propChanged = callback ? callback : arr;
             $observer.propertyChangedHandler.push({
                 all: !callback,
                 propChanged: propChanged,
                 eventPropArr: eventPropArr
             });
-        }
+        };
+
         _observe.prototype = {
             "onPropertyChanged": function (prop, value, oldValue, target, path) {
                 if (value !== oldValue && this.propertyChangedHandler) {
@@ -67,6 +89,8 @@ define(function (require, exports, module) {
                     this.watch(target, prop, target.$observeProps.$observerPath);
                 }
             },
+
+
             "mock": function (target) {
                 var self = this;
                 observe.methods.forEach(function (item) {
@@ -86,15 +110,27 @@ define(function (require, exports, module) {
                     };
                 });
             },
+
+
             "watch": function (target, prop, path) {
-                if (prop === "$observeProps" || prop === "$observer") return;
-                if (observe.isFunction(target[prop])) return;
-                if (!target.$observeProps) target.$observeProps = {};
-                if (path !== undefined) {
-                    target.$observeProps.$observerPath = path;
-                } else {
-                    target.$observeProps.$observerPath = "#";
+                if (prop === "$observeProps" || prop === "$observer") {
+                    return;
                 }
+
+                if (observe.isFunction(target[prop])) {
+                    return;
+                }
+
+                var watchObj = function (_target) {
+                    if (!target.$observeProps) {
+                        hideProp(_target, '$observeProps', {});
+                    }
+
+                    hideProp(_target.$observeProps, '$observerPath', path !== undefined ? path : '#');
+                };
+
+                watchObj(target);
+
                 var self = this;
                 var currentValue = target.$observeProps[prop] = target[prop];
                 Object.defineProperty(target, prop, {
@@ -107,16 +143,11 @@ define(function (require, exports, module) {
                         self.onPropertyChanged(prop, value, old, this, target.$observeProps.$observerPath);
                     }
                 });
-                if (typeof currentValue == "object") {
+                if (typeof currentValue === "object") {
                     if (observe.isArray(currentValue)) {
                         this.mock(currentValue);
                         if (currentValue.length === 0) {
-                            if (!currentValue.$observeProps) currentValue.$observeProps = {};
-                            if (path !== undefined) {
-                                currentValue.$observeProps.$observerPath = path;
-                            } else {
-                                currentValue.$observeProps.$observerPath = "#";
-                            }
+                            watchObj(currentValue);
                         }
                     }
                     for (var cprop in currentValue) {
@@ -126,58 +157,71 @@ define(function (require, exports, module) {
                     }
                 }
             }
-        }
-        return new _observe(target, arr, callback)
-    }
-    observe.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "toLocaleString", "toString", "size"]
-    observe.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift", "size"].join(",")
+        };
+
+        return new _observe(target, arr, callback);
+    };
+
+    observe.methods = 'concat every filter forEach indexOf join lastIndexOf map pop push reduce reduceRight reverse shift slice some sort splice unshift toLocaleString toString size'.split(' ');
+    observe.triggerStr = 'concat,pop,push,reverse,shift,sort,splice,unshift,size';
+
     observe.isArray = function (obj) {
-        return Object.prototype.toString.call(obj) === '[object Array]';
-    }
+        return typeis.Array(obj);
+    };
+
     observe.isString = function (obj) {
-        return typeof obj === "string";
-    }
+        return typeis.String(obj);
+    };
+
     observe.isInArray = function (arr, item) {
         for (var i = arr.length; --i > -1;) {
-            if (item === arr[i]) return true;
+            if (item === arr[i]) {
+                return true;
+            }
         }
+
         return false;
-    }
+    };
+
     observe.isFunction = function (obj) {
-        return Object.prototype.toString.call(obj) == '[object Function]';
-    }
+        return typeis.Function(obj);
+    };
+
     observe.twoWay = function (objA, aProp, objB, bProp) {
         if (typeof objA[aProp] === "object" && typeof objB[bProp] === "object") {
             observe(objA, aProp, function (name, value) {
                 objB[bProp] = this[aProp];
-            })
+            });
             observe(objB, bProp, function (name, value) {
                 objA[aProp] = this[bProp];
-            })
+            });
         } else {
             observe(objA, aProp, function (name, value) {
                 objB[bProp] = value;
-            })
+            });
             observe(objB, bProp, function (name, value) {
                 objA[aProp] = value;
-            })
+            });
         }
-    }
+    };
+
     observe._getRootName = function (prop, path) {
         if (path === "#") {
             return prop;
         }
+
         return path.split("-")[1];
-    }
+    };
 
     observe.add = function (obj, prop, value) {
         obj[prop] = value;
         var $observer = obj.$observer;
         $observer.watch(obj, prop);
-    }
+    };
+
     Array.prototype.size = function (length) {
         this.length = length;
-    }
+    };
 
     module.exports = observe;
 });
