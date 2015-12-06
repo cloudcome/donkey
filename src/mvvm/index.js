@@ -10,6 +10,7 @@ define(function (require, exports, module) {
 
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
+    var Emitter = require('../libs/emitter.js');
     /**
      * @type {Function}
      */
@@ -22,7 +23,7 @@ define(function (require, exports, module) {
         timeout: 50
     };
     var directives = [];
-    var Mvvm = module.exports = klass.create({
+    var Mvvm = module.exports = klass.extend(Emitter).create({
         constructor: function (ele, data, options) {
             var the = this;
 
