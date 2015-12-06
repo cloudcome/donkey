@@ -38,7 +38,7 @@ define(function (require, exports, module) {
      * @param data
      * @returns {*}
      */
-    module.exports = function (expression, data) {
+    exports.expression = function (expression, data) {
         var vars = [];
         var argName = generate();
 
@@ -54,5 +54,16 @@ define(function (require, exports, module) {
         var fn = new Function(argName, fnString + 'return ' + makeSafe(expression));
 
         return fn(data);
+    };
+
+
+    /**
+     * 执行数据路径
+     * @param paths {Array} 路径
+     * @param data
+     * @returns {{}}
+     */
+    exports.path = function (paths, data) {
+        return {};
     };
 });

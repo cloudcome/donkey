@@ -8,7 +8,13 @@
 define(function (require, exports, module) {
     'use strict';
 
-    module.exports = function (string, parentData) {
+
+    /**
+     * 解析路径表达式
+     * @param string
+     * @returns {{raw: *, paths: Array}}
+     */
+    module.exports = function (string) {
         var paths = [];
         var index = 0;
         var length = string.length;
