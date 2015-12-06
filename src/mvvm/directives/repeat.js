@@ -18,7 +18,7 @@ define(function (require, exports, module) {
     module.exports = {
         bind: function (node, token) {
             var the = this;
-            var flag = the.flag = modification.create('#comment', 'v-repeat-' + repeatId);
+            var flag = the.flag = modification.create('#comment', 'repeat-' + repeatId);
             var args = token.expression.split(',');
 
             this.node = node;

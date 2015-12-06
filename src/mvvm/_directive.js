@@ -16,7 +16,7 @@ define(function (require, exports, module) {
     var parseExpression = require('./_parser/expression.js');
     var parseText = require('./_parser/text.js');
     var parseArgs = require('./_parser/args.js');
-    var parsePath = require('./_parser/path.js');
+    //var parsePath = require('./_parser/path.js');
 
     var directiveId = 0;
     var defaults = {};

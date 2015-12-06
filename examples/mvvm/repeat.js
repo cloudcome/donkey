@@ -17,12 +17,23 @@ define(function (require, exports, module) {
     Mvvm.directive('repeat', require('../../src/mvvm/directives/repeat.js'));
 
     var data = window.data = {
-        list: [
-            '呵呵',
-            '哈哈',
-            '嘻嘻'
-        ]
+        users: [{
+            nickname: '#云淡然',
+            tags: [
+                '前端',
+                'JavaScript',
+                'CSS',
+                'HTML'
+            ]
+        }, {
+            nickname: '明明',
+            tags: [
+                '高',
+                '富',
+                '帅'
+            ]
+        }]
     };
 
-    new Mvvm(document.getElementById('demo'), data);
+    window.vm = new Mvvm(document.getElementById('demo'), data);
 });

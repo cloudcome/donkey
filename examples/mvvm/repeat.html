@@ -27,8 +27,12 @@
 <body ontouchstart="">
 
 <ul id="demo">
-   <li v-repeat-item="index, list">{{index}} = {{item}}</li>
-   <li v-repeat-item="list">{{$index}} = {{item}}</li>
+   <li v-repeat-user="users">
+       <b>{{user.nickname}}</b>
+       <ul>
+           <li v-repeat-tag="user.tags">{{tag}}</li>
+       </ul>
+   </li>
 </ul>
 
 <script src="/examples/jquery.min.js"></script>
