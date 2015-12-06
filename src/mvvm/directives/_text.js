@@ -11,11 +11,14 @@ define(function (require, exports, module) {
     module.exports = {
         name: '#text',
         bind: function (node, token) {
-            this.node = node;
-            this.expression = token.expression;
+            var the = this;
+            the.node = node;
+            the.expression = token.expression;
         },
         update: function () {
-            this.node.nodeValue = this.exec(this.expression);
+            var the = this;
+
+            the.node.nodeValue = the.exec();
         }
     };
 });

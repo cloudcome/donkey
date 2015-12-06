@@ -25,14 +25,18 @@ define(function (require, exports, module) {
                 the.trigger = false;
             });
         },
-        update: function (newValue) {
-            if (!this.trigger) {
-                this.$ele.val(this.exec());
+        update: function () {
+            var the = this;
+
+            if (!the.trigger) {
+                the.$ele.val(the.exec());
             }
         },
         unbind: function () {
-            this.$ele.off('input propertychange', this.oninput);
-            this.$ele.off('blur', this.onblur);
+            var the = this;
+
+            the.$ele.off('input propertychange', the.oninput);
+            the.$ele.off('blur', the.onblur);
         }
     };
 });

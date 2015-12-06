@@ -12,11 +12,15 @@ define(function (require, exports, module) {
 
     module.exports = {
         bind: function (ele, token) {
-            this.$ele = $(ele);
-            this.propName = token.value;
+            var the = this;
+
+            the.$ele = $(ele);
+            the.propName = token.value;
         },
         update: function () {
-            this.$ele.prop(this.propName, Boolean(this.exec()));
+            var the = this;
+
+            the.$ele.prop(the.propName, Boolean(the.exec()));
         }
     };
 });

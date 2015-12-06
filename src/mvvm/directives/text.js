@@ -12,7 +12,9 @@ define(function (require, exports, module) {
 
     module.exports = {
         update: function () {
-            this.node.textContent = this.node.innerText = this.exec();
+            var the = this;
+
+            the.node.textContent = the.node.innerText = the.exec();
         }
     };
 });

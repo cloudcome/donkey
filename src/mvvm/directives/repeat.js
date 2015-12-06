@@ -21,10 +21,10 @@ define(function (require, exports, module) {
             var flag = the.flag = modification.create('#comment', 'repeat-' + repeatId);
             var args = token.expression.split(',');
 
-            this.node = node;
-            this.itemVar = token.value;
-            this.listVar = args.pop().trim();
-            this.indexVar = (args[0] || '$index').trim();
+            the.node = node;
+            the.itemVar = token.value;
+            the.listVar = args.pop().trim();
+            the.indexVar = (args[0] || '$index').trim();
 
             modification.insert(flag, node, 'afterend');
             modification.remove(node);

@@ -12,14 +12,18 @@ define(function (require, exports, module) {
 
     module.exports = {
         bind: function (ele, token) {
-            this.$ele = $(ele);
-            this.className = token.value;
+            var the = this;
+
+            the.$ele = $(ele);
+            the.className = token.value;
         },
         update: function () {
-            if (Boolean(this.exec())) {
-                this.$ele.addClass(this.className);
+            var the = this;
+
+            if (Boolean(the.exec())) {
+                the.$ele.addClass(the.className);
             } else {
-                this.$ele.removeClass(this.className);
+                the.$ele.removeClass(the.className);
             }
         }
     };
