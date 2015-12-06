@@ -33,7 +33,7 @@ define(function (require, exports, module) {
 
             return false;
         },
-        update: function (data) {
+        update: function () {
             var the = this;
             var node = the.node;
             var flag = the.flag;
@@ -41,7 +41,7 @@ define(function (require, exports, module) {
 
             dato.each(list, function (index, item) {
                 var clone = node.cloneNode(true);
-                var childData = dato.extend({}, data);
+                var childData = dato.extend({}, the.data);
 
                 childData[the.itemVar] = item;
                 childData[the.indexVar] = index;

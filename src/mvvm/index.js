@@ -82,11 +82,11 @@ define(function (require, exports, module) {
                         return;
                     }
 
-                    directive.update(data);
+                    directive.update();
 
                     if (attribute.varibles.length) {
-                        the._watcher.watch(attribute.varibles, function () {
-                            directive.update(data);
+                        the._watcher.watch(attribute.varibles, function (key, newValue, oldValue, parent) {
+                            directive.update(key, newValue, oldValue, parent);
                         });
                     }
                 });
