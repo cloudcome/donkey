@@ -144,6 +144,10 @@ define(function (require, exports, module) {
             //    var paths = parsePath(_path).paths;
             //    return eval2.path(paths, _data);
             //};
+        },
+
+        getScopeValue: function (data) {
+            var the = this;
         }
     });
 

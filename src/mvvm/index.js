@@ -25,15 +25,34 @@ define(function (require, exports, module) {
         timeout: 50
     };
     var directives = [];
-    var Mvvm = module.exports = klass.extend(Emitter).create({
+    var ParentMvvm = klass.extend(Emitter).create(function (ele, data, options, parent, paths) {
+        var the = this;
+
+        the.parent = null;
+        the.root = the;
+        the.paths = [];
+        the.children = [];
+
+        if (parent) {
+            the.parent = parent;
+            the.paths = paths;
+            parent.children.push(the);
+
+            var root = parent;
+
+            while (root.parent) {
+                root = root.parent;
+            }
+
+            the.root = root;
+        }
+    });
+    var Mvvm = klass.extend(ParentMvvm).create({
         constructor: function (ele, data, options) {
             var the = this;
 
             data = data || {};
             the.data = data;
-            the.parent = null;
-            the.paths = [];
-            the.children = [];
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan.call(the, ele, directives, data, options);
             the._watcher = new Watcher(data, options);
@@ -171,18 +190,13 @@ define(function (require, exports, module) {
          */
         create: function (ele, data, paths) {
             var the = this;
-            var child = new Mvvm(ele, data, the._options);
-
-            child.parent = the;
-            child.paths = paths;
-            the.children.push(child);
-            return child;
+            return new Mvvm(ele, data, the._options, the, paths);
         },
 
 
         /**
          * 事件向下传播
-         * @returns {exports}
+         * @returns {Mvvm}
          */
         broadcast: function () {
             var the = this;
@@ -200,7 +214,7 @@ define(function (require, exports, module) {
 
         /**
          * 事件向下传播
-         * @returns {exports}
+         * @returns {Mvvm}
          */
         bubble: function () {
             var the = this;
@@ -220,6 +234,7 @@ define(function (require, exports, module) {
         }
     });
 
+
     /**
      * 静态指令
      * @param name
@@ -231,5 +246,6 @@ define(function (require, exports, module) {
     };
     Mvvm.defaults = defaults;
     Mvvm.directives = directives;
-    Mvvm.excute = require('./_eval.js');
+
+    module.exports = Mvvm;
 });
