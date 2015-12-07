@@ -39,18 +39,25 @@ define(function (require, exports, module) {
             var flag = the.flag;
             var list = the.exec(the.listVar, the.data) || [];
 
-            dato.each(list, function (index, item) {
-                var clone = node.cloneNode(true);
-                var childData = dato.extend({}, the.data);
+            // 二次更新
+            if(key){
 
-                childData[the.itemVar] = item;
-                childData[the.indexVar] = index;
-                modification.insert(clone, flag, 'beforebegin');
-                the.mvvm.child(clone, childData, [
-                    the.listVar,
-                    index
-                ]);
-            });
+            }
+            // 初次更新
+            else{
+                dato.each(list, function (index, item) {
+                    var clone = node.cloneNode(true);
+                    var childData = the.data;
+
+                    childData[the.itemVar] = item;
+                    childData[the.indexVar] = index;
+                    modification.insert(clone, flag, 'beforebegin');
+                    the.mvvm.child(clone, childData, [
+                        the.listVar,
+                        index
+                    ]);
+                });
+            }
         }
     };
 });
