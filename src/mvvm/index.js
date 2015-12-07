@@ -10,6 +10,7 @@ define(function (require, exports, module) {
 
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
+    var typeis = require('../utils/typeis.js');
     var Emitter = require('../libs/emitter.js');
     /**
      * @type {Function}
@@ -36,37 +37,39 @@ define(function (require, exports, module) {
             the._scanner = scan.call(the, ele, directives, data, options);
             the._watcher = new Watcher(data, options);
             Emitter.pipe(the._watcher, the);
-            the._render(data);
-        },
-
-        /**
-         * 实例指令
-         */
-        directive: function () {
-            // 实例指令
+            the._initEvent();
+            the._initNode(data);
         },
 
 
         /**
-         * 创建子 vm
-         * @params ele {Object} 元素节点
-         * @params data {Object} 数据
-         * @params paths {Array} 从父级取数据的路径
-         * @returns {Mvvm}
+         * 初始化事件
+         * @private
          */
-        child: function (ele, data, paths) {
+        _initEvent: function () {
             var the = this;
-            var child = new Mvvm(ele, data, the._options);
+            var isSameMVVM = function (paths) {
+                if (paths.length !== the.paths.length) {
+                    return false;
+                }
 
-            child.parent = the;
-            child.paths = paths;
-            the.children.push(child);
-            return child;
-        },
+                var ret = true;
+                dato.each(paths, function (index, path) {
+                    if (String(path) !== String(the.paths[index])) {
+                        ret = false;
+                        return false;
+                    }
+                });
 
+                return ret;
+            };
 
-        watch: function () {
-
+            // 广播事件
+            the.on('broadcast', function (key, newValue, oldValue, paths) {
+                if (isSameMVVM(paths)) {
+                    debugger;
+                }
+            });
         },
 
 
@@ -75,7 +78,7 @@ define(function (require, exports, module) {
          * @param data
          * @private
          */
-        _render: function (data) {
+        _initNode: function (data) {
             var the = this;
             var render = function (scanner, data) {
                 dato.each(scanner.attributes, function (index, attribute) {
@@ -111,6 +114,99 @@ define(function (require, exports, module) {
             };
 
             render(the._scanner, data);
+        },
+
+
+        //getData: function () {
+        //    var data = {};
+        //    var readObj = function (obj) {
+        //        var ret;
+        //
+        //        if (typeis.Object(obj)) {
+        //            ret = {};
+        //        } else if (typeis.Array(obj)) {
+        //            ret = [];
+        //        } else {
+        //            return;
+        //        }
+        //
+        //        dato.each(obj, function (key, val) {
+        //            if (typeof val === 'object') {
+        //                ret[key] = readObj(val);
+        //            }
+        //        });
+        //
+        //        return ret;
+        //    };
+        //
+        //    readObj(this.data);
+        //    return data;
+        //},
+
+
+        /**
+         * 实例指令
+         */
+        directive: function () {
+            // 实例指令
+        },
+
+
+        /**
+         * 创建子 vm
+         * @params ele {Object} 元素节点
+         * @params data {Object} 数据
+         * @params paths {Array} 从父级取数据的路径
+         * @returns {Mvvm}
+         */
+        create: function (ele, data, paths) {
+            var the = this;
+            var child = new Mvvm(ele, data, the._options);
+
+            child.parent = the;
+            child.paths = paths;
+            the.children.push(child);
+            return child;
+        },
+
+
+        /**
+         * 事件向下传播
+         * @returns {exports}
+         */
+        broadcast: function () {
+            var the = this;
+            var args = arguments;
+
+            //the.emit.apply(the, args);
+            dato.each(the.children, function (index, child) {
+                child.emit.apply(child, args);
+                child.broadcast.apply(child, args);
+            });
+
+            return the;
+        },
+
+
+        /**
+         * 事件向下传播
+         * @returns {exports}
+         */
+        bubble: function () {
+            var the = this;
+            var args = arguments;
+
+            //the.emit.apply(the, args);
+            if (the.parent) {
+                the.parent.emit.apply(the.parent, args);
+                the.parent.bubble.apply(the.parent, args);
+            }
+
+            return the;
+        },
+
+        watch: function () {
+
         }
     });
 

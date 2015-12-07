@@ -9,6 +9,7 @@ define(function (require, exports, module) {
     'use strict';
 
     var Mvvm = require('../../src/mvvm/index.js');
+    var random = require('../../src/utils/random.js');
 
     Mvvm.directive('class', require('../../src/mvvm/directives/class.js'));
     Mvvm.directive('text', require('../../src/mvvm/directives/text.js'));
@@ -35,6 +36,9 @@ define(function (require, exports, module) {
         }],
         onChange: function () {
             data.users[0].tags[0] = Math.random();
+        },
+        onAddSuffix: function (item) {
+            item.nickname += random.string(1);
         }
     };
 

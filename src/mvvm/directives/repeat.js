@@ -11,39 +11,10 @@ define(function (require, exports, module) {
     require('../../polyfill/string.js');
     var modification = require('../../core/dom/modification.js');
     var dato = require('../../utils/dato.js');
+    var typeis = require('../../utils/typeis.js');
 
     var repeatId = 0;
     var namespace = '-donkey-mvvm-directive-repeat-' + Math.random();
-
-    var getDeepMvvm = function (mvvm, paths) {
-        var pathLength = paths.length;
-        var _deep = function (parentMvvm) {
-            var find = null;
-
-            dato.each(parentMvvm.children, function (index, childMvvm) {
-                if (childMvvm.paths.length !== pathLength) {
-                    return;
-                }
-
-                var findPath = true;
-                dato.each(childMvvm.paths, function (index, path) {
-                    if (path !== paths[index]) {
-                        findPath = false;
-                        return false;
-                    }
-                });
-
-                if (findPath) {
-                    find = childMvvm;
-                    return false;
-                }
-            });
-
-            return find;
-        };
-
-        _deep(mvvm);
-    };
 
     module.exports = {
         bind: function (node, token) {
@@ -71,18 +42,22 @@ define(function (require, exports, module) {
 
             // 二次更新
             if (key) {
-
+                //the.mvvm.broadcast('broadcast', key, newValue, oldValue, paths);
             }
             // 初次更新
             else {
                 dato.each(list, function (index, item) {
                     var clone = node.cloneNode(true);
-                    var childData = the.data;
+                    var childData = dato.extend(true, {}, the.data);
 
-                    childData[the.itemVar] = item;
+                    if (typeof item === 'object') {
+                        childData[the.itemVar] = dato.extend(true, typeis.Array(item) ? [] : {}, item);
+                    } else {
+                        childData[the.itemVar] = item;
+                    }
                     childData[the.indexVar] = index;
                     modification.insert(clone, flag, 'beforebegin');
-                    the.mvvm.child(clone, childData, [
+                    the.mvvm.create(clone, childData, [
                         the.listVar,
                         index
                     ]);

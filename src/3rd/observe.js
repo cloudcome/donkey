@@ -219,9 +219,9 @@ define(function (require, exports, module) {
         $observer.watch(obj, prop);
     };
 
-    Array.prototype.size = function (length) {
-        this.length = length;
-    };
+    //Array.prototype.size = function (length) {
+    //    this.length = length;
+    //};
 
     module.exports = observe;
 });

@@ -28,7 +28,7 @@
 
 <ul id="demo">
    <li v-repeat-user="users">
-       <b>{{user.nickname}}</b>
+       <b>{{user.nickname}} <button v-click="onAddSuffix(user)">添加后缀</button></b>
        <!--<ul>-->
            <!--<li v-repeat-tag="user.tags">{{tag}}</li>-->
        <!--</ul>-->
