@@ -15,6 +15,36 @@ define(function (require, exports, module) {
     var repeatId = 0;
     var namespace = '-donkey-mvvm-directive-repeat-' + Math.random();
 
+    var getDeepMvvm = function (mvvm, paths) {
+        var pathLength = paths.length;
+        var _deep = function (parentMvvm) {
+            var find = null;
+
+            dato.each(parentMvvm.children, function (index, childMvvm) {
+                if (childMvvm.paths.length !== pathLength) {
+                    return;
+                }
+
+                var findPath = true;
+                dato.each(childMvvm.paths, function (index, path) {
+                    if (path !== paths[index]) {
+                        findPath = false;
+                        return false;
+                    }
+                });
+
+                if (findPath) {
+                    find = childMvvm;
+                    return false;
+                }
+            });
+
+            return find;
+        };
+
+        _deep(mvvm);
+    };
+
     module.exports = {
         bind: function (node, token) {
             var the = this;
@@ -40,11 +70,11 @@ define(function (require, exports, module) {
             var list = the.exec(the.listVar, the.data) || [];
 
             // 二次更新
-            if(key){
+            if (key) {
 
             }
             // 初次更新
-            else{
+            else {
                 dato.each(list, function (index, item) {
                     var clone = node.cloneNode(true);
                     var childData = the.data;
