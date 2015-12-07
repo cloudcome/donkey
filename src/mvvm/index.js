@@ -30,6 +30,8 @@ define(function (require, exports, module) {
             data = data || {};
             the.data = data;
             the.parent = null;
+            the.paths = [];
+            the.children = [];
             the._options = options = dato.extend({}, defaults, options);
             the._scanner = scan.call(the, ele, directives, data, options);
             the._watcher = new Watcher(data, options);
@@ -47,16 +49,17 @@ define(function (require, exports, module) {
 
         /**
          * 创建子 vm
-         * @params ele
-         * @params data
+         * @params ele {Object} 元素节点
+         * @params data {Object} 数据
+         * @params paths {Array} 从父级取数据的路径
          * @returns {Mvvm}
          */
-        child: function (ele, data) {
+        child: function (ele, data, paths) {
             var the = this;
             var child = new Mvvm(ele, data, the._options);
 
             child.parent = the;
-            the.children = the.children || [];
+            child.paths = paths;
             the.children.push(child);
             return child;
         },

@@ -46,7 +46,10 @@ define(function (require, exports, module) {
                 childData[the.itemVar] = item;
                 childData[the.indexVar] = index;
                 modification.insert(clone, flag, 'beforebegin');
-                the.mvvm.child(clone, childData);
+                the.mvvm.child(clone, childData, [
+                    the.listVar,
+                    index
+                ]);
             });
         }
     };
