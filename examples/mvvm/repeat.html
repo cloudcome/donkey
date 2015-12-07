@@ -28,8 +28,7 @@
 
 <ul id="demo">
    <li v-repeat-user="users">
-       <!--<b>{{$index}}/{{users.length}} : {{user.nickname}} <button v-click="onAddSuffix(user)">添加后缀</button></b>-->
-       {{users.length}}
+       <b>{{$index}}/{{users.length - 1}} : {{user.nickname}} <button v-click="onAddSuffix(user)">添加后缀</button></b>
        <!--<ul>-->
            <!--<li v-repeat-tag="user.tags">{{tag}}</li>-->
        <!--</ul>-->

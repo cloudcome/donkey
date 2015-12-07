@@ -50,5 +50,6 @@ define(function (require, exports, module) {
     });
 
     Watcher.defaults = defaults;
+    Watcher.observe = observe;
     module.exports = Watcher;
 });

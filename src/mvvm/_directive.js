@@ -44,6 +44,7 @@ define(function (require, exports, module) {
                 var ret = true;
 
                 _directiveName = token.name;
+                the.scope = the.buildScope(the.data);
 
                 if (typeis.Function(directive.bind) && the.name === _directiveName) {
                     ret = the.directive.bind.call(the, node, token);
@@ -56,6 +57,8 @@ define(function (require, exports, module) {
             the.update = function (key, newValue, oldValue, paths) {
                 var the = this;
 
+                the.scope = the.buildScope(the.data);
+
                 if (typeis.Function(directive.update) && the.name === _directiveName) {
                     the.directive.update.call(the, key, newValue, oldValue, paths);
                 }
@@ -64,6 +67,8 @@ define(function (require, exports, module) {
             // 解绑指令
             the.unbind = function () {
                 var the = this;
+
+                the.scope = the.buildScope(the.data);
 
                 if (typeis.Function(directive.unbind) && the.name === _directiveName) {
                     the.directive.unbind.call(the);
@@ -87,7 +92,7 @@ define(function (require, exports, module) {
                     _expression = null;
                 }
 
-                return eval2.expression(_expression || token.expression, the.buildScope(_data || data));
+                return eval2.expression(_expression || token.expression, _data || the.scope);
             };
 
             /**

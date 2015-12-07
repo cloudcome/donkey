@@ -38,7 +38,7 @@ define(function (require, exports, module) {
             var the = this;
             var node = the.node;
             var flag = the.flag;
-            var list = the.exec(the.listVar, the.data) || [];
+            var list = the.exec(the.listVar) || [];
 
             // 二次更新
             if (key) {
@@ -48,7 +48,6 @@ define(function (require, exports, module) {
             else {
                 dato.each(list, function (index, item) {
                     var clone = node.cloneNode(true);
-                    //var childData = dato.extend(true, {}, the.data);
                     var childData = {};
 
                     //if (typeof item === 'object') {

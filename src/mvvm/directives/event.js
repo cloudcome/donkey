@@ -43,8 +43,8 @@ define(function (require, exports, module) {
                 case 'enter':
                     $(ele).on('keypress', function (eve) {
                         if (eve.keyCode === 13) {
-                            if (typeis.Function(the.data[cbName])) {
-                                the.data[cbName].apply(this, calArgs(eve));
+                            if (typeis.Function(the.scope[cbName])) {
+                                the.scope[cbName].apply(this, calArgs(eve));
                             }
                         }
                     });
@@ -52,8 +52,8 @@ define(function (require, exports, module) {
 
                 default:
                     $(ele).on(token.value, function (eve) {
-                        if (typeis.Function(the.data[cbName])) {
-                            the.data[cbName].apply(this, calArgs(eve));
+                        if (typeis.Function(the.scope[cbName])) {
+                            the.scope[cbName].apply(this, calArgs(eve));
                         }
                     });
                     break;
