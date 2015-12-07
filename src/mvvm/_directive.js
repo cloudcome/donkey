@@ -87,7 +87,7 @@ define(function (require, exports, module) {
                     _expression = null;
                 }
 
-                return eval2.expression(_expression || token.expression, _data || data);
+                return eval2.expression(_expression || token.expression, the.buildScope(_data || data));
             };
 
             /**
@@ -146,8 +146,29 @@ define(function (require, exports, module) {
             //};
         },
 
-        getScopeValue: function (data) {
+
+        /**
+         * 构建作用域
+         * @param data
+         * @returns {{}}
+         */
+        buildScope: function (data) {
+            var ret = {};
             var the = this;
+            var stack = [];
+            var mvvm = the.mvvm;
+
+            while (mvvm) {
+                // 向前填充数据，模拟调用栈
+                stack.unshift(mvvm.data);
+                mvvm = mvvm.parent;
+            }
+
+            dato.each(stack, function (index, scope) {
+                dato.extend(ret, scope);
+            });
+
+            return dato.extend(ret, data);
         }
     });
 
