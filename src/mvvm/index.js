@@ -8,6 +8,7 @@
 define(function (require, exports, module) {
     'use strict';
 
+    var allocation = require('../utils/allocation.js');
     var klass = require('../utils/class.js');
     var dato = require('../utils/dato.js');
     var typeis = require('../utils/typeis.js');
@@ -70,6 +71,11 @@ define(function (require, exports, module) {
                     debugger;
                 }
             });
+
+            // 冒泡事件
+            the.on('bubble', function (key, newValue, oldValue, paths) {
+                debugger;
+            });
         },
 
 
@@ -103,6 +109,10 @@ define(function (require, exports, module) {
                     if (scanner.varibles.length) {
                         the._watcher.watch(scanner.varibles, function () {
                             scanner.directive.update(data);
+                            var args = allocation.args(arguments);
+                            args.unshift('bubble');
+                            // 数据变化了，向上冒泡
+                            the.bubble.apply(the, args);
                         });
                     }
                 }

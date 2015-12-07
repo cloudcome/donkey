@@ -48,13 +48,16 @@ define(function (require, exports, module) {
             else {
                 dato.each(list, function (index, item) {
                     var clone = node.cloneNode(true);
-                    var childData = dato.extend(true, {}, the.data);
+                    //var childData = dato.extend(true, {}, the.data);
+                    var childData = {};
 
-                    if (typeof item === 'object') {
-                        childData[the.itemVar] = dato.extend(true, typeis.Array(item) ? [] : {}, item);
-                    } else {
-                        childData[the.itemVar] = item;
-                    }
+                    //if (typeof item === 'object') {
+                    //    childData[the.itemVar] = dato.extend(true, typeis.Array(item) ? [] : {}, item);
+                    //} else {
+                    //    childData[the.itemVar] = item;
+                    //}
+
+                    childData[the.itemVar] = item;
                     childData[the.indexVar] = index;
                     modification.insert(clone, flag, 'beforebegin');
                     the.mvvm.create(clone, childData, [

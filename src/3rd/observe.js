@@ -162,7 +162,7 @@ define(function (require, exports, module) {
         return new _observe(target, arr, callback);
     };
 
-    observe.methods = 'concat every filter forEach indexOf join lastIndexOf map pop push reduce reduceRight reverse shift slice some sort splice unshift toLocaleString toString size'.split(' ');
+    observe.methods = 'concat every filter forEach indexOf join lastIndexOf map pop push reduce reduceRight reverse shift slice some sort splice unshift toLocaleString toString'.split(' ');
     observe.triggerStr = 'concat,pop,push,reverse,shift,sort,splice,unshift,size';
 
     observe.isArray = function (obj) {
