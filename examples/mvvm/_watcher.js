@@ -36,6 +36,12 @@ define(function (require, exports, module) {
     };
 
     watcher.observe(data, function () {
+        console.log(1);
+        console.log(arguments);
+    });
+
+    watcher.observe(data.users[0], function () {
+        console.log(2);
         console.log(arguments);
     });
 

@@ -118,6 +118,10 @@ define(function (require, exports, module) {
                     if (attribute.varibles.length) {
                         the._watcher.watch(attribute.varibles, function (key, newValue, oldValue, paths) {
                             directive.update(key, newValue, oldValue, paths);
+                            var args = allocation.args(arguments);
+                            args.unshift('broadcast');
+                            // 数据变化了，向下广播
+                            the.broadcast.apply(the, args);
                         });
                     }
                 });
@@ -128,10 +132,10 @@ define(function (require, exports, module) {
                     if (scanner.varibles.length) {
                         the._watcher.watch(scanner.varibles, function () {
                             scanner.directive.update(data);
-                            var args = allocation.args(arguments);
-                            args.unshift('bubble');
+                            //var args = allocation.args(arguments);
+                            //args.unshift('bubble');
                             // 数据变化了，向上冒泡
-                            the.bubble.apply(the, args);
+                            //the.bubble.apply(the, args);
                         });
                     }
                 }
