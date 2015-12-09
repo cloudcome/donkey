@@ -26,9 +26,15 @@ define(function (require, exports, module) {
 
     var supportTransition = !!compatible.css3('transition');
     var REG_SEP = /-/;
-    var defaults = {
+    var animationDefaults = {
         easing: 'linear',
         duration: 456
+    };
+    var scrollTopDefaults = {
+        easing: 'linear',
+        duration: 456,
+        offsetLeft: 0,
+        offsetTop: -50
     };
 
     /**
@@ -50,7 +56,7 @@ define(function (require, exports, module) {
             }
         }
 
-        options = dato.extend({}, defaults, options);
+        options = dato.extend({}, animationDefaults, options);
 
         if (supportTransition) {
             if (!typeis.empty(to.translateX)) {
@@ -71,7 +77,7 @@ define(function (require, exports, module) {
             }
 
             if (!$.easing[options.easing]) {
-                options.easing = defaults.easing;
+                options.easing = animationDefaults.easing;
             }
 
             $(ele).animate(to, dato.extend(options, {
@@ -83,7 +89,7 @@ define(function (require, exports, module) {
     /**
      * 定点滚动
      * @param position {Object} 滚动的位置或者元素
-     * @param [options] {Object} 动画配置
+     * @param [options] {object} 动画配置
      * @param [options.easing="linear"] {String} 动画缓冲
      * @param [options.duration=567] {Number} 动画时间
      * @param [options.offsetLeft=0] {Number} 左位移
@@ -103,13 +109,13 @@ define(function (require, exports, module) {
             options = null;
         }
 
-        options = dato.extend({}, defaults, options);
+        options = dato.extend({}, scrollTopDefaults, options);
         options.complete = callback;
 
-        if (typeis.isElement(position) || position.length && typeis.isElement(position[0])) {
+        if (typeis.Element(position) || position.length && typeis.Element(position[0])) {
             position = $(position).offset();
-            position.left += options.offsetLeft;
-            position.top += options.offsetTop;
+            position.left += options.offsetLeft || 0;
+            position.top += options.offsetTop || 0;
         }
 
         $([elHtml, elBody]).animate({
