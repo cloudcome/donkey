@@ -24,10 +24,11 @@ define(function (require, exports, module) {
     var tpl = window.tpl = new Template($textarea.value, {
         debug: true
     });
-    $pre1.innerHTML = tpl.fn.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    $pre1.innerHTML = tpl.compiler.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     $pre2.innerHTML = tpl.render({
         a: 1,
         b: 2,
+        abc: 3,
         phone: '18809091212'
     }).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 });
