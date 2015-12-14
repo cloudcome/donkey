@@ -54,7 +54,8 @@ define(function (require, exports, module) {
             $(doc).on(options.openEvent, options.selector, the._onTooltip = function () {
                 var ele = this;
                 var $ele = $(ele);
-                var content = $ele.data(options.data) || $ele.attr('alt') || $ele.text();
+                // 实时读取 attr data-tooltip
+                var content = $ele.attr('data-' + options.data) || $ele.attr('alt') || $ele.text();
                 var popup;
 
                 // 上次和本次是同一个
