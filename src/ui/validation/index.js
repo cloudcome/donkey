@@ -1,5 +1,5 @@
-/*!
- * 表单
+/**
+ * ui 表单验证
  * @author ydr.me
  * @create 2015-07-02 14:20
  */
@@ -102,12 +102,12 @@ define(function (require, exports, module) {
                 .on('invalid', function (err, path) {
                     the.emit('invalid', err, the._pathMap[path]);
                 })
-                .on('error', function (err, path) {
-                    the.emit('error', err, the._pathMap[path]);
-                })
-                .on('success', function () {
-                    the.emit('success');
-                })
+                //.on('error', function (err, path) {
+                //    the.emit('error', err, the._pathMap[path]);
+                //})
+                //.on('success', function () {
+                //    the.emit('success');
+                //})
                 .before('validate', function (path) {
                     the.emit('beforevalidate', the._pathMap[path]);
                 })
@@ -126,7 +126,7 @@ define(function (require, exports, module) {
 
         /**
          * 获取表单数据
-         * @param [ele] {Object} 指定元素
+         * @param [ele] {Object|String} 指定元素或者字段
          * @returns {{}}
          */
         getData: function (ele) {
@@ -134,18 +134,27 @@ define(function (require, exports, module) {
             var data = {};
             var list = ele ? [] : the._$inputs;
 
-
             if (ele) {
-                var inputType = the._getType(ele);
+                // path
+                if (typeis.String(ele)) {
+                    ele = the._pathMap[ele];
+                }
 
-                switch (inputType) {
-                    case 'checkbox':
-                    case 'radio':
-                        list = $('input[name="' + ele.name + '"]', the._$form);
-                        break;
+                // jquery list or some object
+                if (!ele.nodeType && 'length' in ele) {
+                    list = ele;
+                } else {
+                    var inputType = the._getType(ele);
 
-                    default :
-                        list = [ele];
+                    switch (inputType) {
+                        case 'checkbox':
+                        case 'radio':
+                            list = $('input[name="' + ele.name + '"]', the._$form);
+                            break;
+
+                        default :
+                            list = [ele];
+                    }
                 }
             }
 
@@ -251,13 +260,10 @@ define(function (require, exports, module) {
          * 单独验证某个/些字段
          * @param [ele] {Object|Array|String} 待验证的对象或字段，可以为多个对象，如果为空则验证全部
          * @param [callback] {Function} 回调
-         * @arguments [pass] {Boolean} 是否通过验证
          * @returns {ValidationUI}
          */
         validate: function (ele, callback) {
             var the = this;
-            var options = the._options;
-            var data;
             var args = allocation.args(arguments);
 
             if (typeis.Function(args[0])) {
@@ -265,66 +271,21 @@ define(function (require, exports, module) {
                 ele = null;
             }
 
-            // 单个字段
-            if (typeis.string(ele)) {
-                ele = the._pathMap[ele];
-            }
+            var data = the.getData(ele);
+            var oncomplete = function (err) {
+                callback(err);
 
-            // 多个字段
-            if (typeis.Array(ele)) {
-                var temp = [];
-
-                dato.each(ele, function (index, path) {
-                    temp.push(the._pathMap[path]);
-                });
-
-                ele = temp;
-            }
-
-            // 单个元素
-            if (typeis.element(ele)) {
-                ele = [ele];
-            }
-
-            var pass = null;
-            var oncomplete = function () {
-                if (typeis.Function(callback)) {
-                    callback.call(the, pass);
+                if (err) {
+                    the.emit('error');
+                } else {
+                    the.emit('success');
                 }
             };
 
-            if (ele && 'length' in ele) {
-                howdo.each(ele, function (index, $ele, next) {
-                    var path = $ele.name;
-                    var equalPath = the._equalMap[path];
-                    var select = [path];
-
-                    if (equalPath) {
-                        select.push(equalPath);
-                    }
-
-                    data = dato.select(the.getData(), select);
-                    the._validation.validateOne(data, function (_pass) {
-                        if (pass === null || _pass === false) {
-                            pass = _pass;
-                        }
-
-                        var err = !_pass;
-
-                        // 有错 && 失败继续
-                        if (err && !options.breakOnInvalid) {
-                            err = false;
-                        }
-
-                        next(err);
-                    });
-                }).follow(oncomplete);
+            if (ele) {
+                the._validation.validateSome(data, oncomplete);
             } else {
-                data = the.getData();
-                the._validation.validateAll(data, function (_pass) {
-                    pass = _pass;
-                    oncomplete();
-                });
+                the._validation.validateAll(data, oncomplete);
             }
 
             return the;
