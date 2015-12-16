@@ -127,9 +127,7 @@ define(function (require, exports, module) {
             if (path) {
                 if (typeis.Element(path)) {
                     path = path.name;
-                }
-                // getData([ele1, ele2]);
-                else if ('length' in path) {
+                } else if ('length' in path) {
                     var _temp = [];
                     dato.each(path, function (index, item) {
                         if (typeis.Element(item)) {
@@ -158,15 +156,17 @@ define(function (require, exports, module) {
             var list = ele ? [] : the._$inputs;
 
             if (ele) {
-                // path
                 if (typeis.String(ele)) {
                     ele = the._pathMap[ele];
-                }
-
-                // jquery list or some object
-                if (!ele.nodeType && 'length' in ele) {
-                    list = ele;
-                } else {
+                } else if ('length' in ele) {
+                    dato.each(ele, function (index, item) {
+                        if (typeis.Element(item)) {
+                            list.push(item);
+                        } else if (typeis.String(item)) {
+                            list.push(the._pathMap[item]);
+                        }
+                    });
+                } else if(typeis.Element(ele)) {
                     var inputType = the._getType(ele);
 
                     switch (inputType) {
@@ -244,7 +244,6 @@ define(function (require, exports, module) {
                         data[path] = val;
                 }
             });
-
 
             return data;
         },
