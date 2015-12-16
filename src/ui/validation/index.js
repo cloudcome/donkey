@@ -102,12 +102,6 @@ define(function (require, exports, module) {
                 .on('invalid', function (err, path) {
                     the.emit('invalid', err, the._pathMap[path]);
                 })
-                //.on('error', function (err, path) {
-                //    the.emit('error', err, the._pathMap[path]);
-                //})
-                //.on('success', function () {
-                //    the.emit('success');
-                //})
                 .before('validate', function (path) {
                     the.emit('beforevalidate', the._pathMap[path]);
                 })
@@ -273,12 +267,8 @@ define(function (require, exports, module) {
 
             var data = the.getData(ele);
             var oncomplete = function (err) {
-                callback(err);
-
-                if (err) {
-                    the.emit('error');
-                } else {
-                    the.emit('success');
+                if (typeis.Function(callback)) {
+                    callback(err);
                 }
             };
 
