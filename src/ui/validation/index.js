@@ -124,6 +124,24 @@ define(function (require, exports, module) {
          * @returns {*}
          */
         getData: function (path) {
+            if (path) {
+                if (typeis.Element(path)) {
+                    path = path.name;
+                }
+                // getData([ele1, ele2]);
+                else if ('length' in path) {
+                    var _temp = [];
+                    dato.each(path, function (index, item) {
+                        if (typeis.Element(item)) {
+                            _temp.push(item.name);
+                        } else if (typeis.String(item)) {
+                            _temp.push(item);
+                        }
+                    });
+                    path = _temp;
+                }
+            }
+
             return this._validation.getData(path);
         },
 

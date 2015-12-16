@@ -213,11 +213,15 @@ define(function (require, exports, module) {
          * @returns {*}
          */
         getData: function (path) {
-            if (path) {
-                return this.data[path];
+            var the = this;
+
+            if (typeis.Array(path)) {
+                return dato.select(the.data, path);
+            } else if (typeis.String(path)) {
+                return the.data[path];
             }
 
-            return this.data;
+            return the.data;
         },
 
 
