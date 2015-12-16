@@ -120,7 +120,7 @@ define(function (require, exports, module) {
 
         /**
          * 获取纯数据
-         * @param [path] {String|Array} 字段
+         * @param [path] {String|Array} 字段或元素
          * @returns {*}
          */
         getData: function (path) {
