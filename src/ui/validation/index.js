@@ -120,7 +120,7 @@ define(function (require, exports, module) {
 
         /**
          * 获取纯数据
-         * @param [path] {String|Array} 字段或元素
+         * @param [path] {String|Object|Array} 字段或元素
          * @returns {*}
          */
         getData: function (path) {
@@ -146,7 +146,7 @@ define(function (require, exports, module) {
 
         /**
          * 获取表单数据
-         * @param [ele] {Object|String} 指定元素或者字段
+         * @param [ele] {Object|String|Array} 指定元素或者字段
          * @returns {{}}
          */
         getFormData: function (ele) {
