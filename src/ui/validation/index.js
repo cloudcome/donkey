@@ -119,13 +119,24 @@ define(function (require, exports, module) {
 
 
         /**
+         * 获取纯数据
+         * @param [path] {String|Array} 字段
+         * @returns {*}
+         */
+        getData: function (path) {
+            return this._validation.getData(path);
+        },
+
+
+        /**
          * 获取表单数据
          * @param [ele] {Object|String} 指定元素或者字段
          * @returns {{}}
          */
-        getData: function (ele) {
+        getFormData: function (ele) {
             var the = this;
             var data = {};
+
             var list = ele ? [] : the._$inputs;
 
             if (ele) {
@@ -216,6 +227,7 @@ define(function (require, exports, module) {
                 }
             });
 
+
             return data;
         },
 
@@ -265,7 +277,7 @@ define(function (require, exports, module) {
                 ele = null;
             }
 
-            var data = the.getData(ele);
+            var data = the.getFormData(ele);
             var oncomplete = function (err) {
                 if (typeis.Function(callback)) {
                     callback(err);

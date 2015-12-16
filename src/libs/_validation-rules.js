@@ -14,6 +14,8 @@ define(function (require, exports, module) {
 
     'use strict';
 
+    require('../polyfill/string.js');
+
     var typeis = require('../utils/typeis.js');
     var number = require('../utils/number.js');
     var string = require('../utils/string.js');
