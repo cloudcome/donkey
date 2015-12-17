@@ -140,7 +140,16 @@ define(function (require, exports, module) {
                 }
             }
 
-            return this._validation.getData(path);
+            var the = this;
+            var data = the._validation.getData();
+
+            // after validation
+            if (data) {
+                return the._validation.getData(path);
+            }
+
+            // before validation
+            return the.getFormData(path);
         },
 
 
@@ -166,7 +175,7 @@ define(function (require, exports, module) {
                             list.push(the._pathMap[item]);
                         }
                     });
-                } else if(typeis.Element(ele)) {
+                } else if (typeis.Element(ele)) {
                     var inputType = the._getType(ele);
 
                     switch (inputType) {
