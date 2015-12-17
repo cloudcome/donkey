@@ -91,6 +91,8 @@ define(function (require, exports, module) {
                     ctx.fillRect(Math.round(col * tileW), Math.round(row * tileH), w, h);
                 }
             }
+
+            return canvas;
         },
 
 
