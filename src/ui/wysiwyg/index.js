@@ -779,10 +779,22 @@ define(function (require, exports, module) {
          * @param url
          * @returns {Wysiwyg}
          */
-        insertLink: function (url) {
+        createLink: function (url) {
             var the = this;
             the._exec('createLink', url);
             the._callUpdates(true); // selection destroyed
+            return the;
+        },
+
+
+        /**
+         * 插入链接
+         * @returns {Wysiwyg}
+         */
+        unlink: function () {
+            var the = this;
+            the._exec('unlink');
+            the._callUpdates();
             return the;
         },
 

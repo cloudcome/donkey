@@ -70,8 +70,11 @@ define(function (require, exports, module) {
     $('#outdent').click(function () {
         wy.outdent();
     });
-    $('#insertLink').click(function () {
-        wy.insertLink(location.href);
+    $('#createLink').click(function () {
+        wy.createLink(location.href);
+    });
+    $('#unlink').click(function () {
+        wy.unlink();
     });
     $('#insertImage').click(function () {
         wy.insertImage('http://dummyimage.com/600x400');

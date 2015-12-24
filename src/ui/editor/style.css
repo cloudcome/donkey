@@ -1,28 +1,28 @@
-.donkey-ui-wysiwyg {
+.donkey-ui-editor {
   position: relative;
   border: 1px solid #ddd;
   box-shadow: 0 0 4px #eee;
   border-radius: 3px; }
-  .donkey-ui-wysiwyg * {
+  .donkey-ui-editor * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box; }
-  .donkey-ui-wysiwyg-header {
+  .donkey-ui-editor-header {
     border-bottom: 1px solid #ddd;
     padding: 6px;
     box-shadow: 0 2px 5px #eee; }
-  .donkey-ui-wysiwyg-icon {
+  .donkey-ui-editor-icon {
     position: relative;
     display: inline-block;
     vertical-align: middle;
     width: 30px;
     height: 30px; }
-    .donkey-ui-wysiwyg-icon:hover {
+    .donkey-ui-editor-icon:hover {
       background: #eee; }
-    .donkey-ui-wysiwyg-icon.active,
-    .donkey-ui-wysiwyg-icon.active:hover {
+    .donkey-ui-editor-icon.active,
+    .donkey-ui-editor-icon.active:hover {
       background: #ddd; }
-    .donkey-ui-wysiwyg-icon:after {
+    .donkey-ui-editor-icon:after {
       content: '';
       position: absolute;
       width: 20px;
@@ -31,59 +31,59 @@
       left: 50%;
       margin-top: -10px;
       margin-left: -10px; }
-    .donkey-ui-wysiwyg-icon-bold:after {
+    .donkey-ui-editor-icon-bold:after {
       background-position: 0 0; }
-    .donkey-ui-wysiwyg-icon-italic:after {
+    .donkey-ui-editor-icon-italic:after {
       background-position: 0 -20px; }
-    .donkey-ui-wysiwyg-icon-underline:after {
+    .donkey-ui-editor-icon-underline:after {
       background-position: 0 -40px; }
-    .donkey-ui-wysiwyg-icon-forecolor:after {
+    .donkey-ui-editor-icon-forecolor:after {
       background-position: 0 -60px; }
-    .donkey-ui-wysiwyg-icon-backcolor:after {
+    .donkey-ui-editor-icon-backcolor:after {
       background-position: 0 -80px; }
-    .donkey-ui-wysiwyg-icon-heading:after {
+    .donkey-ui-editor-icon-heading:after {
       background-position: 0 -100px; }
-    .donkey-ui-wysiwyg-icon-justifyleft:after {
+    .donkey-ui-editor-icon-justifyleft:after {
       background-position: 0 -120px; }
-    .donkey-ui-wysiwyg-icon-justifycenter:after {
+    .donkey-ui-editor-icon-justifycenter:after {
       background-position: 0 -140px; }
-    .donkey-ui-wysiwyg-icon-justifyright:after {
+    .donkey-ui-editor-icon-justifyright:after {
       background-position: 0 -160px; }
-    .donkey-ui-wysiwyg-icon-justifyboth:after {
+    .donkey-ui-editor-icon-justifyfull:after {
       background-position: 0 -180px; }
-    .donkey-ui-wysiwyg-icon-orderlist:after {
+    .donkey-ui-editor-icon-orderlist:after {
       background-position: 0 -200px; }
-    .donkey-ui-wysiwyg-icon-unorderlist:after {
+    .donkey-ui-editor-icon-unorderlist:after {
       background-position: 0 -220px; }
-    .donkey-ui-wysiwyg-icon-link:after {
+    .donkey-ui-editor-icon-link:after {
       background-position: 0 -240px; }
-    .donkey-ui-wysiwyg-icon-unlink:after {
+    .donkey-ui-editor-icon-unlink:after {
       background-position: 0 -260px; }
-    .donkey-ui-wysiwyg-icon-line:after {
+    .donkey-ui-editor-icon-line:after {
       background-position: 0 -280px; }
-    .donkey-ui-wysiwyg-icon-image:after {
+    .donkey-ui-editor-icon-image:after {
       background-position: 0 -300px; }
-    .donkey-ui-wysiwyg-icon-video:after {
+    .donkey-ui-editor-icon-video:after {
       background-position: 0 -320px; }
-    .donkey-ui-wysiwyg-icon-quote:after {
+    .donkey-ui-editor-icon-quote:after {
       background-position: 0 -340px; }
-    .donkey-ui-wysiwyg-icon-undo:after {
+    .donkey-ui-editor-icon-undo:after {
       background-position: 0 -360px; }
-    .donkey-ui-wysiwyg-icon-redo:after {
+    .donkey-ui-editor-icon-redo:after {
       background-position: 0 -380px; }
-    .donkey-ui-wysiwyg-icon-format:after {
+    .donkey-ui-editor-icon-format:after {
       background-position: 0 -400px; }
-    .donkey-ui-wysiwyg-icon-clean:after {
+    .donkey-ui-editor-icon-clean:after {
       background-position: 0 -420px; }
-  .donkey-ui-wysiwyg-separator {
+  .donkey-ui-editor-separator {
     display: inline-block;
     margin: 0 2px 0 3px;
     border-right: 1px solid #ddd;
     height: 20px;
     vertical-align: middle; }
-  .donkey-ui-wysiwyg-body {
+  .donkey-ui-editor-body {
     overflow: auto; }
-  .donkey-ui-wysiwyg-content {
+  .donkey-ui-editor-content {
     outline: none;
     position: relative;
     overflow: auto;

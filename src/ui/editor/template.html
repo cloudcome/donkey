@@ -1,15 +1,15 @@
-<div class="donkey-ui-wysiwyg" id="donkey-ui-wysiwyg-{{index}}">
-    <div class="donkey-ui-wysiwyg-header j-flag">
+<div class="donkey-ui-editor" id="donkey-ui-editor-{{index}}">
+    <div class="donkey-ui-editor-header j-flag">
         {{list buttons as index,button}}
         {{if button.text}}
-        <div class="donkey-ui-wysiwyg-icon donkey-ui-wysiwyg-icon-{{button.name}}" data-command="{{button.command}}" title="{{button.text}}"></div>
+        <div class="donkey-ui-editor-icon donkey-ui-editor-icon-{{button.name}}" data-command="{{button.command}}" title="{{button.text}}"></div>
         {{else}}
-        <div class="donkey-ui-wysiwyg-separator"></div>
+        <div class="donkey-ui-editor-separator"></div>
         {{/if}}
         {{/list}}
     </div>
-    <div class="donkey-ui-wysiwyg-body">
-        <div class="donkey-ui-wysiwyg-content j-flag" contenteditable="true" spellcheck="false"></div>
+    <div class="donkey-ui-editor-body">
+        <div class="donkey-ui-editor-content j-flag" contenteditable="true" spellcheck="false"></div>
     </div>
-    <div class="donkey-ui-wysiwyg-footer j-flag"></div>
+    <div class="donkey-ui-editor-footer j-flag"></div>
 </div>

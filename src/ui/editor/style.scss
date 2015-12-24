@@ -1,6 +1,6 @@
 $border-color: #ddd;
 
-.donkey-ui-wysiwyg {
+.donkey-ui-editor {
   position: relative;
   border: 1px solid $border-color;
   box-shadow: 0 0 4px #eee;
@@ -81,7 +81,7 @@ $border-color: #ddd;
       background-position: 0 -160px;
     }
 
-    &-justifyboth:after {
+    &-justifyfull:after {
       background-position: 0 -180px;
     }
 

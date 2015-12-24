@@ -23,7 +23,7 @@ define(function (require, exports, module) {
     var style = require('./style.css', 'css');
     var icons = require('./icons.png', 'image');
 
-    var namespace = 'donkey-ui-wysiwyg';
+    var namespace = 'donkey-ui-editor';
     var donkeyIndex = 0;
     var defaultButtons = {
         bold: {
@@ -36,15 +36,15 @@ define(function (require, exports, module) {
         },
         underline: {
             text: '下划线',
-            command: ''
+            command: 'underline'
         },
         forecolor: {
             text: '字体颜色',
-            command: ''
+            command: 'foreColor'
         },
         backcolor: {
             text: '背景颜色',
-            command: ''
+            command: 'backColor'
         },
         heading: {
             text: '标题',
@@ -52,31 +52,31 @@ define(function (require, exports, module) {
         },
         justifyleft: {
             text: '左对齐',
-            command: ''
+            command: 'justifyLeft'
         },
         justifycenter: {
             text: '居中对齐',
-            command: ''
+            command: 'justifyCenter'
         },
         justifyright: {
             text: '右对齐',
-            command: ''
+            command: 'justifyRight'
         },
-        justifyboth: {
+        justifyfull: {
             text: '两端对齐',
-            command: ''
+            command: 'justifyFull'
         },
         orderlist: {
             text: '有序列表',
-            command: ''
+            command: 'insertOrderList'
         },
         unorderlist: {
             text: '无序列表',
-            command: ''
+            command: 'insertUnorderList'
         },
         link: {
             text: '添加链接',
-            command: ''
+            command: 'insertLink'
         },
         unlink: {
             text: '取消链接',
