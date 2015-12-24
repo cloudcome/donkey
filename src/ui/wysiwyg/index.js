@@ -417,11 +417,29 @@ define(function (require, exports, module) {
         // ====================================
 
 
+        /**
+         * 获取 HTML
+         * @returns {*}
+         */
         getHTML: function () {
             return this._eWysiwyg.innerHTML;
         },
 
 
+        /**
+         * 获取文本
+         * @returns {*|string|string}
+         */
+        getText: function () {
+            return this._eWysiwyg.innerText || this._eWysiwyg.textContent;
+        },
+
+
+        /**
+         * 设置 HTML
+         * @param html
+         * @returns {Wysiwyg}
+         */
         setHTML: function (html) {
             var the = this;
 
@@ -430,6 +448,11 @@ define(function (require, exports, module) {
             return the;
         },
 
+
+        /**
+         * 获取当前选中的 HTML
+         * @returns {*}
+         */
         getSelectedHTML: function () {
             var the = this;
             the._restoreSelection();
@@ -442,6 +465,10 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         * 编辑器可写
+         * @returns {Wysiwyg}
+         */
         enable: function () {
             var the = this;
             the._eWysiwyg.setAttribute('contentEditable', 'true'); // IE7 is case sensitive
@@ -449,6 +476,10 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         * 编辑器不可写
+         * @returns {Wysiwyg}
+         */
         disbale: function () {
             var the = this;
             the._eWysiwyg.removeAttribute('contentEditable');
@@ -465,6 +496,12 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         *
+         * @param preceding
+         * @param following
+         * @returns {Wysiwyg}
+         */
         expandSelection: function (preceding, following) {
             var the = this;
 
@@ -478,8 +515,10 @@ define(function (require, exports, module) {
             return the;
         },
 
+
         /**
          * save/restore selection
+         * 在失去焦点的时候都需要手动保存一次
          * @link http://stackoverflow.com/questions/13949059/persisting-the-changes-of-range-objects-after-selection-in-html/13950376#13950376
          * @returns {*}
          */
@@ -768,7 +807,7 @@ define(function (require, exports, module) {
          */
         insertHTML: function (html) {
             var the = this;
-            var node_wysiwyg = the._eWysiwyg;
+
             if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'
                 the._restoreSelection();
@@ -776,7 +815,7 @@ define(function (require, exports, module) {
                 the._pasteHtmlAtCaret(html);
             }
             the._callUpdates(true); // selection destroyed
-            return this;
+            return the;
         },
 
 
