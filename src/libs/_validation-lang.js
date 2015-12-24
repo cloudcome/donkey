@@ -6,10 +6,6 @@
 
 
 define(function (require, exports, module) {
-    /**
-     * @module libs/validation-lang
-     */
-
     'use strict';
 
     var lang = {
