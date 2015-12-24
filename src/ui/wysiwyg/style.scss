@@ -1,0 +1,157 @@
+$border-color: #ddd;
+
+.donkey-ui-wysiwyg {
+  position: relative;
+  border: 1px solid $border-color;
+  box-shadow: 0 0 4px #eee;
+  border-radius: 3px;
+
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  &-header {
+    border-bottom: 1px solid $border-color;
+    padding: 6px;
+    box-shadow: 0 2px 5px #eee;
+  }
+
+  &-icon {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+
+    &:hover {
+      background: #eee;
+    }
+
+    &.active,
+    &.active:hover {
+      background: $border-color;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-top: -10px;
+      margin-left: -10px;
+    }
+
+    &-bold:after {
+      background-position: 0 0;
+    }
+
+    &-italic:after {
+      background-position: 0 -20px;
+    }
+
+    &-underline:after {
+      background-position: 0 -40px;
+    }
+
+    &-forecolor:after {
+      background-position: 0 -60px;
+    }
+
+    &-backcolor:after {
+      background-position: 0 -80px;
+    }
+
+    &-heading:after {
+      background-position: 0 -100px;
+    }
+
+    &-justifyleft:after {
+      background-position: 0 -120px;
+    }
+
+    &-justifycenter:after {
+      background-position: 0 -140px;
+    }
+
+    &-justifyright:after {
+      background-position: 0 -160px;
+    }
+
+    &-justifyboth:after {
+      background-position: 0 -180px;
+    }
+
+    &-orderlist:after {
+      background-position: 0 -200px;
+    }
+
+    &-unorderlist:after {
+      background-position: 0 -220px;
+    }
+
+    &-link:after {
+      background-position: 0 -240px;
+    }
+
+    &-unlink:after {
+      background-position: 0 -260px;
+    }
+
+    &-line:after {
+      background-position: 0 -280px;
+    }
+
+    &-image:after {
+      background-position: 0 -300px;
+    }
+
+    &-video:after {
+      background-position: 0 -320px;
+    }
+
+    &-quote:after {
+      background-position: 0 -340px;
+    }
+
+    &-undo:after {
+      background-position: 0 -360px;
+    }
+
+    &-redo:after {
+      background-position: 0 -380px;
+    }
+
+    &-format:after {
+      background-position: 0 -400px;
+    }
+
+    &-clean:after {
+      background-position: 0 -420px;
+    }
+  }
+
+  &-separator {
+    display: inline-block;
+    margin: 0 2px 0 3px;
+    border-right: 1px solid $border-color;
+    height: 20px;
+    vertical-align: middle;
+  }
+
+  &-body {
+    overflow: auto;
+  }
+
+  &-content {
+    outline: none;
+    position: relative;
+    overflow: auto;
+    height: 100%;
+    padding: 6px;
+  }
+}
+

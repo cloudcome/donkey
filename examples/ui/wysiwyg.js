@@ -12,7 +12,7 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    var Editor = require('../../src/ui/editor/index.js');
+    var Wysiwyg = require('../../src/ui/wysiwyg/index.js');
 
-    window.ed = new Editor('#textarea');
+    window.wy = new Wysiwyg('#textarea');
 });
