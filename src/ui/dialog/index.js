@@ -117,7 +117,7 @@ define(function (require, exports, module) {
             the._$head = $(nodes[0]);
             the._$title = $(nodes[1]);
             the._$close = $(nodes[2]);
-            the._$body = $(nodes[3]);
+            the._$content = $(nodes[3]);
             the._window = new Window(the._$parent, dato.extend({}, options, {
                 addClass: namespace + '-window ' + options.addClass
             }));
@@ -125,8 +125,8 @@ define(function (require, exports, module) {
 
             var ndFlag = modification.create('#comment', namespace + '-' + the._id);
             the._$flag = $(ndFlag).insertAfter(the._$dialog);
-            the._$dialog.appendTo(the._$body);
-            the._$body.css('overflow', options.overflow);
+            the._$dialog.appendTo(the._$content);
+            the._$content.css('overflow', options.overflow);
             the.setTitle(options.title);
 
             if (!options.canClose) {
@@ -147,7 +147,7 @@ define(function (require, exports, module) {
          * @returns {*|HTMLElement}
          */
         getNode: function () {
-            return this._$body[0];
+            return this._$content[0];
         },
 
 
@@ -196,7 +196,7 @@ define(function (require, exports, module) {
         setBody: function (html) {
             var the = this;
 
-            the._$body.html();
+            the._$content.html();
 
             return the.resize();
         },
@@ -215,9 +215,9 @@ define(function (require, exports, module) {
             }
 
             the.emit('beforeupdate');
-            the._$body.css('overflow', 'auto');
+            the._$content.css('overflow', 'auto');
             the._window.update();
-            the._$body.css('overflow', options.overflow);
+            the._$content.css('overflow', options.overflow);
             the.emit('update');
 
             return the;

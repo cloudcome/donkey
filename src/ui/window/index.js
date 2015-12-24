@@ -79,9 +79,9 @@ define(function (require, exports, module) {
             })).appendTo(elBody);
             var $children = the._$parent.children();
             the._$focus = $($children[0]);
-            the._$body = $($children[1]);
+            the._$content = $($children[1]);
             the._$flag.insertAfter(the._$window);
-            the._$window.appendTo(the._$body);
+            the._$window.appendTo(the._$content);
             the._$parent.addClass(options.addClass).css('position', options.modal ? 'absoluted' : 'fixed');
 
             if (options.modal) {

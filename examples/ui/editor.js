@@ -15,4 +15,8 @@ define(function (require, exports, module) {
     var Editor = require('../../src/ui/editor/index.js');
 
     window.ed = new Editor('#textarea');
+
+    //$('#italic').click(function () {
+    //    ed._wysiwyg.italic();
+    //});
 });

@@ -124,8 +124,8 @@ define(function (require, exports, module) {
             var the = this;
 
             the._$textarea = $($textarea);
-            the._options = dato.extend({}, defaults, options);
             the._index = donkeyIndex++;
+            the._options = dato.extend({}, defaults, options);
             the._initNode();
             the._initEvent();
         },
@@ -156,23 +156,31 @@ define(function (require, exports, module) {
 
             modification.insert(eflag, the._$textarea[0], 'afterend');
             the._$editor = $(html).insertAfter(the._$textarea);
-            the._wysiwyg = new Wysiwyg(the._$textarea);
             var nodes = $('.j-flag', the._$editor);
             the._$textarea.hide();
             the._$header = $(nodes[0]);
-            the._$body = $(nodes[1]);
+            the._$content = $(nodes[1]);
             the._$footer = $(nodes[2]);
-            the._$body.css(options.style).html(the._$textarea.val());
+            the._$content.css(options.style).html(the._$textarea.val());
         },
 
 
+        /**
+         * 初始化事件
+         * @private
+         */
         _initEvent: function () {
             var the = this;
 
+            the._wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function () {
                 var command = $(this).data('command');
 
-                if (command && the._wysiwyg[command]) {
+                if (!command) {
+                    return;
+                }
+
+                if (the._wysiwyg[command]) {
                     the._wysiwyg[command]();
                 }
             });

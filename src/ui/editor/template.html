@@ -2,7 +2,7 @@
     <div class="donkey-ui-editor-header j-flag">
         {{list buttons as index,button}}
         {{if button.text}}
-        <div class="donkey-ui-editor-icon donkey-ui-editor-icon-{{button.name}}" data-command="{{button.command}}" title="{{button.text}}"></div>
+        <button class="donkey-ui-editor-icon donkey-ui-editor-icon-{{button.name}}" data-command="{{button.command}}" title="{{button.text}}"></button>
         {{else}}
         <div class="donkey-ui-editor-separator"></div>
         {{/if}}

@@ -89,8 +89,8 @@ define(function (require, exports, module) {
                 addClass: options.addClass,
                 canClose: options.canClose
             });
-            the._$body = the._dialog.getNode();
-            the._$buttons = $('.j-flag', the._$body);
+            the._$content = the._dialog.getNode();
+            the._$buttons = $('.j-flag', the._$content);
         },
 
         _initEvent: function () {

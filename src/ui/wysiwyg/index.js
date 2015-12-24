@@ -18,8 +18,8 @@ define(function (require, exports, module) {
         constructor: function ($wysiwyg, options) {
             var the = this;
 
-            the._$editor = $($wysiwyg);
-            the._eWysiwyg = the._$editor[0];
+            the._$wysiwyg = $($wysiwyg);
+            the._eWysiwyg = the._$wysiwyg[0];
             the._options = dato.extend({}, defaults, options);
             the._popupSavedSelection = null;
             the._trailingDiv = null;
