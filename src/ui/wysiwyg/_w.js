@@ -1082,7 +1082,7 @@
                 try {
                     if (document.queryCommandSupported && !document.queryCommandSupported(command))
                         return false;
-                    return document.execCommand(command, false, param);
+                    return document._exec(command, false, param);
                 }
                 catch (e) {
                 }
@@ -1096,7 +1096,7 @@
                     try {
                         if (!range.queryCommandEnabled(command))
                             return false;
-                        return range.execCommand(command, false, param);
+                        return range._exec(command, false, param);
                     }
                     catch (e) {
                     }

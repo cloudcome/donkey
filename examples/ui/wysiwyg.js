@@ -61,6 +61,9 @@ define(function (require, exports, module) {
     $('#format').click(function () {
         wy.format();
     });
+    $('#removeFormat').click(function () {
+        wy.removeFormat();
+    });
     $('#indent').click(function () {
         wy.indent();
     });

@@ -21,11 +21,11 @@ define(function (require, exports, module) {
             the._$wysiwyg = $($wysiwyg);
             the._eWysiwyg = the._$wysiwyg[0];
             the._options = dato.extend({}, defaults, options);
-            the._popup_saved_selection = null;
+            the._popupSavedSelection = null;
             the._trailingDiv = null;
         },
 
-        IEtrailingDIV: function () {
+        _IEtrailingDIV: function () {
             var the = this;
             var node_wysiwyg = the._eWysiwyg;
 
@@ -37,17 +37,19 @@ define(function (require, exports, module) {
         },
 
 
-        restoreSelection: function (containerNode, savedSel) {
-            if (!savedSel) {
+        _restoreSelection: function () {
+            var the = this;
+
+            if (!the._popupSavedSelection) {
                 return;
             }
 
             if (window.getSelection) {
                 var sel = window.getSelection();
                 sel.removeAllRanges();
-                sel.addRange(savedSel);
+                sel.addRange(the._popupSavedSelection);
             } else if (document.selection) {
-                savedSel.select();
+                the._popupSavedSelection.select();
             }
         },
 
@@ -58,7 +60,7 @@ define(function (require, exports, module) {
          * @param descendant
          * @returns {boolean}
          */
-        isOrContainsNode: function (ancestor, descendant) {
+        _isOrContainsNode: function (ancestor, descendant) {
             var node = descendant;
             while (node) {
                 if (node === ancestor) {
@@ -71,15 +73,17 @@ define(function (require, exports, module) {
         },
 
 
-        selectionInside: function (containerNode, force) {
+        _selectionInside: function (force) {
             var the = this;
             var sel;
             var range;
+            var containerNode = the._eWysiwyg;
+
             // selection inside editor?
             if (window.getSelection) {
                 sel = window.getSelection();
-                if (the.isOrContainsNode(containerNode, sel.anchorNode) &&
-                    the.isOrContainsNode(containerNode, sel.focusNode)) {
+                if (the._isOrContainsNode(containerNode, sel.anchorNode) &&
+                    the._isOrContainsNode(containerNode, sel.focusNode)) {
                     return true;
                 }
                 // selection at least partly outside editor
@@ -100,7 +104,7 @@ define(function (require, exports, module) {
                     // http://msdn.microsoft.com/en-us/library/ie/hh826021%28v=vs.85%29.aspx
                     range = sel.createRange();
                     // test only the first element
-                    if (range.length !== 0 && the.isOrContainsNode(containerNode, range(0))) {
+                    if (range.length !== 0 && the._isOrContainsNode(containerNode, range(0))) {
                         return true;
                     }
                 } else {
@@ -133,7 +137,7 @@ define(function (require, exports, module) {
         /**
          * @link http://stackoverflow.com/questions/8513368/collapse-selection-to-start-of-selection-not-div
          */
-        collapseSelectionEnd: function () {
+        _collapseSelectionEnd: function () {
             var sel;
             if (window.getSelection) {
                 sel = window.getSelection();
@@ -158,31 +162,8 @@ define(function (require, exports, module) {
         },
 
 
-        /**
-         * save/restore selection
-         * @link http://stackoverflow.com/questions/13949059/persisting-the-changes-of-range-objects-after-selection-in-html/13950376#13950376
-         * @returns {*}
-         */
-        saveSelection: function () {
-            var sel;
-            if (window.getSelection) {
-                sel = window.getSelection();
-
-                if (sel.rangeCount > 0) {
-                    return sel.getRangeAt(0);
-                }
-            }
-            else if (document.selection) {
-                sel = document.selection;
-                return sel.createRange();
-            }
-
-            return null;
-        },
-
-
         // Command structure
-        callUpdates: function (selection_destroyed) {
+        _callUpdates: function (selectionDestroyed) {
             var the = this;
             var node_wysiwyg = the._eWysiwyg;
             // Remove IE11 workaround
@@ -191,12 +172,12 @@ define(function (require, exports, module) {
                 the._trailingDiv = null;
             }
             // handle saved selection
-            if (selection_destroyed) {
-                the.collapseSelectionEnd();
-                the._popup_saved_selection = null; // selection destroyed
+            if (selectionDestroyed) {
+                the._collapseSelectionEnd();
+                the._popupSavedSelection = null; // selection destroyed
             }
-            else if (the._popup_saved_selection) {
-                the._popup_saved_selection = the.saveSelection(node_wysiwyg);
+            else if (the._popupSavedSelection) {
+                the.saveSelection();
             }
         },
 
@@ -206,19 +187,19 @@ define(function (require, exports, module) {
          * @link http://www.quirksmode.org/dom/execCommand.html
          * @param command
          * @param param
-         * @param force_selection
+         * @param forceSelection
          * @private
          */
-        execCommand: function (command, param, force_selection) {
+        _exec: function (command, param, forceSelection) {
             var the = this;
             var node_wysiwyg = the._eWysiwyg;
             // give selection to contenteditable element
-            the.restoreSelection(node_wysiwyg, the._popup_saved_selection);
+            the._restoreSelection();
             // tried to avoid forcing focus(), but ... - https://github.com/wysiwygjs/wysiwyg.js/issues/51
             node_wysiwyg.focus();
 
             // returns 'selection inside editor'
-            if (!the.selectionInside(node_wysiwyg, force_selection)) {
+            if (!the._selectionInside(forceSelection)) {
                 return false;
             }
 
@@ -246,7 +227,7 @@ define(function (require, exports, module) {
                             return false;
                         }
 
-                        return range.execCommand(command, false, param);
+                        return range._exec(command, false, param);
                     } catch (e) {
                         // ignore
                     }
@@ -261,13 +242,13 @@ define(function (require, exports, module) {
          * @link http://stackoverflow.com/questions/6690752/insert-html-at-caret-in-a-contenteditable-div/6691294#6691294
          * @link http://stackoverflow.com/questions/4823691/insert-an-html-element-in-a-contenteditable-element
          * @link http://stackoverflow.com/questions/6139107/programatically-select-text-in-a-contenteditable-html-element
-         * @param containerNode
          * @param html
          */
-        pasteHtmlAtCaret: function (containerNode, html) {
+        _pasteHtmlAtCaret: function (html) {
             var the = this;
             var sel;
             var range;
+            var containerNode = the._eWysiwyg;
 
             if (window.getSelection) {
                 // IE9 and non-IE
@@ -283,7 +264,7 @@ define(function (require, exports, module) {
                     while ((node = el.firstChild)) {
                         lastNode = frag.appendChild(node);
                     }
-                    if (the.isOrContainsNode(containerNode, range.commonAncestorContainer)) {
+                    if (the._isOrContainsNode(containerNode, range.commonAncestorContainer)) {
                         range.deleteContents();
                         range.insertNode(frag);
                     }
@@ -307,7 +288,7 @@ define(function (require, exports, module) {
                     var originalRange = sel.createRange();
                     originalRange.collapse(true);
                     range = sel.createRange();
-                    if (the.isOrContainsNode(containerNode, range.parentElement())) {
+                    if (the._isOrContainsNode(containerNode, range.parentElement())) {
                         range.pasteHTML(html);
                     }
                     // simply append to Editor
@@ -327,6 +308,199 @@ define(function (require, exports, module) {
             }
         },
 
+        _getSelectionCollapsed: function () {
+            var the = this;
+            var containerNode = the._eWysiwyg;
+            var sel;
+
+            if (window.getSelection) {
+                sel = window.getSelection();
+
+                return !!sel.isCollapsed;
+            }
+            else if (document.selection) {
+                sel = document.selection;
+
+                if (sel.type === 'Text') {
+                    var range = document.selection.createRange();
+                    var textrange = document.body.createTextRange();
+                    textrange.moveToElementText(containerNode);
+                    textrange.setEndPoint('EndToStart', range);
+                    return range.htmlText.length === 0;
+                }
+
+                // e.g. an image selected
+                if (sel.type === 'Control') {
+                    return false;
+                }
+
+                // sel.type == 'None' -> collapsed selection
+            }
+
+            return true;
+        },
+
+
+        // http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text/4652824#4652824
+        _getSelectionHtml: function () {
+            var the = this;
+            var sel;
+
+            if (the._getSelectionCollapsed()) {
+                return null;
+            }
+
+            if (window.getSelection) {
+                sel = window.getSelection();
+                if (sel.rangeCount) {
+                    var container = document.createElement('div'),
+                        len = sel.rangeCount;
+                    for (var i = 0; i < len; ++i) {
+                        var contents = sel.getRangeAt(i).cloneContents();
+                        container.appendChild(contents);
+                    }
+                    return container.innerHTML;
+                }
+            }
+            else if (document.selection) {
+                sel = document.selection;
+                if (sel.type === 'Text') {
+                    var range = sel.createRange();
+                    return range.htmlText;
+                }
+            }
+            return null;
+        },
+
+
+        // http://stackoverflow.com/questions/15157435/get-last-character-before-caret-position-in-javascript
+        // http://stackoverflow.com/questions/11247737/how-can-i-get-the-word-that-the-caret-is-upon-inside-a-contenteditable-div
+        _expandSelectionCaret: function (preceding, following) {
+            var sel;
+            var range;
+            var i = 0;
+
+            if (window.getSelection) {
+                sel = window.getSelection();
+                if (sel.modify) {
+                    for (i = 0; i < preceding; ++i) {
+                        sel.modify('extend', 'backward', 'character');
+                    }
+                    for (i = 0; i < following; ++i) {
+                        sel.modify('extend', 'forward', 'character');
+                    }
+                }
+                else {
+                    // not so easy if the steps would cover multiple nodes ...
+                    range = sel.getRangeAt(0);
+                    range.setStart(range.startContainer, range.startOffset - preceding);
+                    range.setEnd(range.endContainer, range.endOffset + following);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
+            else if (document.selection) {
+                sel = document.selection;
+                if (sel.type !== 'Control') {
+                    range = sel.createRange();
+                    range.collapse(true);
+                    range.moveStart('character', -preceding);
+                    range.moveEnd('character', following);
+                    range.select();
+                }
+            }
+        },
+
+
+        // ====================================
+        // =============[ public ]=============
+        // ====================================
+
+
+        getHTML: function () {
+            return this._eWysiwyg.innerHTML;
+        },
+
+
+        setHTML: function (html) {
+            var the = this;
+
+            the._eWysiwyg.innerHTML = html || '<br>';
+            the._callUpdates(true); // selection destroyed
+            return the;
+        },
+
+        getSelectedHTML: function () {
+            var the = this;
+            the._restoreSelection();
+
+            if (!the._selectionInside()) {
+                return null;
+            }
+
+            return the._getSelectionHtml();
+        },
+
+
+        enable: function () {
+            var the = this;
+            the._eWysiwyg.setAttribute('contentEditable', 'true'); // IE7 is case sensitive
+            return the;
+        },
+
+
+        disbale: function () {
+            var the = this;
+            the._eWysiwyg.removeAttribute('contentEditable');
+            return the;
+        },
+
+
+        // selection and popup
+        collapseSelection: function () {
+            var the = this;
+            the._collapseSelectionEnd();
+            the._popupSavedSelection = null; // selection destroyed
+            return the;
+        },
+
+
+        expandSelection: function (preceding, following) {
+            var the = this;
+
+            the._restoreSelection();
+            if (!the._selectionInside()) {
+                return the;
+            }
+
+            the._expandSelectionCaret(preceding, following);
+            the.saveSelection();
+            return the;
+        },
+
+        /**
+         * save/restore selection
+         * @link http://stackoverflow.com/questions/13949059/persisting-the-changes-of-range-objects-after-selection-in-html/13950376#13950376
+         * @returns {*}
+         */
+        saveSelection: function () {
+            var the = this;
+            var sel;
+
+            if (window.getSelection) {
+                sel = window.getSelection();
+                if (sel.rangeCount > 0) {
+                    the._popupSavedSelection = sel.getRangeAt(0);
+                }
+            }
+            else if (document.selection) {
+                sel = document.selection;
+                the._popupSavedSelection = sel.createRange();
+            } else {
+                the._popupSavedSelection = null;
+            }
+        },
+
 
         /**
          * 加粗
@@ -334,8 +508,8 @@ define(function (require, exports, module) {
          */
         bold: function () {
             var the = this;
-            the.execCommand('bold');
-            the.callUpdates();
+            the._exec('bold');
+            the._callUpdates();
             return the;
         },
 
@@ -346,8 +520,8 @@ define(function (require, exports, module) {
          */
         italic: function () {
             var the = this;
-            the.execCommand('italic');
-            the.callUpdates();
+            the._exec('italic');
+            the._callUpdates();
             return the;
         },
 
@@ -358,8 +532,8 @@ define(function (require, exports, module) {
          */
         underline: function () {
             var the = this;
-            the.execCommand('underline');
-            the.callUpdates();
+            the._exec('underline');
+            the._callUpdates();
             return the;
         },
 
@@ -370,8 +544,8 @@ define(function (require, exports, module) {
          */
         strikethrough: function () {
             var the = this;
-            the.execCommand('strikethrough');
-            the.callUpdates();
+            the._exec('strikethrough');
+            the._callUpdates();
             return the;
         },
 
@@ -383,8 +557,8 @@ define(function (require, exports, module) {
          */
         foreColor: function (color) {
             var the = this;
-            the.execCommand('foreColor', color);
-            the.callUpdates();
+            the._exec('foreColor', color);
+            the._callUpdates();
             return the;
         },
 
@@ -397,11 +571,11 @@ define(function (require, exports, module) {
         backColor: function (color) {
             var the = this;
             // @link http://stackoverflow.com/questions/2756931/highlight-the-text-of-the-dom-range-element
-            if (!the.execCommand('hiliteColor', color)) {
+            if (!the._exec('hiliteColor', color)) {
                 // some browsers apply 'backColor' to the whole block
-                the.execCommand('backColor', color);
+                the._exec('backColor', color);
             }
-            the.callUpdates();
+            the._callUpdates();
             return the;
         },
 
@@ -413,8 +587,8 @@ define(function (require, exports, module) {
          */
         fontName: function (fontName) {
             var the = this;
-            the.execCommand('fontName', fontName);
-            the.callUpdates();
+            the._exec('fontName', fontName);
+            the._callUpdates();
             return the;
         },
 
@@ -426,8 +600,8 @@ define(function (require, exports, module) {
          */
         fontSize: function (fontSize) {
             var the = this;
-            the.execCommand('fontSize', fontSize);
-            the.callUpdates();
+            the._exec('fontSize', fontSize);
+            the._callUpdates();
             return the;
         },
 
@@ -438,8 +612,8 @@ define(function (require, exports, module) {
          */
         subscript: function () {
             var the = this;
-            the.execCommand('subscript');
-            the.callUpdates();
+            the._exec('subscript');
+            the._callUpdates();
             return the;
         },
 
@@ -450,8 +624,8 @@ define(function (require, exports, module) {
          */
         superscript: function () {
             var the = this;
-            the.execCommand('superscript');
-            the.callUpdates();
+            the._exec('superscript');
+            the._callUpdates();
             return the;
         },
 
@@ -462,9 +636,9 @@ define(function (require, exports, module) {
          */
         justifyLeft: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('justifyLeft');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('justifyLeft');
+            the._callUpdates();
             return the;
         },
 
@@ -475,9 +649,9 @@ define(function (require, exports, module) {
          */
         justifyCenter: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('justifyCenter');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('justifyCenter');
+            the._callUpdates();
             return the;
         },
 
@@ -488,9 +662,9 @@ define(function (require, exports, module) {
          */
         justifyRight: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('justifyRight');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('justifyRight');
+            the._callUpdates();
             return the;
         },
 
@@ -501,9 +675,9 @@ define(function (require, exports, module) {
          */
         justifyFull: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('justifyFull');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('justifyFull');
+            the._callUpdates();
             return the;
         },
 
@@ -515,9 +689,22 @@ define(function (require, exports, module) {
          */
         format: function (tagname) {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('formatBlock', tagname);
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('formatBlock', tagname);
+            the._callUpdates();
+            return the;
+        },
+
+
+        /**
+         * 移除格式化
+         * @returns {Wysiwyg}
+         */
+        removeFormat: function () {
+            var the = this;
+            the._exec('removeFormat');
+            the._exec('unlink');
+            the._callUpdates();
             return the;
         },
 
@@ -528,9 +715,9 @@ define(function (require, exports, module) {
          */
         indent: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('indent');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('indent');
+            the._callUpdates();
             return the;
         },
 
@@ -541,9 +728,9 @@ define(function (require, exports, module) {
          */
         outdent: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('outdent');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('outdent');
+            the._callUpdates();
             return the;
         },
 
@@ -555,8 +742,8 @@ define(function (require, exports, module) {
          */
         insertLink: function (url) {
             var the = this;
-            the.execCommand('createLink', url);
-            the.callUpdates(true); // selection destroyed
+            the._exec('createLink', url);
+            the._callUpdates(true); // selection destroyed
             return the;
         },
 
@@ -568,8 +755,8 @@ define(function (require, exports, module) {
          */
         insertImage: function (url) {
             var the = this;
-            the.execCommand('insertImage', url, true);
-            the.callUpdates(true); // selection destroyed
+            the._exec('insertImage', url, true);
+            the._callUpdates(true); // selection destroyed
             return the;
         },
 
@@ -582,13 +769,13 @@ define(function (require, exports, module) {
         insertHTML: function (html) {
             var the = this;
             var node_wysiwyg = the._eWysiwyg;
-            if (!the.execCommand('insertHTML', html, true)) {
+            if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'
-                the.restoreSelection(node_wysiwyg, the._popup_saved_selection);
-                the.selectionInside(node_wysiwyg, true);
-                the.pasteHtmlAtCaret(node_wysiwyg, html);
+                the._restoreSelection();
+                the._selectionInside(true);
+                the._pasteHtmlAtCaret(html);
             }
-            the.callUpdates(true); // selection destroyed
+            the._callUpdates(true); // selection destroyed
             return this;
         },
 
@@ -599,9 +786,9 @@ define(function (require, exports, module) {
          */
         insertOrderedList: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('insertOrderedList');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('insertOrderedList');
+            the._callUpdates();
             return the;
         },
 
@@ -612,9 +799,9 @@ define(function (require, exports, module) {
          */
         insertUnorderedList: function () {
             var the = this;
-            the.IEtrailingDIV();
-            the.execCommand('insertUnorderedList');
-            the.callUpdates();
+            the._IEtrailingDIV();
+            the._exec('insertUnorderedList');
+            the._callUpdates();
             return the;
         }
     });
