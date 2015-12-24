@@ -118,7 +118,7 @@ define(function (require, exports, module) {
         ],
         placeholder: '输入，从这里开始'
     };
-    var Wysiwyg = ui.create({
+    var Editor = ui.create({
         constructor: function ($textarea, options) {
             var the = this;
 
@@ -176,6 +176,6 @@ define(function (require, exports, module) {
 
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);
-    Wysiwyg.defaults = defaults;
-    module.exports = Wysiwyg;
+    Editor.defaults = defaults;
+    module.exports = Editor;
 });

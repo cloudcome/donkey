@@ -2,7 +2,7 @@
 <!--
  - 文件描述
  - @author ydr.me
- - @create 2015-12-24 16:35
+ - @create 2015-12-24 11:52
  -->
 <html lang="zh-Hans">
 <head>
@@ -17,19 +17,22 @@
     <meta name="keywords" content="关键词1,关键词2">
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>wysiwyg.html</title>
+    <title>editor.html</title>
+    <style>
+        * {
+            font-family: 'Helvetica Neue', 'Lucida Grande', 'Segoe UI', Arial sans-serif;
+        }
+    </style>
 </head>
 <body ontouchstart="">
 
-<button id="bold">加粗</button>
-<div id="wysiwyg" contenteditable="true">
-    <h1>Some cool title</h1>
-    <p>Lorem <b>ipsum</b> dolor sit amet, consectetur adipisicing elit。</p>
-</div>
+<textarea id="textarea"><h1 style="color:#ff2288">呵呵，我是富文本编辑器</h1></textarea>
 
 
 <script src="/examples/jquery.min.js"></script>
-<script src="/examples/coolie.js" data-config="coolie-config.js" data-main="libs/wysiwyg.js"></script>
+<script src="/examples/coolie.js"
+        data-config="coolie-config.js"
+        data-main="ui/editor.js"></script>
 
 </body>
 </html>

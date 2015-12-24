@@ -2,7 +2,7 @@
 <!--
  - 文件描述
  - @author ydr.me
- - @create 2015-12-24 11:52
+ - @create 2015-12-24 16:35
  -->
 <html lang="zh-Hans">
 <head>
@@ -22,17 +22,59 @@
         * {
             font-family: 'Helvetica Neue', 'Lucida Grande', 'Segoe UI', Arial sans-serif;
         }
+
+        #wysiwyg {
+            border: 2px solid #505050;
+            padding: 10px;
+            color: #444;
+        }
+
+        #wysiwyg b {
+            color: #000;
+        }
+
+        button {
+            padding: 4px 8px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body ontouchstart="">
 
-<textarea id="textarea"><h1 style="color:#ff2288">呵呵，我是富文本编辑器</h1></textarea>
+<button id="bold">bold</button>
+<button id="italic">italic</button>
+<button id="underline">underline</button>
+<button id="strikethrough">strikethrough</button>
+<button id="foreColor">foreColor</button>
+<button id="backColor">backColor</button>
+<button id="fontName">fontName</button>
+<button id="fontSize">fontSize</button>
+<button id="subscript">subscript</button>
+<button id="superscript">superscript</button>
+<button id="justifyLeft">justifyLeft</button>
+<button id="justifyCenter">justifyCenter</button>
+<button id="justifyRight">justifyRight</button>
+<button id="justifyFull">justifyFull</button>
+<button id="format">format</button>
+<button id="indent">indent</button>
+<button id="outdent">outdent</button>
+<button id="insertLink">insertLink</button>
+<button id="insertImage">insertImage</button>
+<button id="insertHTML">insertHTML</button>
+<button id="insertOrderedList">insertOrderedList</button>
+<button id="insertUnorderedList">insertUnorderedList</button>
+<hr>
+<div id="wysiwyg" contenteditable="true">
+    <h1>静夜思</h1>
+    <p>床上明月光，</p>
+    <p>疑是地上霜。</p>
+    <p>举头望明月，</p>
+    <p>低头思故乡。</p>
+</div>
 
 
 <script src="/examples/jquery.min.js"></script>
-<script src="/examples/coolie.js"
-        data-config="coolie-config.js"
-        data-main="ui/wysiwyg.js"></script>
+<script src="/examples/coolie.js" data-config="coolie-config.js" data-main="ui/wysiwyg.js"></script>
 
 </body>
 </html>
