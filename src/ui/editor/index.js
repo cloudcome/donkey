@@ -14,6 +14,7 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
     var ui = require('../index.js');
+    var Wysiwyg = require('../wysiwyg/index.js');
     var dato = require('../../utils/dato.js');
     var modification = require('../../core/dom/modification.js');
     var event = require('../../core/event/base.js');
@@ -40,11 +41,11 @@ define(function (require, exports, module) {
         },
         forecolor: {
             text: '字体颜色',
-            command: 'foreColor'
+            command: ''
         },
         backcolor: {
             text: '背景颜色',
-            command: 'backColor'
+            command: ''
         },
         heading: {
             text: '标题',
@@ -76,11 +77,11 @@ define(function (require, exports, module) {
         },
         link: {
             text: '添加链接',
-            command: 'insertLink'
+            command: ''
         },
         unlink: {
             text: '取消链接',
-            command: ''
+            command: 'unlink'
         },
         line: {
             text: '分割线',
@@ -154,8 +155,9 @@ define(function (require, exports, module) {
             });
 
             modification.insert(eflag, the._$textarea[0], 'afterend');
-            the._$wysiwyg = $(html).insertAfter(the._$textarea);
-            var nodes = $('.j-flag', the._$wysiwyg);
+            the._$editor = $(html).insertAfter(the._$textarea);
+            the._wysiwyg = new Wysiwyg(the._$textarea);
+            var nodes = $('.j-flag', the._$editor);
             the._$textarea.hide();
             the._$header = $(nodes[0]);
             the._$body = $(nodes[1]);
@@ -169,7 +171,10 @@ define(function (require, exports, module) {
 
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function () {
                 var command = $(this).data('command');
-                console.log(command);
+
+                if (command && the._wysiwyg[command]) {
+                    the._wysiwyg[command]();
+                }
             });
         }
     });
