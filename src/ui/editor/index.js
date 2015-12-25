@@ -45,7 +45,7 @@ define(function (require, exports, module) {
         },
         backcolor: {
             text: '背景颜色',
-            command: ''
+            command: 'backcolor2'
         },
         heading: {
             text: '标题',
