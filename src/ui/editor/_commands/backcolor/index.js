@@ -63,6 +63,7 @@ define(function (require, exports, module) {
             event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
                 var color = $(this).data('color');
                 the.editor.wysiwyg.backColor(color);
+                the._card.close();
             });
         }
     });

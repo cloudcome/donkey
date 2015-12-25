@@ -16,6 +16,8 @@ define(function (require, exports, module) {
     var animation = require('../../core/dom/animation.js');
     var event = require('../../core/event/base.js');
 
+    var namespace = 'alien-ui-editor--card';
+    var alienIdex = 0;
     var defaults = {
         style: {
             display: 'none',
@@ -50,6 +52,8 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var eDiv = the._eDiv = modification.create('div', {
+                'class': namespace,
+                id: namespace + '-' + alienIdex++,
                 style: options.style
             });
 
