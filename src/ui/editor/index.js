@@ -45,7 +45,8 @@ define(function (require, exports, module) {
         },
         backcolor: {
             text: '背景颜色',
-            command: 'backcolor2'
+            command: 'backcolor',
+            action: 'backcolor2'
         },
         heading: {
             text: '标题',
@@ -104,7 +105,7 @@ define(function (require, exports, module) {
             command: ''
         }
     };
-    var customCommands = {};
+    var actions = {};
     var defaults = {
         style: {
             width: 'auto',
@@ -176,17 +177,18 @@ define(function (require, exports, module) {
 
             the.wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
+                var action = $(this).data('action');
                 var command = $(this).data('command');
 
-                if (!command) {
+                if (!action && !command) {
                     return;
                 }
 
-                if (the.wysiwyg[command]) {
-                    the.wysiwyg[command]();
-                }else if(customCommands[command]){
-                    the._commands[command] = the._commands[command] || new customCommands[command](the);
+                if (action && actions[command]) {
+                    the._commands[command] = the._commands[command] || new actions[command](the);
                     the._commands[command].open(this);
+                } else if (command && the.wysiwyg[command]) {
+                    the.wysiwyg[command]();
                 }
 
                 eve.preventDefault();
@@ -200,11 +202,11 @@ define(function (require, exports, module) {
      * @param command
      * @param commander
      */
-    Editor.command = function (command, commander) {
-        customCommands[command] = commander;
+    Editor.action = function (command, commander) {
+        actions[command] = commander;
     };
 
-    Editor.command('backcolor2', require('./_commands/backcolor/index.js'));
+    Editor.action('backcolor', require('./_actions/backcolor/index.js'));
 
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);
