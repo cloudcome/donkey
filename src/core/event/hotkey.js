@@ -138,7 +138,7 @@ define(function (require, exports, module) {
         if (ret === false) {
             eve.preventDefault();
         }
-    }, false);
+    });
 
     module.exports = event;
 });

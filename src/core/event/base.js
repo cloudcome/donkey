@@ -10,6 +10,7 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
+    var allocation = require('../../utils/allocation.js');
     var dato = require('../../utils/dato.js');
 
     var REG_SPACE = /\s+/;
@@ -21,13 +22,12 @@ define(function (require, exports, module) {
      * @param eventType {String} 事件类型
      * @param [selector] {String} 选择器
      * @param listener {Function} 回调
-     * @param [capture] {Boolean} 是否捕获
      */
-    exports.on = function (ele, eventType, selector, listener, capture) {
+    exports.on = function (ele, eventType, selector, listener) {
         var eventTypes = eventType.split(REG_SPACE);
 
         dato.each(eventTypes, function (index, eventType) {
-            $(ele).on(eventType, selector, listener, capture);
+            $(ele).on(eventType, selector, listener);
         });
     };
 
