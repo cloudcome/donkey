@@ -9,12 +9,16 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var $ = window.jQuery;
+    var w = window;
+    var d = document;
+    var $ = w.jQuery;
     var ui = require('../index.js');
     var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
     var event = require('../../core/event/base.js');
 
+    var supportWindowGetSelection = !!w.getSelection;
+    var supportDocumentSelection = !!d.selection;
     var defaults = {};
     var Wysiwyg = ui.create({
         constructor: function ($wysiwyg, options) {
@@ -32,11 +36,13 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._eWysiwyg, 'focus blur click selectstart selectchange selectend', function () {
+            event.on(the._eWysiwyg, 'focus blur mousedown selectstart selectchange selectend', controller.debounce(function (eve) {
+                console.log(eve);
                 the.emit('selectionChange');
-            });
+            }));
 
-            event.on(the._eWysiwyg, 'input change', function () {
+            event.on(the._eWysiwyg, 'input change', function (eve) {
+                console.log(eve);
                 the.emit('contentChange');
             });
 
@@ -50,7 +56,7 @@ define(function (require, exports, module) {
             var node_wysiwyg = the._eWysiwyg;
 
             // Detect IE - http://stackoverflow.com/questions/17907445/how-to-detect-ie11
-            if (document.all || !!window.MSInputMethodContext) {
+            if (document.all || !!w.MSInputMethodContext) {
                 var trailingDiv = the._trailingDiv = document.createElement('DIV');
                 node_wysiwyg.appendChild(trailingDiv);
             }
@@ -64,11 +70,11 @@ define(function (require, exports, module) {
                 return;
             }
 
-            if (window.getSelection) {
-                var sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                var sel = w.getSelection();
                 sel.removeAllRanges();
                 sel.addRange(the._lastSavedSelection);
-            } else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 the._lastSavedSelection.select();
             }
         },
@@ -100,8 +106,8 @@ define(function (require, exports, module) {
             var containerNode = the._eWysiwyg;
 
             // selection inside editor?
-            if (window.getSelection) {
-                sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                sel = w.getSelection();
                 if (the._isOrContainsNode(containerNode, sel.anchorNode) &&
                     the._isOrContainsNode(containerNode, sel.focusNode)) {
                     return true;
@@ -116,7 +122,7 @@ define(function (require, exports, module) {
                 range.collapse(false);
                 sel.removeAllRanges();
                 sel.addRange(range);
-            } else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 sel = document.selection;
 
                 // e.g. an image selected
@@ -159,8 +165,8 @@ define(function (require, exports, module) {
          */
         _collapseSelectionEnd: function () {
             var sel;
-            if (window.getSelection) {
-                sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                sel = w.getSelection();
                 if (!sel.isCollapsed) {
                     // Form-submits via Enter throw 'NS_ERROR_FAILURE' on Firefox 34
                     try {
@@ -169,8 +175,7 @@ define(function (require, exports, module) {
                         // ignore
                     }
                 }
-            }
-            else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 sel = document.selection;
 
                 if (sel.type !== 'Control') {
@@ -227,7 +232,7 @@ define(function (require, exports, module) {
             }
 
             // for webkit, mozilla, opera
-            if (window.getSelection) {
+            if (supportWindowGetSelection) {
                 // Buggy, call within 'try/catch'
                 try {
                     if (document.queryCommandSupported && !document.queryCommandSupported(command)) {
@@ -240,7 +245,7 @@ define(function (require, exports, module) {
                 }
             }
             // for IE
-            else if (document.selection) {
+            else if (supportDocumentSelection) {
                 var sel = document.selection;
                 if (sel.type !== 'None') {
                     var range = sel.createRange();
@@ -273,9 +278,9 @@ define(function (require, exports, module) {
             var range;
             var containerNode = the._eWysiwyg;
 
-            if (window.getSelection) {
+            if (supportWindowGetSelection) {
                 // IE9 and non-IE
-                sel = window.getSelection();
+                sel = w.getSelection();
                 if (sel.getRangeAt && sel.rangeCount) {
                     range = sel.getRangeAt(0);
                     // Range.createContextualFragment() would be useful here but is
@@ -303,8 +308,7 @@ define(function (require, exports, module) {
                         sel.addRange(range);
                     }
                 }
-            }
-            else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 // IE <= 8
                 sel = document.selection;
                 if (sel.type !== 'Control') {
@@ -336,12 +340,11 @@ define(function (require, exports, module) {
             var containerNode = the._eWysiwyg;
             var sel;
 
-            if (window.getSelection) {
-                sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                sel = w.getSelection();
 
                 return !!sel.isCollapsed;
-            }
-            else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 sel = document.selection;
 
                 if (sel.type === 'Text') {
@@ -373,8 +376,8 @@ define(function (require, exports, module) {
                 return null;
             }
 
-            if (window.getSelection) {
-                sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                sel = w.getSelection();
                 if (sel.rangeCount) {
                     var container = document.createElement('div'),
                         len = sel.rangeCount;
@@ -384,8 +387,7 @@ define(function (require, exports, module) {
                     }
                     return container.innerHTML;
                 }
-            }
-            else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 sel = document.selection;
                 if (sel.type === 'Text') {
                     var range = sel.createRange();
@@ -408,8 +410,8 @@ define(function (require, exports, module) {
         //    var range;
         //    var i = 0;
         //
-        //    if (window.getSelection) {
-        //        sel = window.getSelection();
+        //    if (supportWindowGetSelection) {
+        //        sel = w.getSelection();
         //        if (sel.modify) {
         //            for (i = 0; i < preceding; ++i) {
         //                sel.modify('extend', 'backward', 'character');
@@ -427,7 +429,7 @@ define(function (require, exports, module) {
         //            sel.addRange(range);
         //        }
         //    }
-        //    else if (document.selection) {
+        //    else if (supportDocumentSelection) {
         //        sel = document.selection;
         //        if (sel.type !== 'Control') {
         //            range = sel.createRange();
@@ -582,12 +584,12 @@ define(function (require, exports, module) {
             var the = this;
             var sel;
 
-            if (window.getSelection) {
-                sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                sel = w.getSelection();
                 if (sel.rangeCount > 0) {
                     the._lastSavedSelection = sel.getRangeAt(0);
                 }
-            } else if (document.selection) {
+            } else if (supportDocumentSelection) {
                 sel = document.selection;
                 the._lastSavedSelection = sel.createRange();
             } else {
@@ -608,11 +610,11 @@ define(function (require, exports, module) {
                 return the;
             }
 
-            if (window.getSelection) {
-                var sel = window.getSelection();
+            if (supportWindowGetSelection) {
+                var sel = w.getSelection();
                 sel.removeAllRanges();
                 sel.addRange(range);
-            } else if (document.selection && range.select) { // IE
+            } else if (supportDocumentSelection && range.select) { // IE
                 range.select();
             }
         },
@@ -760,7 +762,7 @@ define(function (require, exports, module) {
 
 
         /**
-         * 居中
+         * 居中对齐
          * @returns {Wysiwyg}
          */
         justifyCenter: function () {
@@ -891,11 +893,62 @@ define(function (require, exports, module) {
 
         /**
          * 插入 html
-         * @param html
+         * @link https://github.com/jakiestfu/Medium.js/blob/master/src/Medium/Injector.js#L61
+         * @param html {String} 插入的 HTML
+         * @param [select=false] {Boolean} 是否选中插入的内容
          * @returns {Wysiwyg}
          */
-        insertHTML: function (html) {
+        insertHTML: function (html, select) {
             var the = this;
+            //var sel;
+            //var range;
+            //
+            //if (supportWindowGetSelection) {
+            //    sel = w.getSelection();
+            //    if (sel.getRangeAt && sel.rangeCount) {
+            //        range = sel.getRangeAt(0);
+            //        range.deleteContents();
+            //
+            //        // Range.createContextualFragment() would be useful here but is
+            //        // only relatively recently standardized and is not supported in
+            //        // some browsers (IE9, for one)
+            //        var el = d.createElement('div');
+            //        el.innerHTML = html;
+            //        var frag = d.createDocumentFragment(), node, lastNode;
+            //        while ((node = el.firstChild)) {
+            //            lastNode = frag.appendChild(node);
+            //        }
+            //        var firstNode = frag.firstChild;
+            //        range.insertNode(frag);
+            //
+            //        // Preserve the selection
+            //        if (lastNode) {
+            //            range = range.cloneRange();
+            //            range.setStartAfter(lastNode);
+            //            if (select) {
+            //                range.setStartBefore(firstNode);
+            //            } else {
+            //                range.collapse(true);
+            //            }
+            //            sel.removeAllRanges();
+            //            sel.addRange(range);
+            //        }
+            //    }
+            //} else if (supportDocumentSelection) {
+            //    sel = document.selection;
+            //
+            //    if (sel && sel.type !== 'Control') {
+            //        // IE < 9
+            //        var originalRange = sel.createRange();
+            //        originalRange.collapse(true);
+            //        sel.createRange().pasteHTML(html);
+            //        if (select) {
+            //            range = sel.createRange();
+            //            range.setEndPoint("StartToStart", originalRange);
+            //            range.select();
+            //        }
+            //    }
+            //}
 
             if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'

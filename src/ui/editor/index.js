@@ -161,7 +161,12 @@ define(function (require, exports, module) {
             modification.insert(eflag, the._$textarea[0], 'afterend');
             the._$editor = $(html).insertAfter(the._$textarea);
             $('.' + namespace + '-icon', the._$editor).each(function (index, ele) {
-                buttons[index].ele = ele;
+                var buttonIndex = $(ele).data('index');
+                var btn = buttons[buttonIndex];
+
+                if (btn) {
+                    btn.ele = ele;
+                }
             });
             var nodes = $('.j-flag', the._$editor);
             the._$textarea.hide();

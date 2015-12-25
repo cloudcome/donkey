@@ -80,7 +80,7 @@ define(function (require, exports, module) {
         wy.insertImage('http://dummyimage.com/600x400');
     });
     $('#insertHTML').click(function () {
-        wy.insertHTML('<h1>HTML</h1>');
+        wy.insertHTML('<h1>HTML</h1>', true);
     });
     $('#insertOrderedList').click(function () {
         wy.insertOrderedList();
