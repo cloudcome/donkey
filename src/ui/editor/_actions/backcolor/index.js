@@ -22,7 +22,7 @@ define(function (require, exports, module) {
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
 
-    var namespace = 'alien-ui-editor--backcolor';
+    var namespace = 'alien-ui-editor_action-backcolor';
     var defaults = {
         colors: [
             '880000', '800080', 'ff0000', 'ff00ff',

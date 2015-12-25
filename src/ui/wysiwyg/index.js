@@ -12,6 +12,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
+    var event = require('../../core/event/base.js');
 
     var defaults = {};
     var Wysiwyg = ui.create({
@@ -23,6 +24,20 @@ define(function (require, exports, module) {
             the._options = dato.extend({}, defaults, options);
             the._lastSavedSelection = null;
             the._trailingDiv = null;
+            the._initEvent();
+        },
+
+
+        _initEvent: function () {
+            var the = this;
+
+            event.on(the._eWysiwyg, 'focus blur selectstart selectchange selectend', function () {
+                the.emit('selectionChange');
+            });
+
+            event.on(the._eWysiwyg, 'input change', function () {
+                the.emit('contentChange');
+            });
         },
 
         _IEtrailingDIV: function () {
