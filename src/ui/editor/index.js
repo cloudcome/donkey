@@ -157,8 +157,12 @@ define(function (require, exports, module) {
                 buttons: buttons
             });
 
+            the._buttons = buttons;
             modification.insert(eflag, the._$textarea[0], 'afterend');
             the._$editor = $(html).insertAfter(the._$textarea);
+            $('.' + namespace + '-icon', the._$editor).each(function (index, ele) {
+                buttons[index].ele = ele;
+            });
             var nodes = $('.j-flag', the._$editor);
             the._$textarea.hide();
             the._$header = $(nodes[0]);
@@ -192,6 +196,19 @@ define(function (require, exports, module) {
                 }
 
                 eve.preventDefault();
+            });
+            the.wysiwyg.on('selectionChange', function () {
+                dato.each(the._buttons, function (index, btn) {
+                    var command = btn.command;
+                    var isState = the.wysiwyg.isState(command);
+                    var className = namespace + '-icon-active';
+
+                    if (isState) {
+                        $(btn.ele).addClass(className);
+                    } else {
+                        $(btn.ele).removeClass(className);
+                    }
+                });
             });
         }
     });

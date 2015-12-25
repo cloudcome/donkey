@@ -32,8 +32,8 @@
       cursor: pointer; }
     .donkey-ui-editor-icon:hover {
       background: #eee; }
-    .donkey-ui-editor-icon.active,
-    .donkey-ui-editor-icon.active:hover {
+    .donkey-ui-editor-icon-active,
+    .donkey-ui-editor-icon-active:hover {
       background: #ddd; }
     .donkey-ui-editor-icon:after {
       content: '';

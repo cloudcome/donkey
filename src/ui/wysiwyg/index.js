@@ -11,6 +11,7 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
     var ui = require('../index.js');
+    var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
     var event = require('../../core/event/base.js');
 
@@ -31,12 +32,16 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._eWysiwyg, 'focus blur selectstart selectchange selectend', function () {
+            event.on(the._eWysiwyg, 'focus blur click selectstart selectchange selectend', function () {
                 the.emit('selectionChange');
             });
 
             event.on(the._eWysiwyg, 'input change', function () {
                 the.emit('contentChange');
+            });
+
+            controller.nextTick(function () {
+                the.focus();
             });
         },
 
@@ -180,12 +185,13 @@ define(function (require, exports, module) {
         // Command structure
         _callUpdates: function (selectionDestroyed) {
             var the = this;
-            var node_wysiwyg = the._eWysiwyg;
+
             // Remove IE11 workaround
             if (the._trailingDiv) {
-                node_wysiwyg.removeChild(the._trailingDiv);
+                the._eWysiwyg.removeChild(the._trailingDiv);
                 the._trailingDiv = null;
             }
+
             // handle saved selection
             if (selectionDestroyed) {
                 the._collapseSelectionEnd();
@@ -193,6 +199,8 @@ define(function (require, exports, module) {
             } else {
                 the.restoreSelection();
             }
+
+            the.focus();
         },
 
 
@@ -206,11 +214,12 @@ define(function (require, exports, module) {
          */
         _exec: function (command, param, forceSelection) {
             var the = this;
-            var node_wysiwyg = the._eWysiwyg;
+
             // give selection to contenteditable element
             the._restoreSelection();
+
             // tried to avoid forcing focus(), but ... - https://github.com/wysiwygjs/wysiwyg.js/issues/51
-            node_wysiwyg.focus();
+            the._eWysiwyg.focus();
 
             // returns 'selection inside editor'
             if (!the._selectionInside(forceSelection)) {
@@ -491,6 +500,7 @@ define(function (require, exports, module) {
         enable: function () {
             var the = this;
             the._eWysiwyg.setAttribute('contentEditable', 'true'); // IE7 is case sensitive
+            the.emit('selectionChange');
             return the;
         },
 
@@ -499,9 +509,34 @@ define(function (require, exports, module) {
          * 编辑器不可写
          * @returns {Wysiwyg}
          */
-        disbale: function () {
+        disable: function () {
             var the = this;
             the._eWysiwyg.removeAttribute('contentEditable');
+            the.emit('selectionChange');
+            return the;
+        },
+
+
+        /**
+         * 聚焦
+         * @returns {Wysiwyg}
+         */
+        focus: function () {
+            var the = this;
+            the._eWysiwyg.focus();
+            the.emit('selectionChange');
+            return the;
+        },
+
+
+        /**
+         * 聚焦
+         * @returns {Wysiwyg}
+         */
+        blur: function () {
+            var the = this;
+            the._eWysiwyg.blur();
+            the.emit('selectionChange');
             return the;
         },
 

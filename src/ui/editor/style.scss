@@ -44,8 +44,8 @@ $border-color: #ddd;
       background: #eee;
     }
 
-    &.active,
-    &.active:hover {
+    &-active,
+    &-active:hover {
       background: $border-color;
     }
 

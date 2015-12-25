@@ -53,7 +53,7 @@ define(function (require, exports, module) {
      * @param ele {Object} 元素
      * @param eventType {String} 事件类型
      */
-    exports.dispath = function (ele, eventType) {
-        $(ele).trigger(eventType);
+    exports.dispatch = function (ele, eventType) {
+        return $.event.trigger( eventType, null, ele );
     };
 });
