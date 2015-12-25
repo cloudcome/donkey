@@ -29,7 +29,10 @@ define(function (require, exports, module) {
             '000080', '0000ff', '00ffff', '008080',
             '008000', '808000', '00ff00', 'ffcc00',
             '808080', 'c0c0c0', '000000', 'ffffff'
-        ]
+        ],
+        style: {
+            width: 122
+        }
     };
 
     var BackColor2 = ui.create({
@@ -48,6 +51,7 @@ define(function (require, exports, module) {
             var options = the._options;
 
             the._card = new Card({
+                style: options.style,
                 template: tpl.render(options)
             });
         },
@@ -63,6 +67,7 @@ define(function (require, exports, module) {
         }
     });
 
+    ui.importStyle(style);
     klass.transfer(Card, BackColor2, '_card');
     BackColor2.defaults = defaults;
     module.exports = BackColor2;

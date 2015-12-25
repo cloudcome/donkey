@@ -14,16 +14,22 @@
   .donkey-ui-editor-icon {
     position: relative;
     display: inline-block;
-    vertical-align: middle;
-    width: 30px;
-    height: 30px;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    outline: 0;
-    box-shadow: none;
-    border-radius: 0; }
+    vertical-align: middle; }
+    .donkey-ui-editor-icon,
+    .donkey-ui-editor-icon:hover,
+    .donkey-ui-editor-icon:visited,
+    .donkey-ui-editor-icon:link,
+    .donkey-ui-editor-icon:active {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      outline: 0;
+      box-shadow: none;
+      border-radius: 0;
+      cursor: pointer; }
     .donkey-ui-editor-icon:hover {
       background: #eee; }
     .donkey-ui-editor-icon.active,

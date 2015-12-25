@@ -12,16 +12,21 @@ define(function (require, exports, module) {
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
     var modification = require('../../core/dom/modification.js');
+    var animation = require('../../core/dom/animation.js');
+    var event = require('../../core/event/base.js');
 
     var defaults = {
         style: {
             display: 'none',
             position: 'absolute',
             width: 400,
-            height: 'auto'
+            height: 'auto',
+            background: '#fff',
+            border: '1px solid #ccc',
+            boxShadow: '0 0 10px #BBB',
+            boxSizing: 'border-box'
         },
         template: '',
-        // click out
         autoClose: true
     };
     var Card = ui.create({
@@ -30,6 +35,7 @@ define(function (require, exports, module) {
 
             the._options = dato.extend(true, {}, defaults, options);
             the._initNode();
+            the._initEvent();
         },
 
         /**
@@ -44,6 +50,27 @@ define(function (require, exports, module) {
             });
 
             eDiv.innerHTML = options.template;
+            $(eDiv).appendTo(document.body);
+        },
+
+
+        /**
+         * 初始化事件
+         * @private
+         */
+        _initEvent: function () {
+            var the = this;
+            var timeid = 0;
+
+            event.on(the._eDiv, 'mouseover', function () {
+                clearTimeout(timeid);
+            });
+
+            event.on(the._eDiv, 'mouseout', function () {
+                timeid = setTimeout(function () {
+                    the.close();
+                }, 400);
+            });
         },
 
 
@@ -67,9 +94,13 @@ define(function (require, exports, module) {
             var offset = $target.offset();
 
             offset.display = 'block';
+            offset.opacity = 0;
             offset.top += $target.height();
             offset.zIndex = ui.getZindex();
             $(the._eDiv).css(offset);
+
+
+
             return the;
         },
 
