@@ -14,6 +14,7 @@ define(function (require, exports, module) {
 
     var Card = require('../_card.js');
     var ui = require('../../index.js');
+    var dato = require('../../../utils/dato.js');
 
     var defaults = {
         colors: [
@@ -24,5 +25,28 @@ define(function (require, exports, module) {
         ]
     };
 
-    module.exports = '';
+    var BackColor2 = ui.create({
+        constructor: function (options) {
+            var the = this;
+
+            options = dato.extend({}, defaults, options);
+            the.card = new Card();
+        },
+
+        _initNode: function () {
+            var the = this;
+
+        }
+    });
+
+    module.exports = function (options) {
+
+
+
+        return {
+            open: function () {
+                card.open();
+            }
+        };
+    };
 });

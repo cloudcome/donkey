@@ -104,6 +104,7 @@ define(function (require, exports, module) {
             command: ''
         }
     };
+    var customCommands = {};
     var defaults = {
         style: {
             width: 'auto',
@@ -126,8 +127,23 @@ define(function (require, exports, module) {
             the._$textarea = $($textarea);
             the._index = donkeyIndex++;
             the._options = dato.extend({}, defaults, options);
+            the._initCommand();
             the._initNode();
             the._initEvent();
+        },
+
+
+        /**
+         * 初始化命令
+         * @private
+         */
+        _initCommand: function () {
+            var the = this;
+
+            the._commands = {};
+            dato.each(customCommands, function (command, commander) {
+                the._commands[command] = commander.call(the);
+            });
         },
 
 
@@ -186,6 +202,16 @@ define(function (require, exports, module) {
             });
         }
     });
+
+
+    /**
+     * 注册编辑器命令
+     * @param command
+     * @param commander
+     */
+    Editor.command = function (command, commander) {
+        customCommands[command] = commander;
+    };
 
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);

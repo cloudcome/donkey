@@ -25,14 +25,17 @@ define(function (require, exports, module) {
         autoClose: true
     };
     var Card = ui.create({
-        constructor: function ($target, options) {
+        constructor: function (options) {
             var the = this;
 
-            the._$target = $($target);
             the._options = dato.extend(true, {}, defaults, options);
             the._initNode();
         },
 
+        /**
+         * 初始化节点
+         * @private
+         */
         _initNode: function () {
             var the = this;
             var options = the._options;
@@ -44,21 +47,37 @@ define(function (require, exports, module) {
         },
 
 
+        /**
+         * 获取节点
+         * @returns {Node|*}
+         */
         getNode: function () {
             return this._eDiv;
         },
 
-        open: function () {
+
+        /**
+         * 打开卡片
+         * @param $target {*} 参考目标
+         * @returns {Card}
+         */
+        open: function ($target) {
             var the = this;
-            var offset = the._$target.offset();
+            $target = $($target);
+            var offset = $target.offset();
 
             offset.display = 'block';
-            offset.top += the._$target.height();
+            offset.top += $target.height();
             offset.zIndex = ui.getZindex();
             $(the._eDiv).css(offset);
             return the;
         },
 
+
+        /**
+         * 关闭卡片
+         * @returns {Card}
+         */
         close: function () {
             var the = this;
             the._eDiv.style.display = 'none';
