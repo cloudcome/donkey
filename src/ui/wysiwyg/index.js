@@ -900,8 +900,8 @@ define(function (require, exports, module) {
          */
         insertHTML: function (html, select) {
             var the = this;
-            //var sel;
-            //var range;
+            var sel;
+            var range;
             //
             //if (supportWindowGetSelection) {
             //    sel = w.getSelection();
@@ -949,6 +949,13 @@ define(function (require, exports, module) {
             //        }
             //    }
             //}
+
+            if(supportWindowGetSelection){
+                sel = w.getSelection();
+                if (sel.getRangeAt && sel.rangeCount) {
+
+                }
+            }
 
             if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'
