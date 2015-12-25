@@ -127,23 +127,9 @@ define(function (require, exports, module) {
             the._$textarea = $($textarea);
             the._index = donkeyIndex++;
             the._options = dato.extend({}, defaults, options);
-            the._initCommand();
+            the._commands = {};
             the._initNode();
             the._initEvent();
-        },
-
-
-        /**
-         * 初始化命令
-         * @private
-         */
-        _initCommand: function () {
-            var the = this;
-
-            the._commands = {};
-            dato.each(customCommands, function (command, commander) {
-                the._commands[command] = commander.call(the);
-            });
         },
 
 
@@ -188,7 +174,7 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            the._wysiwyg = new Wysiwyg(the._$content[0]);
+            the.wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function () {
                 var command = $(this).data('command');
 
@@ -196,8 +182,11 @@ define(function (require, exports, module) {
                     return;
                 }
 
-                if (the._wysiwyg[command]) {
-                    the._wysiwyg[command]();
+                if (the.wysiwyg[command]) {
+                    the.wysiwyg[command]();
+                }else if(customCommands[command]){
+                    the._commands[command] = the._commands[command] || new customCommands[command](the);
+                    the._commands[command].open(this);
                 }
             });
         }
@@ -212,6 +201,8 @@ define(function (require, exports, module) {
     Editor.command = function (command, commander) {
         customCommands[command] = commander;
     };
+
+    Editor.command('backcolor2', require('./_commands/backcolor/index.js'));
 
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);

@@ -234,7 +234,7 @@ define(function (require, exports, module) {
      * 即：`class.transfer(Dialog, ProductDialog, 'dialog')`
      * 结果是：将 Dialog 的原型通过 dialog 实例转让给 ProductDialog
      *
-     * @param parentClass {Function} 父级构造函数
+     * @param parentClass {Function|Object} 父级构造函数
      * @param childClass {Function} 子级构造函数
      * @param parentInstanceNameInChild {String} 父级实例在子类的名称
      * @param [filter] {Array} 允许和禁止的公共方法名称
