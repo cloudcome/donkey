@@ -21,7 +21,7 @@ define(function (require, exports, module) {
             the._$wysiwyg = $($wysiwyg);
             the._eWysiwyg = the._$wysiwyg[0];
             the._options = dato.extend({}, defaults, options);
-            the._popupSavedSelection = null;
+            the._lastSavedSelection = null;
             the._trailingDiv = null;
         },
 
@@ -40,16 +40,16 @@ define(function (require, exports, module) {
         _restoreSelection: function () {
             var the = this;
 
-            if (!the._popupSavedSelection) {
+            if (!the._lastSavedSelection) {
                 return;
             }
 
             if (window.getSelection) {
                 var sel = window.getSelection();
                 sel.removeAllRanges();
-                sel.addRange(the._popupSavedSelection);
+                sel.addRange(the._lastSavedSelection);
             } else if (document.selection) {
-                the._popupSavedSelection.select();
+                the._lastSavedSelection.select();
             }
         },
 
@@ -174,10 +174,9 @@ define(function (require, exports, module) {
             // handle saved selection
             if (selectionDestroyed) {
                 the._collapseSelectionEnd();
-                the._popupSavedSelection = null; // selection destroyed
-            }
-            else if (the._popupSavedSelection) {
-                the.saveSelection();
+                the._lastSavedSelection = null; // selection destroyed
+            } else {
+                the.restoreSelection();
             }
         },
 
@@ -373,43 +372,48 @@ define(function (require, exports, module) {
         },
 
 
-        // http://stackoverflow.com/questions/15157435/get-last-character-before-caret-position-in-javascript
-        // http://stackoverflow.com/questions/11247737/how-can-i-get-the-word-that-the-caret-is-upon-inside-a-contenteditable-div
-        _expandSelectionCaret: function (preceding, following) {
-            var sel;
-            var range;
-            var i = 0;
-
-            if (window.getSelection) {
-                sel = window.getSelection();
-                if (sel.modify) {
-                    for (i = 0; i < preceding; ++i) {
-                        sel.modify('extend', 'backward', 'character');
-                    }
-                    for (i = 0; i < following; ++i) {
-                        sel.modify('extend', 'forward', 'character');
-                    }
-                }
-                else {
-                    // not so easy if the steps would cover multiple nodes ...
-                    range = sel.getRangeAt(0);
-                    range.setStart(range.startContainer, range.startOffset - preceding);
-                    range.setEnd(range.endContainer, range.endOffset + following);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
-            }
-            else if (document.selection) {
-                sel = document.selection;
-                if (sel.type !== 'Control') {
-                    range = sel.createRange();
-                    range.collapse(true);
-                    range.moveStart('character', -preceding);
-                    range.moveEnd('character', following);
-                    range.select();
-                }
-            }
-        },
+        ///**
+        // * @link http://stackoverflow.com/questions/15157435/get-last-character-before-caret-position-in-javascript
+        // * @link http://stackoverflow.com/questions/11247737/how-can-i-get-the-word-that-the-caret-is-upon-inside-a-contenteditable-div
+        // * @param preceding
+        // * @param following
+        // * @private
+        // */
+        //_expandSelectionCaret: function (preceding, following) {
+        //    var sel;
+        //    var range;
+        //    var i = 0;
+        //
+        //    if (window.getSelection) {
+        //        sel = window.getSelection();
+        //        if (sel.modify) {
+        //            for (i = 0; i < preceding; ++i) {
+        //                sel.modify('extend', 'backward', 'character');
+        //            }
+        //            for (i = 0; i < following; ++i) {
+        //                sel.modify('extend', 'forward', 'character');
+        //            }
+        //        }
+        //        else {
+        //            // not so easy if the steps would cover multiple nodes ...
+        //            range = sel.getRangeAt(0);
+        //            range.setStart(range.startContainer, range.startOffset - preceding);
+        //            range.setEnd(range.endContainer, range.endOffset + following);
+        //            sel.removeAllRanges();
+        //            sel.addRange(range);
+        //        }
+        //    }
+        //    else if (document.selection) {
+        //        sel = document.selection;
+        //        if (sel.type !== 'Control') {
+        //            range = sel.createRange();
+        //            range.collapse(true);
+        //            range.moveStart('character', -preceding);
+        //            range.moveEnd('character', following);
+        //            range.select();
+        //        }
+        //    }
+        //},
 
 
         // ====================================
@@ -487,38 +491,40 @@ define(function (require, exports, module) {
         },
 
 
-        // selection and popup
+        /**
+         * 释放选区
+         * @returns {Wysiwyg}
+         */
         collapseSelection: function () {
             var the = this;
             the._collapseSelectionEnd();
-            the._popupSavedSelection = null; // selection destroyed
+            the._lastSavedSelection = null; // selection destroyed
             return the;
         },
 
 
+        ///**
+        // * 扩大选区
+        // * @param preceding {Number} 选区之前长度
+        // * @param following {Number} 选区之后长度
+        // * @returns {Wysiwyg}
+        // */
+        //expandSelection: function (preceding, following) {
+        //    var the = this;
+        //
+        //    the._restoreSelection();
+        //    if (!the._selectionInside()) {
+        //        return the;
+        //    }
+        //
+        //    the._expandSelectionCaret(preceding, following);
+        //    the.saveSelection();
+        //    return the;
+        //},
+
+
         /**
-         *
-         * @param preceding
-         * @param following
-         * @returns {Wysiwyg}
-         */
-        expandSelection: function (preceding, following) {
-            var the = this;
-
-            the._restoreSelection();
-            if (!the._selectionInside()) {
-                return the;
-            }
-
-            the._expandSelectionCaret(preceding, following);
-            the.saveSelection();
-            return the;
-        },
-
-
-        /**
-         * save/restore selection
-         * 在失去焦点的时候都需要手动保存一次
+         * 保存选区
          * @link http://stackoverflow.com/questions/13949059/persisting-the-changes-of-range-objects-after-selection-in-html/13950376#13950376
          * @returns {*}
          */
@@ -529,14 +535,35 @@ define(function (require, exports, module) {
             if (window.getSelection) {
                 sel = window.getSelection();
                 if (sel.rangeCount > 0) {
-                    the._popupSavedSelection = sel.getRangeAt(0);
+                    the._lastSavedSelection = sel.getRangeAt(0);
                 }
-            }
-            else if (document.selection) {
+            } else if (document.selection) {
                 sel = document.selection;
-                the._popupSavedSelection = sel.createRange();
+                the._lastSavedSelection = sel.createRange();
             } else {
-                the._popupSavedSelection = null;
+                the._lastSavedSelection = null;
+            }
+        },
+
+
+        /**
+         * 恢复选区
+         * @returns {Wysiwyg}
+         */
+        restoreSelection: function () {
+            var the = this;
+            var range = the._lastSavedSelection;
+
+            if (!range) {
+                return the;
+            }
+
+            if (window.getSelection) {
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (document.selection && range.select) { // IE
+                range.select();
             }
         },
 
@@ -854,6 +881,20 @@ define(function (require, exports, module) {
             the._exec('insertUnorderedList');
             the._callUpdates();
             return the;
+        },
+
+
+        /**
+         * 判断命令状态
+         * @param command
+         * @returns {*}
+         */
+        isState: function (command) {
+            try {
+                return document.queryCommandState(command);
+            } catch (err) {
+                return false;
+            }
         }
     });
 

@@ -175,7 +175,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the.wysiwyg = new Wysiwyg(the._$content[0]);
-            event.on(the._$header[0], 'click', '.' + namespace + '-icon', function () {
+            event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
                 var command = $(this).data('command');
 
                 if (!command) {
@@ -188,6 +188,8 @@ define(function (require, exports, module) {
                     the._commands[command] = the._commands[command] || new customCommands[command](the);
                     the._commands[command].open(this);
                 }
+
+                eve.preventDefault();
             });
         }
     });
