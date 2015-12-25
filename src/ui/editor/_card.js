@@ -11,6 +11,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
+    var typeis = require('../../utils/typeis.js');
     var modification = require('../../core/dom/modification.js');
     var animation = require('../../core/dom/animation.js');
     var event = require('../../core/event/base.js');
@@ -27,7 +28,10 @@ define(function (require, exports, module) {
             boxSizing: 'border-box'
         },
         template: '',
-        autoClose: true
+        autoClose: true,
+        animation: {
+            duration: 123
+        }
     };
     var Card = ui.create({
         constructor: function (options) {
@@ -86,9 +90,10 @@ define(function (require, exports, module) {
         /**
          * 打开卡片
          * @param $target {*} 参考目标
+         * @param [callback] {Function} 回调
          * @returns {Card}
          */
-        open: function ($target) {
+        open: function ($target, callback) {
             var the = this;
             $target = $($target);
             var offset = $target.offset();
@@ -99,7 +104,16 @@ define(function (require, exports, module) {
             offset.zIndex = ui.getZindex();
             $(the._eDiv).css(offset);
 
+            the.emit('beforeopen');
+            animation.animate(the._eDiv, {
+                opacity: 1
+            }, the._options.animation, function () {
+                if (typeis.Function(callback)) {
+                    callback.call(the);
+                }
 
+                the.emit('open');
+            });
 
             return the;
         },
@@ -107,11 +121,21 @@ define(function (require, exports, module) {
 
         /**
          * 关闭卡片
+         * @param [callback] {Function} 回调
          * @returns {Card}
          */
-        close: function () {
+        close: function (callback) {
             var the = this;
-            the._eDiv.style.display = 'none';
+            the.emit('beforeclose');
+            animation.animate(the._eDiv, {
+                opacity: 0
+            }, the._options.animation, function () {
+                the._eDiv.style.display = 'none';
+                if (typeis.Function(callback)) {
+                    callback.call(the);
+                }
+                the.emit('close');
+            });
             return the;
         }
     });
