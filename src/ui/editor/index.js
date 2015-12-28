@@ -18,8 +18,6 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var modification = require('../../core/dom/modification.js');
     var event = require('../../core/event/base.js');
-    var rangy = require('../../3rd/rangy/core.js');
-    window.rangy = rangy;
     var Template = require('../../libs/Template.js');
     var template = require('./template.html', 'html');
     var tpl = new Template(template);
@@ -206,10 +204,9 @@ define(function (require, exports, module) {
                 eve.preventDefault();
             });
 
+            // 选中图片
             event.on(the._$content[0], 'click', 'img', function (eve) {
-                var range = rangy.getSelection();
-
-                range.selectAllChildren(this.parentNode);
+                the.wysiwyg.select(this);
             });
 
             the.wysiwyg.on('selectionChange contentChange', function () {

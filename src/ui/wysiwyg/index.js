@@ -16,6 +16,8 @@ define(function (require, exports, module) {
     var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
     var event = require('../../core/event/base.js');
+    var rangy = require('../../3rd/rangy/core.js');
+    window.rangy = rangy;
 
     var supportWindowGetSelection = !!w.getSelection;
     var supportDocumentSelection = !!d.selection;
@@ -202,8 +204,6 @@ define(function (require, exports, module) {
             } else {
                 the.restoreSelection();
             }
-
-            the.focus();
         },
 
 
@@ -494,6 +494,22 @@ define(function (require, exports, module) {
 
 
         /**
+         * 选择节点
+         * @param node
+         * @returns {Wysiwyg}
+         */
+        select: function (node) {
+            var the = this;
+            var sel = rangy.getSelection();
+            var rng = rangy.createRange();
+
+            rng.selectNode(node);
+            sel.setSingleRange(rng);
+            return the;
+        },
+
+
+        /**
          * 编辑器可写
          * @returns {Wysiwyg}
          */
@@ -519,13 +535,48 @@ define(function (require, exports, module) {
 
         /**
          * 聚焦
+         * @param [end=true] {Boolean} 是否聚焦的末尾
          * @returns {Wysiwyg}
          */
-        focus: function () {
+        focus: function (end) {
             var the = this;
             the._eWysiwyg.focus();
+            if (end !== false) {
+                controller.nextFrame(function () {
+                    var sel = rangy.getSelection();
+                    var rng = rangy.createRange();
+
+                    rng.selectNodeContents(the._eWysiwyg);
+                    rng.collapse(false);
+                    sel.setSingleRange(rng);
+                });
+            }
             the.emit('selectionChange');
             return the;
+        },
+
+
+        /**
+         * 是否聚焦
+         * @returns {boolean}
+         */
+        isFocus: function () {
+            var the = this;
+            var sel = rangy.getSelection();
+
+            if (!sel.rangeCount) {
+                return false;
+            }
+
+            var focusNode = sel.focusNode();
+
+            while (focusNode && focusNode !== d) {
+                if (focusNode === the._eWysiwyg) {
+                    return true;
+                }
+            }
+
+            return false;
         },
 
 
@@ -625,8 +676,8 @@ define(function (require, exports, module) {
         bold: function () {
             var the = this;
 
-            //the._exec('bold');
-            //the._callUpdates();
+            the._exec('bold');
+            the._callUpdates();
             return the;
         },
 
