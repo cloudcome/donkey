@@ -28,14 +28,15 @@ define(function (require, exports, module) {
             '880000', '800080', 'ff0000', 'ff00ff',
             '000080', '0000ff', '00ffff', '008080',
             '008000', '808000', '00ff00', 'ffcc00',
-            '808080', 'c0c0c0', '000000', 'ffffff'
+            '000000', '808080', 'c0c0c0', 'ffffff'
         ],
         style: {
             width: 122
-        }
+        },
+        command: 'backColor'
     };
 
-    var BackColor2 = ui.create({
+    var Color = ui.create({
         constructor: function (editor, options) {
             var the = this;
 
@@ -62,14 +63,14 @@ define(function (require, exports, module) {
 
             event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
                 var color = $(this).data('color');
-                the.editor.wysiwyg.backColor(color);
+                the.editor.wysiwyg[the._options.command](color);
                 the._card.close();
             });
         }
     });
 
     ui.importStyle(style);
-    klass.transfer(Card, BackColor2, '_card');
-    BackColor2.defaults = defaults;
-    module.exports = BackColor2;
+    klass.transfer(Card, Color, '_card');
+    Color.defaults = defaults;
+    module.exports = Color;
 });

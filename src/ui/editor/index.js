@@ -41,11 +41,11 @@ define(function (require, exports, module) {
         },
         forecolor: {
             text: '字体颜色',
-            action: 'forecolor'
+            command: 'forecolor'
         },
         backcolor: {
             text: '背景颜色',
-            action: 'backcolor'
+            command: 'backcolor'
         },
         heading: {
             text: '标题',
@@ -77,7 +77,7 @@ define(function (require, exports, module) {
         },
         link: {
             text: '添加链接',
-            action: 'createLink'
+            command: 'createLink'
         },
         unlink: {
             text: '取消链接',
@@ -186,14 +186,13 @@ define(function (require, exports, module) {
 
             the.wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
-                var action = $(this).data('action');
                 var command = $(this).data('command');
 
-                if (!action && !command) {
+                if (!command) {
                     return;
                 }
 
-                if (action && actions[command]) {
+                if (command && actions[command]) {
                     the._commands[command] = the._commands[command] || new actions[command](the);
                     the._commands[command].open(this);
                 } else if (command && the.wysiwyg[command]) {
@@ -234,7 +233,7 @@ define(function (require, exports, module) {
         actions[command] = commander;
     };
 
-    Editor.action('backcolor', require('./_actions/backcolor/index.js'));
+    Editor.action('color', require('./_actions/color/index.js'));
 
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);
