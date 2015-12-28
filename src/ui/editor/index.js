@@ -207,7 +207,9 @@ define(function (require, exports, module) {
             });
 
             event.on(the._$content[0], 'click', 'img', function (eve) {
-                console.log(this);
+                var range = rangy.getSelection();
+
+                range.selectAllChildren(this.parentNode);
             });
 
             the.wysiwyg.on('selectionChange contentChange', function () {
