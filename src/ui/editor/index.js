@@ -41,11 +41,13 @@ define(function (require, exports, module) {
         },
         forecolor: {
             text: '字体颜色',
-            command: 'forecolor'
+            command: 'color',
+            arg: 'foreColor'
         },
         backcolor: {
             text: '背景颜色',
-            command: 'backcolor'
+            command: 'backcolor',
+            arg: 'backColor'
         },
         heading: {
             text: '标题',
@@ -187,13 +189,16 @@ define(function (require, exports, module) {
             the.wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
                 var command = $(this).data('command');
+                var arg = $(this).data('arg');
 
                 if (!command) {
                     return;
                 }
 
                 if (command && actions[command]) {
-                    the._commands[command] = the._commands[command] || new actions[command](the);
+                    the._commands[command] = the._commands[command] || new actions[command](the, {
+                            arg: arg
+                        });
                     the._commands[command].open(this);
                 } else if (command && the.wysiwyg[command]) {
                     the.wysiwyg[command]();

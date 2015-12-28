@@ -33,7 +33,7 @@ define(function (require, exports, module) {
         style: {
             width: 122
         },
-        command: 'backColor'
+        arg: 'backColor'
     };
 
     var Color = ui.create({
@@ -63,7 +63,7 @@ define(function (require, exports, module) {
 
             event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
                 var color = $(this).data('color');
-                the.editor.wysiwyg[the._options.command](color);
+                the.editor.wysiwyg[the._options.arg](color);
                 the._card.close();
             });
         }
