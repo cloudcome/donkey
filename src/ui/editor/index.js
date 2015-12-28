@@ -51,7 +51,7 @@ define(function (require, exports, module) {
         },
         heading: {
             text: '标题',
-            command: ''
+            command: 'heading'
         },
         justifyleft: {
             text: '左对齐',
@@ -241,6 +241,7 @@ define(function (require, exports, module) {
     };
 
     Editor.action('color', require('./_actions/color/index.js'));
+    Editor.action('heading', require('./_actions/heading/index.js'));
 
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);

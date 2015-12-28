@@ -19,6 +19,7 @@ define(function (require, exports, module) {
     var rangy = require('../../3rd/rangy/core.js');
     window.rangy = rangy;
 
+    var blockTags = 'DIV P'.split(' ');
     var supportWindowGetSelection = !!w.getSelection;
     var supportDocumentSelection = !!d.selection;
     var defaults = {};
@@ -569,11 +570,14 @@ define(function (require, exports, module) {
             }
 
             var focusNode = sel.focusNode();
+            var checkNode = focusNode;
 
-            while (focusNode && focusNode !== d) {
-                if (focusNode === the._eWysiwyg) {
-                    return true;
+            while (checkNode && checkNode !== d) {
+                if (checkNode === the._eWysiwyg) {
+                    return focusNode;
                 }
+
+                checkNode = checkNode.parentNode;
             }
 
             return false;
@@ -665,6 +669,29 @@ define(function (require, exports, module) {
                 sel.addRange(range);
             } else if (supportDocumentSelection && range.select) { // IE
                 range.select();
+            }
+        },
+
+
+        /**
+         * 获取最近的父级块状元素
+         * @returns {Object}
+         */
+        getClosestBlock: function () {
+            var the = this;
+            var focusNode = the.isFocus();
+
+            if (!focusNode) {
+                return;
+            }
+
+            var checkNode = focusNode;
+            while (checkNode) {
+                var tagName = checkNode.tagName;
+                if (blockTags.indexOf(tagName) > -1) {
+                    return checkNode;
+                }
+                checkNode = checkNode.parentNode;
             }
         },
 
