@@ -18,6 +18,8 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var modification = require('../../core/dom/modification.js');
     var event = require('../../core/event/base.js');
+    var rangy = require('../../3rd/rangy/core.js');
+    window.rangy = rangy;
     var Template = require('../../libs/Template.js');
     var template = require('./template.html', 'html');
     var tpl = new Template(template);
@@ -119,7 +121,8 @@ define(function (require, exports, module) {
             'line', 'image', '|',
             'undo', 'redo'
         ],
-        placeholder: '输入，从这里开始'
+        placeholder: '输入，从这里开始',
+        addClass: ''
     };
     var Editor = ui.create({
         constructor: function ($textarea, options) {
@@ -159,7 +162,7 @@ define(function (require, exports, module) {
 
             the._buttons = buttons;
             modification.insert(eflag, the._$textarea[0], 'afterend');
-            the._$editor = $(html).insertAfter(the._$textarea);
+            the._$editor = $(html).insertAfter(the._$textarea).addClass(options.addClass);
             $('.' + namespace + '-icon', the._$editor).each(function (index, ele) {
                 var buttonIndex = $(ele).data('index');
                 var btn = buttons[buttonIndex];
@@ -202,6 +205,11 @@ define(function (require, exports, module) {
 
                 eve.preventDefault();
             });
+
+            event.on(the._$content[0], 'click', 'img', function (eve) {
+                console.log(this);
+            });
+
             the.wysiwyg.on('selectionChange contentChange', function () {
                 dato.each(the._buttons, function (index, btn) {
                     var command = btn.command;

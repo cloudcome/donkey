@@ -37,12 +37,10 @@ define(function (require, exports, module) {
             var the = this;
 
             event.on(the._eWysiwyg, 'focus blur mousedown selectstart selectchange selectend', controller.debounce(function (eve) {
-                console.log(eve);
                 the.emit('selectionChange');
             }));
 
             event.on(the._eWysiwyg, 'input change', function (eve) {
-                console.log(eve);
                 the.emit('contentChange');
             });
 
@@ -626,8 +624,9 @@ define(function (require, exports, module) {
          */
         bold: function () {
             var the = this;
-            the._exec('bold');
-            the._callUpdates();
+
+            //the._exec('bold');
+            //the._callUpdates();
             return the;
         },
 
@@ -950,12 +949,12 @@ define(function (require, exports, module) {
             //    }
             //}
 
-            if(supportWindowGetSelection){
-                sel = w.getSelection();
-                if (sel.getRangeAt && sel.rangeCount) {
-
-                }
-            }
+            //if(supportWindowGetSelection){
+            //    sel = w.getSelection();
+            //    if (sel.getRangeAt && sel.rangeCount) {
+            //
+            //    }
+            //}
 
             if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'
