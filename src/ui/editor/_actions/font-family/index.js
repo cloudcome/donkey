@@ -61,10 +61,9 @@ define(function (require, exports, module) {
             var the = this;
 
             event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
-                var color = $(this).data('color');
-                var command = commandTypeMap[the._options.type];
+                var font = $(this).data('font');
 
-                the.editor.wysiwyg[command](color);
+                the.editor.wysiwyg.fontName(font);
                 the._card.close();
             });
         }
