@@ -41,12 +41,11 @@ define(function (require, exports, module) {
         },
         forecolor: {
             text: '字体颜色',
-            command: ''
+            action: 'forecolor'
         },
         backcolor: {
             text: '背景颜色',
-            command: 'backcolor',
-            action: 'backcolor2'
+            action: 'backcolor'
         },
         heading: {
             text: '标题',
@@ -70,15 +69,15 @@ define(function (require, exports, module) {
         },
         orderlist: {
             text: '有序列表',
-            command: 'insertOrderList'
+            command: 'insertOrderedList'
         },
         unorderlist: {
             text: '无序列表',
-            command: 'insertUnorderList'
+            command: 'insertUnorderedList'
         },
         link: {
             text: '添加链接',
-            command: ''
+            action: 'createLink'
         },
         unlink: {
             text: '取消链接',
