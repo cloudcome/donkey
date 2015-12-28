@@ -42,12 +42,12 @@ define(function (require, exports, module) {
         forecolor: {
             text: '字体颜色',
             command: 'color',
-            arg: 'foreColor'
+            type: 1
         },
         backcolor: {
             text: '背景颜色',
-            command: 'backcolor',
-            arg: 'backColor'
+            command: 'color',
+            type: 2
         },
         heading: {
             text: '标题',
@@ -189,17 +189,19 @@ define(function (require, exports, module) {
             the.wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
                 var command = $(this).data('command');
-                var arg = $(this).data('arg');
+                var type = $(this).data('type') || '';
 
                 if (!command) {
                     return;
                 }
 
-                if (command && actions[command]) {
-                    the._commands[command] = the._commands[command] || new actions[command](the, {
-                            arg: arg
+                var action = command + type;
+
+                if (action && actions[command]) {
+                    the._commands[action] = the._commands[action] || new actions[command](the, {
+                            type: type
                         });
-                    the._commands[command].open(this);
+                    the._commands[action].open(this);
                 } else if (command && the.wysiwyg[command]) {
                     the.wysiwyg[command]();
                 }
