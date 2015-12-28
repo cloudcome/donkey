@@ -19,21 +19,20 @@ define(function (require, exports, module) {
     var tpl = new Template(template);
 
     var namespace = 'alien-ui-editor_action-backcolor';
-    var commandTypeMap = {
-        1: 'foreColor',
-        2: 'backColor'
-    };
     var defaults = {
-        colors: [
-            '880000', '800080', 'ff0000', 'ff00ff',
-            '000080', '0000ff', '00ffff', '008080',
-            '008000', '808000', '00ff00', 'ffcc00',
-            '000000', '808080', 'c0c0c0', 'ffffff'
-        ],
+        fontFamilies: [{
+            name: 'SimSun',
+            text: '宋体'
+        }, {
+            name: 'Microsoft YaHei',
+            text: '微软雅黑'
+        }, {
+            name: 'arial, helvetica,sans-serif',
+            text: 'Arial'
+        }],
         style: {
             width: 122
-        },
-        type: 1
+        }
     };
 
     var Color = ui.create({
