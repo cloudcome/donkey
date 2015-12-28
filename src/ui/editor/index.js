@@ -202,7 +202,7 @@ define(function (require, exports, module) {
 
                 eve.preventDefault();
             });
-            the.wysiwyg.on('selectionChange', function () {
+            the.wysiwyg.on('selectionChange contentChange', function () {
                 dato.each(the._buttons, function (index, btn) {
                     var command = btn.command;
                     var isState = the.wysiwyg.isState(command);
