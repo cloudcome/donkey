@@ -80,13 +80,11 @@ define(function (require, exports, module) {
         },
         link: {
             text: '添加链接',
-            command: 'link',
-            type: 1
+            command: 'link'
         },
         unlink: {
             text: '取消链接',
-            command: 'link',
-            type: 2
+            command: 'unlink'
         },
         line: {
             text: '分割线',

@@ -446,6 +446,67 @@ define(function (require, exports, module) {
         //},
 
 
+        /**
+         * 保存选区
+         * @private
+         */
+        _saveRange: function () {
+            var sel = rangy.getSelection();
+            // 缓存下这些变量，因为 replace 之后 selection 会变化
+            var anchorNode = sel.anchorNode;
+            var anchorOffset = sel.anchorOffset;
+            var focusNode = sel.focusNode;
+            var focusOffset = sel.focusOffset;
+
+            this._lastRange = {
+                an: anchorNode,
+                ao: anchorOffset,
+                fn: focusNode,
+                fo: focusOffset
+            };
+        },
+
+
+        /**
+         * 恢复选区
+         * @private
+         */
+        _restoreRange: function () {
+            var lastRng = this._lastRange;
+            var rng = rangy.createRange();
+            rng.setStart(lastRng.an, lastRng.ao);
+            rng.setEnd(lastRng.fn, lastRng.fo);
+
+            var sel = rangy.getSelection();
+            sel.setSingleRange(rng);
+        },
+
+
+        /**
+         * 获取最近的父级块状元素
+         * @returns {Object}
+         */
+        _getClosestBlock: function () {
+            var the = this;
+            var focusNode = the.isFocus();
+
+            if (!focusNode) {
+                return null;
+            }
+
+            var checkNode = focusNode;
+            while (checkNode !== the._eWysiwyg) {
+                var tagName = checkNode.tagName;
+                if (REG_BLOCK_TAG.test(tagName)) {
+                    return checkNode;
+                }
+                checkNode = checkNode.parentNode;
+            }
+
+            return null;
+        },
+
+
         // ====================================
         // =============[ public ]=============
         // ====================================
@@ -691,68 +752,6 @@ define(function (require, exports, module) {
 
 
         /**
-         * 获取最近的父级块状元素
-         * @returns {Object}
-         */
-        getClosestBlock: function () {
-            var the = this;
-            var focusNode = the.isFocus();
-
-            if (!focusNode) {
-                return null;
-            }
-
-            var checkNode = focusNode;
-            while (checkNode !== the._eWysiwyg) {
-                var tagName = checkNode.tagName;
-                if (REG_BLOCK_TAG.test(tagName)) {
-                    return checkNode;
-                }
-                checkNode = checkNode.parentNode;
-            }
-
-            return null;
-        },
-
-
-        /**
-         * 保存选区
-         * @returns {{an: *, ao: *, fn: (*|null), fo: (*|number)}}
-         * @private
-         */
-        _saveRange: function () {
-            var sel = rangy.getSelection();
-            // 缓存下这些变量，因为 replace 之后 selection 会变化
-            var anchorNode = sel.anchorNode;
-            var anchorOffset = sel.anchorOffset;
-            var focusNode = sel.focusNode;
-            var focusOffset = sel.focusOffset;
-
-            return {
-                an: anchorNode,
-                ao: anchorOffset,
-                fn: focusNode,
-                fo: focusOffset
-            };
-        },
-
-
-        /**
-         * 恢复选区
-         * @param lastRng
-         * @private
-         */
-        _restoreRange: function (lastRng) {
-            var rng = rangy.createRange();
-            rng.setStart(lastRng.an, lastRng.ao);
-            rng.setEnd(lastRng.fn, lastRng.fo);
-
-            var sel = rangy.getSelection();
-            sel.setSingleRange(rng);
-        },
-
-
-        /**
          * 包裹当前选区
          * @link http://stackoverflow.com/a/19987884
          * @param tagName
@@ -780,7 +779,9 @@ define(function (require, exports, module) {
             }
 
             if (tagName !== 'A') {
+                the._saveRange();
                 eLink = modification.replace(eLink, tagName, attributes);
+                the._restoreRange();
             }
 
             if (collapsed) {
@@ -810,14 +811,12 @@ define(function (require, exports, module) {
         replace: function (tagName, attributes) {
             var the = this;
             the.restoreSelection();
-            var blockEle = the.getClosestBlock();
+            var blockEle = the._getClosestBlock();
 
             if (blockEle) {
-                var lastRng = the._saveRange();
-
+                the._saveRange();
                 modification.replace(blockEle, tagName, attributes);
-
-                the._restoreRange(lastRng);
+                the._restoreRange();
             }
 
             return the;

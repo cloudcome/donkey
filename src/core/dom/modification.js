@@ -18,6 +18,7 @@ define(function (require, exports, module) {
     var typeis = require('../../utils/typeis.js');
     var doc = window.document;
     var head = $('head')[0] || doc.documentElement;
+    var REG_SINGLE_TAG = /^hr|br|input$/i;
 
 
     /**
@@ -222,7 +223,10 @@ define(function (require, exports, module) {
             replacement.appendChild(node.firstChild);
         }
 
-        exports.insert(replacement, node, 'afterend');
+        if (!REG_SINGLE_TAG.test(tagName)) {
+            exports.insert(replacement, node, 'afterend');
+        }
+
         exports.remove(node);
 
         return replacement;

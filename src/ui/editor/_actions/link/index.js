@@ -19,27 +19,11 @@ define(function (require, exports, module) {
     var template = require('./template.html', 'html');
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
-    var rangy = require('../../../../3rd/rangy/core.js');
 
-    var namespace = 'alien-ui-editor_action-link';
-    var typeMap = {
-        1: 'createLink',
-        2: 'unlink'
-    };
     var defaults = {
-        headings: [
-            '段落',
-            '一级标题',
-            '二级标题',
-            '三级标题',
-            '四级标题',
-            '五级标题',
-            '六级标题'
-        ],
         style: {
             width: 'auto'
-        },
-        type: 1
+        }
     };
 
     var Color = ui.create({
@@ -80,8 +64,15 @@ define(function (require, exports, module) {
             });
 
             event.on(the._eSure, 'click', function () {
+                var url = the._eUrl.value;
+
+                if (!url) {
+                    the.close();
+                    return;
+                }
+
                 the.editor.wrap('a', {
-                    href: the._eUrl.value,
+                    href: url,
                     target: the._eTarget.checked ? '_blank' : '_self',
                     title: the._eTitle.value
                 });
