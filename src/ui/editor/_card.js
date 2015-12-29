@@ -10,6 +10,7 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
     var ui = require('../index.js');
+    var Mask = require('../mask/index.js');
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var modification = require('../../core/dom/modification.js');
@@ -33,7 +34,8 @@ define(function (require, exports, module) {
         autoClose: true,
         animation: {
             duration: 123
-        }
+        },
+        mask: false
     };
     var Card = ui.create({
         constructor: function (options) {
@@ -59,6 +61,9 @@ define(function (require, exports, module) {
 
             eDiv.innerHTML = options.template;
             $(eDiv).appendTo(document.body);
+            if (options.mask) {
+                the._mask = new Mask(window);
+            }
         },
 
 
@@ -107,10 +112,15 @@ define(function (require, exports, module) {
             offset.display = 'block';
             offset.opacity = 0;
             offset.top += $target.height();
-            offset.zIndex = ui.getZindex();
-            $(the._eDiv).css(offset);
 
             the.emit('beforeopen');
+
+            if (the._mask) {
+                the._mask.open();
+            }
+
+            offset.zIndex = ui.getZindex();
+            $(the._eDiv).css(offset);
             animation.animate(the._eDiv, {
                 opacity: 1
             }, the._options.animation, function () {
@@ -139,6 +149,9 @@ define(function (require, exports, module) {
                 the._eDiv.style.display = 'none';
                 if (typeis.Function(callback)) {
                     callback.call(the);
+                }
+                if (the._mask) {
+                    the._mask.close();
                 }
                 the.emit('close');
             });
