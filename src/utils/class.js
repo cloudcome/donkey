@@ -48,6 +48,13 @@ define(function (require, exports, module) {
 
     var classId = 0;
     var REG_PRIVATE = /^_/;
+    var hasOwn = function (obj, key) {
+        try {
+            return Object.prototype.hasOwnProperty.call(obj, key);
+        } catch (err) {
+            return false;
+        }
+    };
 
 
     /**
@@ -83,26 +90,38 @@ define(function (require, exports, module) {
         options = dato.extend({}, {
             'static': false,
             'prototype': false
-        });
+        }, options);
 
         if (options['static']) {
-            dato.extend(true, constructor, superConstructor);
+            var deepCopyStatic = function (superConstructor) {
+                dato.each(superConstructor, function (key, fun) {
+                    if (!REG_PRIVATE.test(key) && !hasOwn(constructor, key)) {
+                        constructor[key] = fun;
+                    }
+                });
+
+                if (superConstructor.super_) {
+                    deepCopyStatic(superConstructor.super_);
+                }
+            };
+
+            deepCopyStatic(superConstructor);
         }
 
         if (options.prototype) {
-            var deepCopy = function (superConstructor) {
+            var deepCopyPrototype = function (superConstructor) {
                 dato.each(superConstructor.prototype, function (key, fun) {
-                    if (!REG_PRIVATE.test(key) && !constructor.prototype[key]) {
+                    if (!REG_PRIVATE.test(key) && !hasOwn(constructor.prototype, key)) {
                         constructor.prototype[key] = fun;
                     }
                 });
 
                 if (superConstructor.super_) {
-                    deepCopy(superConstructor.super_);
+                    deepCopyPrototype(superConstructor.super_);
                 }
             };
 
-            deepCopy(superConstructor);
+            deepCopyPrototype(superConstructor);
         }
     };
 

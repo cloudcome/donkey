@@ -14,7 +14,9 @@ define(function (require, exports, module) {
     var style = require('./dialog.css', 'css');
 
     ui.importStyle(style);
-    module.exports = klass.extend(Dialog).create(function () {
+    module.exports = klass.extend(Dialog, {
+        prototype: true
+    }).create(function () {
         this._$window.addClass('alien-ui-editor_dialog');
     });
 });
