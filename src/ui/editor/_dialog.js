@@ -19,10 +19,7 @@ define(function (require, exports, module) {
 
     var namespace = 'donkey-ui-editor_dialog';
     ui.importStyle(style);
-    module.exports = klass.extend(Dialog, {
-        'static': true,
-        prototype: true
-    }).create(function () {
+    module.exports = klass.extend(Dialog).create(function () {
         var the = this;
         var eContainer = the.getNode();
 

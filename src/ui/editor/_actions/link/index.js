@@ -62,11 +62,11 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            the.on('open', function () {
+            the._dialog.on('open', function () {
                 the._eUrl.focus();
             });
 
-            the.on('action', function (index) {
+            the._dialog.on('action', function (index) {
                 switch (index) {
                     case 0:
                         var url = the._eUrl.value;
@@ -93,6 +93,12 @@ define(function (require, exports, module) {
         },
 
 
+        //open: function () {
+        //    var the = this;
+        //    the._dialog.open();
+        //    return the;
+        //},
+
         /**
          * 重置
          * @returns {Link}
@@ -110,6 +116,7 @@ define(function (require, exports, module) {
 
     ui.importStyle(style);
     klass.transfer(Dialog, Link, '_dialog');
+    klass.transfer(Dialog.super_, Link, '_dialog');
     Link.defaults = defaults;
     module.exports = Link;
 });

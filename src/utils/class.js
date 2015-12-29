@@ -47,23 +47,12 @@ define(function (require, exports, module) {
     var typeis = require('./typeis.js');
 
     var classId = 0;
-    var REG_PRIVATE = /^_/;
-    var hasOwn = function (obj, key) {
-        try {
-            return Object.prototype.hasOwnProperty.call(obj, key);
-        } catch (err) {
-            return false;
-        }
-    };
-
 
     /**
      * 单继承
      * @param {Function} constructor 子类
      * @param {Function} superConstructor 父类
-     * @param {Object} [options] 继承配置
-     * @param {Boolean} [options.static=false] 是否复制静态方法
-     * @param {Boolean} [options.prototype=false] 是否复制原型方法
+     * @param {Boolean} [isCopyStatic=false] 是否复制静态方法
      * @link https://github.com/joyent/node/blob/master/lib/util.js#L628
      *
      * @example
@@ -84,44 +73,12 @@ define(function (require, exports, module) {
      * // 这里开始写子类的原型方法
      * Child.prototype.fn = fn;
      */
-    var inherit = function (constructor, superConstructor, options) {
+    var inherit = function (constructor, superConstructor, isCopyStatic) {
         constructor.super_ = superConstructor;
         constructor.prototype = Object.create(superConstructor.prototype);
-        options = dato.extend({}, {
-            'static': false,
-            'prototype': false
-        }, options);
 
-        if (options['static']) {
-            var deepCopyStatic = function (superConstructor) {
-                dato.each(superConstructor, function (key, fun) {
-                    if (!REG_PRIVATE.test(key) && !hasOwn(constructor, key)) {
-                        constructor[key] = fun;
-                    }
-                });
-
-                if (superConstructor.super_) {
-                    deepCopyStatic(superConstructor.super_);
-                }
-            };
-
-            deepCopyStatic(superConstructor);
-        }
-
-        if (options.prototype) {
-            var deepCopyPrototype = function (superConstructor) {
-                dato.each(superConstructor.prototype, function (key, fun) {
-                    if (!REG_PRIVATE.test(key) && !hasOwn(constructor.prototype, key)) {
-                        constructor.prototype[key] = fun;
-                    }
-                });
-
-                if (superConstructor.super_) {
-                    deepCopyPrototype(superConstructor.super_);
-                }
-            };
-
-            deepCopyPrototype(superConstructor);
+        if (isCopyStatic) {
+            dato.extend(true, constructor, superConstructor);
         }
     };
 
@@ -130,12 +87,10 @@ define(function (require, exports, module) {
      * 创建一个类（构造函数）【旧的方法，会在下一个大版本中废弃】
      * @param {Object} prototypes 原型链
      * @param {Function} [superConstructor=null] 父类
-     * @param {Object} [options] 继承配置
-     * @param {Boolean} [options.static=false] 是否复制静态方法
-     * @param {Boolean} [options.prototype=false] 是否复制原型方法
+     * @param {Boolean} [isInheritStatic=false] 是否继承父类的静态方法
      * @returns {Function}
      */
-    var create = function (prototypes, superConstructor, options) {
+    var create = function (prototypes, superConstructor, isInheritStatic) {
         if (typeis.isFunction(prototypes)) {
             prototypes = {
                 constructor: prototypes
@@ -164,7 +119,7 @@ define(function (require, exports, module) {
         };
 
         if (superConstructorIsAFn) {
-            inherit(Class, superConstructor, options);
+            inherit(Class, superConstructor, isInheritStatic);
         }
 
         dato.each(prototypes, function (key, val) {
@@ -192,17 +147,15 @@ define(function (require, exports, module) {
      * 类的构造器
      * @param prototypes
      * @param superConstructor
-     * @param {Object} [options] 继承配置
-     * @param {Boolean} [options.static=false] 是否复制静态方法
-     * @param {Boolean} [options.prototype=false] 是否复制原型方法
+     * @param isInheritStatic
      * @constructor
      */
-    var Class = function (prototypes, superConstructor, options) {
+    var Class = function (prototypes, superConstructor, isInheritStatic) {
         var the = this;
 
         the.p = prototypes;
         the.s = superConstructor;
-        the.o = options;
+        the.i = isInheritStatic;
     };
 
     Class.prototype = {
@@ -218,7 +171,7 @@ define(function (require, exports, module) {
 
             the.p = prototypes || the.p;
 
-            return create(the.p, the.s, the.o);
+            return create(the.p, the.s, the.i);
         }
     };
 
@@ -227,13 +180,11 @@ define(function (require, exports, module) {
      * 类的继承，参考了 es6 的 class 表现
      * 因为 extends 是关键字，在 IE 下会报错，修改为 extend、inherit
      * @param superConstructor
-     * @param {Object} [options] 继承配置
-     * @param {Boolean} [options.static=false] 是否复制静态方法
-     * @param {Boolean} [options.prototype=false] 是否复制原型方法
+     * @param isInheritStatic
      * @returns {Class}
      */
-    exports.extend = exports.inherit = function (superConstructor, options) {
-        return new Class(null, superConstructor, options);
+    exports.extend = exports.inherit = function (superConstructor, isInheritStatic) {
+        return new Class(null, superConstructor, isInheritStatic);
     };
 
 
@@ -241,9 +192,7 @@ define(function (require, exports, module) {
      * 类的创建
      * @param {Object} prototypes 原型链
      * @param {Function} [superConstructor=null] 父类
-     * @param {Object} [options] 继承配置
-     * @param {Boolean} [options.static=false] 是否复制静态方法
-     * @param {Boolean} [options.prototype=false] 是否复制原型方法
+     * @param {Boolean} [isInheritStatic=false] 是否继承父类的静态方法
      * @returns {Function}
      *
      * @example
@@ -263,7 +212,7 @@ define(function (require, exports, module) {
      *     ...
      * });
      */
-    exports.create = function (prototypes, superConstructor, options) {
+    exports.create = function (prototypes, superConstructor, isInheritStatic) {
         var the = this;
 
         // 上一个级联应该是 extends
@@ -271,7 +220,7 @@ define(function (require, exports, module) {
             return the.create(prototypes);
         }
 
-        return new Class(prototypes, superConstructor, options).create();
+        return new Class(prototypes, superConstructor, isInheritStatic).create();
     };
 
 
@@ -294,24 +243,19 @@ define(function (require, exports, module) {
      * name 与 ['!name'] 不匹配
      */
     exports.transfer = function (parentClass, childClass, parentInstanceNameInChild, filter) {
-        var deepTransfer = function (parentClass) {
-            dato.each(parentClass.prototype, function (property) {
-                if (!childClass.prototype[property] && _matches(property, filter)) {
-                    childClass.prototype[property] = function () {
-                        var the = this;
-                        var ret = the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
-                        return ret instanceof parentClass ? the : ret;
-                    };
-                }
-            });
-            //if (parentClass.super_) {
-            //    deepTransfer(parentClass.super_);
-            //}
-        };
-
-        deepTransfer(parentClass);
+        dato.each(parentClass.prototype, function (property) {
+            if (!childClass.prototype[property] && _matches(property, filter)) {
+                childClass.prototype[property] = function () {
+                    var the = this;
+                    var ret = the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
+                    return ret instanceof parentClass ? the : ret;
+                };
+            }
+        });
     };
 
+
+    var REG_PRIVATE = /^_/;
 
     /**
      * 判断是否匹配
