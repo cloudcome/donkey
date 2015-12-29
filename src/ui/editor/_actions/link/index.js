@@ -22,7 +22,13 @@ define(function (require, exports, module) {
 
     var defaults = {
         width: 400,
-        title: '链接'
+        title: '链接',
+        buttons: [{
+            text: '确定',
+            'class': 'aaa'
+        }, {
+            text: '取消'
+        }]
     };
 
     var Link = ui.create({
@@ -43,7 +49,8 @@ define(function (require, exports, module) {
             the._dialog = new Dialog({
                 width: options.width,
                 title: options.title,
-                template: tpl.render(options)
+                template: tpl.render(options),
+                buttons: options.buttons
             });
             var nodes = $('.j-flag', the._dialog.getNode());
             the._eUrl = nodes[0];
