@@ -31,7 +31,7 @@ define(function (require, exports, module) {
             '000000', '808080', 'c0c0c0', 'ffffff'
         ],
         style: {
-            width: 122
+            width: 134
         },
         type: 1
     };

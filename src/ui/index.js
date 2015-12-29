@@ -118,6 +118,13 @@ define(function (require, exports, module) {
     exports.importStyle = function (styleText) {
         modification.importStyle(styleText);
     };
+    modification.importStyle(
+        '*,*:before,*:after{' +
+            /**/'-webkit-box-sizing:border-box;' +
+            /**/'-moz-box-sizing:border-box;' +
+            /**/'-ms-box-sizing:border-box;' +
+            /**/'box-sizing:border-box;' +
+        '}');
 
 
     var defaults = {

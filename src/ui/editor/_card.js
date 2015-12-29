@@ -20,14 +20,9 @@ define(function (require, exports, module) {
 
     var defaults = {
         style: {
-            display: 'none',
-            position: 'absolute',
             width: 400,
             height: 'auto',
-            background: '#fff',
-            border: '1px solid #ccc',
-            boxShadow: '0 0 10px #BBB',
-            boxSizing: 'border-box'
+            background: '#fff'
         },
         template: '',
         autoClose: 500,
@@ -42,7 +37,27 @@ define(function (require, exports, module) {
             var the = this;
 
             the._options = dato.extend(true, {}, defaults, options);
+            the._initNode();
             the._initEvent();
+        },
+
+        /**
+         * 初始化节点
+         * @private
+         */
+        _initNode: function () {
+            var the = this;
+            var options = the._options;
+
+            if (options.mask) {
+                the._mask = new Mask(window);
+            }
+
+            the._popup = new Popup(window, {
+                priority: options.arrowPriority,
+                style: options.style
+            });
+            the._popup.html(options.template);
         },
 
 
@@ -86,24 +101,19 @@ define(function (require, exports, module) {
          */
         open: function ($target, callback) {
             var the = this;
-            var options = the._options;
 
-            if (options.mask && !the._mask) {
-                the._mask = new Mask(window);
-            }
-
-            if (!the._popup) {
-                the._popup = new Popup($target, {
-                    priority: options.arrowPriority
-                });
-                the._popup.html(options.template);
-            }
-
+            the.emit('beforeopen');
             if (the._mask) {
                 the._mask.open();
             }
 
-            the._popup.open();
+            the._popup.open($target, function () {
+                if (typeis.Function(callback)) {
+                    callback.call(the);
+                }
+
+                the.emit('open');
+            });
 
             return the;
         },
@@ -116,6 +126,7 @@ define(function (require, exports, module) {
          */
         close: function (callback) {
             var the = this;
+
             the.emit('beforeclose');
             the._popup.close(function () {
                 if (the._mask) {
