@@ -649,6 +649,7 @@ define(function (require, exports, module) {
             //} else {
             //    the._lastSavedSelection = null;
             //}
+
             the._lastSavedSelection = rangy.saveSelection();
             return the;
         },
@@ -656,7 +657,7 @@ define(function (require, exports, module) {
 
         /**
          * 恢复选区
-         * @params [preserveDirection] {String} 方向
+         * @param [preserveDirection=true] {Boolean} 保留方向
          * @returns {Wysiwyg}
          */
         restoreSelection: function (preserveDirection) {
@@ -676,7 +677,8 @@ define(function (require, exports, module) {
             //}
 
             if (the._lastSavedSelection) {
-                rangy.restoreSelection(the._lastSavedSelection, preserveDirection);
+                rangy.restoreSelection(the._lastSavedSelection, preserveDirection !== false);
+                the._lastSavedSelection = null;
             }
 
             return the;

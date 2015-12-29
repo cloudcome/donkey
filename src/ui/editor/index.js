@@ -188,6 +188,9 @@ define(function (require, exports, module) {
             var the = this;
 
             the._wysiwyg = new Wysiwyg(the._$content[0]);
+            event.on(the._$header[0], 'mousedown', '.' + namespace + '-icon', function (eve) {
+                the._wysiwyg.saveSelection();
+            });
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
                 var command = $(this).data('command');
                 var type = $(this).data('type') || '';
@@ -215,7 +218,6 @@ define(function (require, exports, module) {
             });
 
             the._wysiwyg.on('selectionChange contentChange', function () {
-                the._wysiwyg.saveSelection();
                 dato.each(the._buttons, function (index, btn) {
                     var command = btn.command;
                     var isState = the._wysiwyg.isState(command);
