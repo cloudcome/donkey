@@ -172,9 +172,9 @@ define(function (require, exports, module) {
     CountDown.humanrize = function (remain) {
         var ret = {};
 
-        ret.times = remain;
         remain = number.parseInt(remain);
         remain = Math.max(remain, 0);
+        ret.times = remain;
         ret.dates = Math.floor(remain / oneDate);
         remain -= ret.dates * oneDate;
         ret.hours = Math.floor(remain / oneHour);
