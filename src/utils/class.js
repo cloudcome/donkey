@@ -222,4 +222,88 @@ define(function (require, exports, module) {
 
         return new Class(prototypes, superConstructor, isInheritStatic).create();
     };
+
+
+
+    /**
+     * 原型转让，将父级的原型复制到子类，
+     * 比如写好的一个 Dialog 类有 A、B、C 三个原型方法，
+     * 而写好的一个子类 ProductDialog，与 Dialog 的构造参数不一致，无法直接继承，
+     * 那么就可以使用原型过渡，子类的 ProductDialog 原本没有 A、B、C 三个实例方法，
+     * 只是在内部实例化了一个 Dialog 实例 dialog，那么就可以将 dialog 的原型方法复制到 ProductDialog 实例上
+     * 即：`class.transfer(Dialog, ProductDialog, 'dialog')`
+     * 结果是：将 Dialog 的原型通过 dialog 实例转让给 ProductDialog
+     *
+     * @param parentClass {Function|Object} 父级构造函数
+     * @param childClass {Function} 子级构造函数
+     * @param parentInstanceNameInChild {String} 父级实例在子类的名称
+     * @param [filter] {Array} 允许和禁止的公共方法名称
+     *
+     * @example
+     * name 与 ['name'] 匹配
+     * name 与 ['!name'] 不匹配
+     */
+    exports.transfer = function (parentClass, childClass, parentInstanceNameInChild, filter) {
+        dato.each(parentClass.prototype, function (property) {
+            if(!childClass.prototype[property] && _matches(property, filter)){
+                childClass.prototype[property] = function () {
+                    var the = this;
+
+                    the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
+
+                    return the;
+                };
+            }
+        });
+    };
+
+
+
+    var REG_PRIVATE = /^_/;
+
+    /**
+     * 判断是否匹配
+     * @param name {String} 待匹配字符串
+     * @param [names] {Array} 被匹配字符串数组
+     * @returns {boolean}
+     * @private
+     */
+    function _matches(name, names) {
+        names = names || [];
+
+        if (REG_PRIVATE.test(name)) {
+            return false;
+        }
+
+        if (!names.length) {
+            return true;
+        }
+
+        var matched = true;
+
+        dato.each(names, function (index, _name) {
+            var flag = _name[0];
+
+            // !name
+            if (flag === '!') {
+                matched = true;
+
+                if (name === _name.slice(1)) {
+                    matched = false;
+                    return false;
+                }
+            }
+            // name
+            else {
+                matched = false;
+
+                if (name === _name) {
+                    matched = true;
+                    return false;
+                }
+            }
+        });
+
+        return matched;
+    }
 });

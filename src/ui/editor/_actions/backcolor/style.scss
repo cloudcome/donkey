@@ -1,0 +1,24 @@
+.alien-ui-editor_action-backcolor {
+  overflow: hidden;
+
+  &-color {
+    &,
+    &:hover,
+    &:visited,
+    &:link,
+    &:active {
+      float: left;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      outline: 0;
+      box-shadow: none;
+      border-radius: 0;
+      cursor: pointer;
+    }
+  }
+}
+

@@ -1,0 +1,15 @@
+<div class="donkey-ui-editor" id="donkey-ui-editor-{{index}}">
+    <div class="donkey-ui-editor-header j-flag">
+        {{list buttons as index,button}}
+        {{if button.text}}
+        <button class="donkey-ui-editor-icon donkey-ui-editor-icon-{{button.name}}" data-index="{{index}}" data-action="{{button.action||''}}" data-command="{{button.command||''}}" title="{{button.text}}"></button>
+        {{else}}
+        <div class="donkey-ui-editor-separator" data-index="{{index}}"></div>
+        {{/if}}
+        {{/list}}
+    </div>
+    <div class="donkey-ui-editor-body">
+        <div class="donkey-ui-editor-content j-flag" contenteditable="true" spellcheck="false"></div>
+    </div>
+    <div class="donkey-ui-editor-footer j-flag"></div>
+</div>

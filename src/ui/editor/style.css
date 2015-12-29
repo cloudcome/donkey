@@ -1,0 +1,104 @@
+.donkey-ui-editor {
+  position: relative;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 4px #eee;
+  border-radius: 3px; }
+  .donkey-ui-editor * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+  .donkey-ui-editor-header {
+    border-bottom: 1px solid #ddd;
+    padding: 6px;
+    box-shadow: 0 2px 5px #eee; }
+  .donkey-ui-editor-icon {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle; }
+    .donkey-ui-editor-icon,
+    .donkey-ui-editor-icon:hover,
+    .donkey-ui-editor-icon:visited,
+    .donkey-ui-editor-icon:link,
+    .donkey-ui-editor-icon:active {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      outline: 0;
+      box-shadow: none;
+      border-radius: 0;
+      cursor: pointer; }
+    .donkey-ui-editor-icon:hover {
+      background: #eee; }
+    .donkey-ui-editor-icon-active,
+    .donkey-ui-editor-icon-active:hover {
+      background: #ddd; }
+    .donkey-ui-editor-icon:after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-top: -10px;
+      margin-left: -10px; }
+    .donkey-ui-editor-icon-bold:after {
+      background-position: 0 0; }
+    .donkey-ui-editor-icon-italic:after {
+      background-position: 0 -20px; }
+    .donkey-ui-editor-icon-underline:after {
+      background-position: 0 -40px; }
+    .donkey-ui-editor-icon-forecolor:after {
+      background-position: 0 -60px; }
+    .donkey-ui-editor-icon-backcolor:after {
+      background-position: 0 -80px; }
+    .donkey-ui-editor-icon-heading:after {
+      background-position: 0 -100px; }
+    .donkey-ui-editor-icon-justifyleft:after {
+      background-position: 0 -120px; }
+    .donkey-ui-editor-icon-justifycenter:after {
+      background-position: 0 -140px; }
+    .donkey-ui-editor-icon-justifyright:after {
+      background-position: 0 -160px; }
+    .donkey-ui-editor-icon-justifyfull:after {
+      background-position: 0 -180px; }
+    .donkey-ui-editor-icon-orderlist:after {
+      background-position: 0 -200px; }
+    .donkey-ui-editor-icon-unorderlist:after {
+      background-position: 0 -220px; }
+    .donkey-ui-editor-icon-link:after {
+      background-position: 0 -240px; }
+    .donkey-ui-editor-icon-unlink:after {
+      background-position: 0 -260px; }
+    .donkey-ui-editor-icon-line:after {
+      background-position: 0 -280px; }
+    .donkey-ui-editor-icon-image:after {
+      background-position: 0 -300px; }
+    .donkey-ui-editor-icon-video:after {
+      background-position: 0 -320px; }
+    .donkey-ui-editor-icon-quote:after {
+      background-position: 0 -340px; }
+    .donkey-ui-editor-icon-undo:after {
+      background-position: 0 -360px; }
+    .donkey-ui-editor-icon-redo:after {
+      background-position: 0 -380px; }
+    .donkey-ui-editor-icon-format:after {
+      background-position: 0 -400px; }
+    .donkey-ui-editor-icon-clean:after {
+      background-position: 0 -420px; }
+  .donkey-ui-editor-separator {
+    display: inline-block;
+    margin: 0 2px 0 3px;
+    border-right: 1px solid #ddd;
+    height: 20px;
+    vertical-align: middle; }
+  .donkey-ui-editor-body {
+    overflow: auto; }
+  .donkey-ui-editor-content {
+    outline: none;
+    position: relative;
+    overflow: auto;
+    height: 100%;
+    padding: 6px; }
