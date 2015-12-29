@@ -11,14 +11,13 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var Mask = require('../mask/index.js');
+    var Popup = require('../popup/index.js');
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var modification = require('../../core/dom/modification.js');
     var animation = require('../../core/dom/animation.js');
     var event = require('../../core/event/base.js');
 
-    var namespace = 'alien-ui-editor--card';
-    var alienIdex = 0;
     var defaults = {
         style: {
             display: 'none',
@@ -31,39 +30,19 @@ define(function (require, exports, module) {
             boxSizing: 'border-box'
         },
         template: '',
-        autoClose: true,
+        autoClose: 500,
         animation: {
             duration: 123
         },
-        mask: false
+        mask: false,
+        arrowPriority: 'center'
     };
     var Card = ui.create({
         constructor: function (options) {
             var the = this;
 
             the._options = dato.extend(true, {}, defaults, options);
-            the._initNode();
             the._initEvent();
-        },
-
-        /**
-         * 初始化节点
-         * @private
-         */
-        _initNode: function () {
-            var the = this;
-            var options = the._options;
-            var eDiv = the._eDiv = modification.create('div', {
-                'class': namespace,
-                id: namespace + '-' + alienIdex++,
-                style: options.style
-            });
-
-            eDiv.innerHTML = options.template;
-            $(eDiv).appendTo(document.body);
-            if (options.mask) {
-                the._mask = new Mask(window);
-            }
         },
 
 
@@ -74,16 +53,17 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
             var timeid = 0;
+            var options = the._options;
 
             event.on(the._eDiv, 'mouseover', function () {
                 clearTimeout(timeid);
             });
 
             event.on(the._eDiv, 'mouseout', function () {
-                if (the._options.autoClose) {
+                if (options.autoClose > -1) {
                     timeid = setTimeout(function () {
                         the.close();
-                    }, 400);
+                    }, options.autoClose);
                 }
             });
         },
@@ -94,7 +74,7 @@ define(function (require, exports, module) {
          * @returns {Node|*}
          */
         getNode: function () {
-            return this._eDiv;
+            return this._popup.getNode();
         },
 
 
@@ -106,30 +86,24 @@ define(function (require, exports, module) {
          */
         open: function ($target, callback) {
             var the = this;
-            $target = $($target);
-            var offset = $target.offset();
+            var options = the._options;
 
-            offset.display = 'block';
-            offset.opacity = 0;
-            offset.top += $target.height();
+            if (options.mask && !the._mask) {
+                the._mask = new Mask(window);
+            }
 
-            the.emit('beforeopen');
+            if (!the._popup) {
+                the._popup = new Popup($target, {
+                    priority: options.arrowPriority
+                });
+                the._popup.html(options.template);
+            }
 
             if (the._mask) {
                 the._mask.open();
             }
 
-            offset.zIndex = ui.getZindex();
-            $(the._eDiv).css(offset);
-            animation.animate(the._eDiv, {
-                opacity: 1
-            }, the._options.animation, function () {
-                if (typeis.Function(callback)) {
-                    callback.call(the);
-                }
-
-                the.emit('open');
-            });
+            the._popup.open();
 
             return the;
         },
@@ -143,16 +117,15 @@ define(function (require, exports, module) {
         close: function (callback) {
             var the = this;
             the.emit('beforeclose');
-            animation.animate(the._eDiv, {
-                opacity: 0
-            }, the._options.animation, function () {
-                the._eDiv.style.display = 'none';
-                if (typeis.Function(callback)) {
-                    callback.call(the);
-                }
+            the._popup.close(function () {
                 if (the._mask) {
                     the._mask.close();
                 }
+
+                if (typeis.Function(callback)) {
+                    callback.call(the);
+                }
+
                 the.emit('close');
             });
             return the;

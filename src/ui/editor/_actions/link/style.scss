@@ -1,0 +1,36 @@
+.alien-ui-editor_action-link {
+  padding: 10px;
+  font-size: 14px;
+
+  &-item {
+    position: relative;
+    padding-left: 100px;
+    line-height: 30px;
+    margin-bottom: 10px;
+  }
+
+  &-key {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &-val {
+    width: 250px;
+  }
+
+  &-action {
+    border-top: 1px solid #EAEAEA;
+    padding-top: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    text-align: center;
+  }
+
+  &-btn {
+    display: inline-block;
+    border: 1px solid #EFEFEF;
+    padding: 6px 18px;
+    background: #f7f7f7;
+  }
+}
