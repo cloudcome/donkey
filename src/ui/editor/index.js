@@ -80,11 +80,13 @@ define(function (require, exports, module) {
         },
         link: {
             text: '添加链接',
-            command: 'createLink'
+            command: 'link',
+            type: 1
         },
         unlink: {
             text: '取消链接',
-            command: 'unlink'
+            command: 'link',
+            type: 2
         },
         line: {
             text: '分割线',
@@ -246,6 +248,7 @@ define(function (require, exports, module) {
     // import actions
     Editor.action('color', require('./_actions/color/index.js'));
     Editor.action('heading', require('./_actions/heading/index.js'));
+    Editor.action('link', require('./_actions/link/index.js'));
 
     // style
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
