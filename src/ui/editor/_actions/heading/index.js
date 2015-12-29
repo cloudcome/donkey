@@ -12,13 +12,15 @@ define(function (require, exports, module) {
     var ui = require('../../../index.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
+    var number = require('../../../../utils/number.js');
     var event = require('../../../../core/event/base.js');
+    var modification = require('../../../../core/dom/modification.js');
     var Template = require('../../../../libs/template.js');
     var template = require('./template.html', 'html');
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
 
-    var namespace = 'alien-ui-editor_action-backcolor';
+    var namespace = 'alien-ui-editor_action-heading';
     var defaults = {
         headings: [
             '段落',
@@ -59,12 +61,13 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
-                var heading = $(this).data('heading');
-                var blockEle = the.wysiwyg.getClosestBlock();
+            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', function () {
+                the.editor.wysiwyg.restoreSelection();
+                var index = $(this).data('index');
+                var blockEle = the.editor.wysiwyg.getClosestBlock();
 
-                console.log(blockEle);
-                console.log(heading);
+                index = number.parseInt(index);
+                modification.replace(blockEle, index ? 'h' + index : 'p');
                 the._card.close();
             });
         }

@@ -569,7 +569,7 @@ define(function (require, exports, module) {
                 return false;
             }
 
-            var focusNode = sel.focusNode();
+            var focusNode = sel.focusNode;
             var checkNode = focusNode;
 
             while (checkNode && checkNode !== d) {

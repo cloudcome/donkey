@@ -196,7 +196,7 @@ define(function (require, exports, module) {
                 }
 
                 var action = command + type;
-
+                the.wysiwyg.saveSelection();
                 if (action && actions[command]) {
                     the._commands[action] = the._commands[action] || new actions[command](the, {
                             type: type

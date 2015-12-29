@@ -202,4 +202,27 @@ define(function (require, exports, module) {
     exports.remove = function (node) {
         $(node).remove();
     };
+
+
+    /**
+     * 替换
+     * @param node {Object} 原节点
+     * @param tagName {String} 目标标签名
+     * @param [attributes] {Object} 属性
+     * @param [properties] {Object} 属性
+     */
+    exports.replace = function (node, tagName, attributes, properties) {
+        var replacement = exports.create(tagName, attributes, properties);
+
+        if (node.tagName === tagName.toUpperCase()) {
+            return;
+        }
+
+        while (node && node.firstChild) {
+            replacement.appendChild(node.firstChild);
+        }
+
+        exports.insert(replacement, node, 'afterend');
+        exports.remove(node);
+    };
 });
