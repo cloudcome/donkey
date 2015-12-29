@@ -1,5 +1,5 @@
 /**
- * 字体选择器
+ * 标题选择器
  * @author ydr.me
  * @create 2015-12-28 17:36
  */
@@ -63,11 +63,10 @@ define(function (require, exports, module) {
             var the = this;
 
             event.on(the._card.getNode(), 'click', '.' + namespace + '-item', function () {
-                the.editor.wysiwyg.restoreSelection();
+                the.editor.restoreSelection();
                 var index = $(this).data('index');
-                var blockEle = the.editor.wysiwyg.getClosestBlock();
+                var blockEle = the.editor.getClosestBlock();
                 index = number.parseInt(index);
-
 
                 if (blockEle) {
                     var sel = rangy.getSelection();
@@ -83,7 +82,7 @@ define(function (require, exports, module) {
                     rng.setEnd(focusNode, focusOffset);
                     sel.setSingleRange(rng);
                 } else {
-                    the.editor.wysiwyg.restoreSelection();
+                    the.editor.restoreSelection();
                 }
 
                 the._card.close();

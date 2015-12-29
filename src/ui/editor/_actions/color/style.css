@@ -1,18 +1,7 @@
 .alien-ui-editor_action-color {
   overflow: hidden; }
-  .alien-ui-editor_action-color-item,
-  .alien-ui-editor_action-color-item:hover,
-  .alien-ui-editor_action-color-item:visited,
-  .alien-ui-editor_action-color-item:link,
-  .alien-ui-editor_action-color-item:active {
+  .alien-ui-editor_action-color-item {
     float: left;
     width: 30px;
     height: 30px;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    outline: 0;
-    box-shadow: none;
-    border-radius: 0;
     cursor: pointer; }

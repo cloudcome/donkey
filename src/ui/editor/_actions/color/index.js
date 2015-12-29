@@ -18,7 +18,7 @@ define(function (require, exports, module) {
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
 
-    var namespace = 'alien-ui-editor_action-backcolor';
+    var namespace = 'alien-ui-editor_action-color';
     var commandTypeMap = {
         1: 'foreColor',
         2: 'backColor'
@@ -61,11 +61,12 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
+            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', function () {
                 var color = $(this).data('color');
                 var command = commandTypeMap[the._options.type];
 
-                the.editor.wysiwyg[command](color);
+                the.editor.restoreSelection();
+                the.editor[command](color);
                 the._card.close();
             });
         }

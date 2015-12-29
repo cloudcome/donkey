@@ -224,7 +224,6 @@ define(function (require, exports, module) {
     };
 
 
-
     /**
      * 原型转让，将父级的原型复制到子类，
      * 比如写好的一个 Dialog 类有 A、B、C 三个原型方法，
@@ -245,18 +244,15 @@ define(function (require, exports, module) {
      */
     exports.transfer = function (parentClass, childClass, parentInstanceNameInChild, filter) {
         dato.each(parentClass.prototype, function (property) {
-            if(!childClass.prototype[property] && _matches(property, filter)){
+            if (!childClass.prototype[property] && _matches(property, filter)) {
                 childClass.prototype[property] = function () {
                     var the = this;
-
-                    the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
-
-                    return the;
+                    var ret = the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
+                    return ret instanceof parentClass ? the : ret;
                 };
             }
         });
     };
-
 
 
     var REG_PRIVATE = /^_/;

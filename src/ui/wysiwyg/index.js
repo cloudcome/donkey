@@ -17,6 +17,7 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var event = require('../../core/event/base.js');
     var rangy = require('../../3rd/rangy/core.js');
+    require('../../3rd/rangy/save-restore-selection.js')(rangy);
     window.rangy = rangy;
 
     var REG_BLOCK_TAG = /^h[1-6]|div|p$/i;
@@ -64,21 +65,21 @@ define(function (require, exports, module) {
         },
 
 
-        _restoreSelection: function () {
-            var the = this;
-
-            if (!the._lastSavedSelection) {
-                return;
-            }
-
-            if (supportWindowGetSelection) {
-                var sel = w.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(the._lastSavedSelection);
-            } else if (supportDocumentSelection) {
-                the._lastSavedSelection.select();
-            }
-        },
+        //_restoreSelection: function () {
+        //    var the = this;
+        //
+        //    if (!the._lastSavedSelection) {
+        //        return;
+        //    }
+        //
+        //    if (supportWindowGetSelection) {
+        //        var sel = w.getSelection();
+        //        sel.removeAllRanges();
+        //        sel.addRange(the._lastSavedSelection);
+        //    } else if (supportDocumentSelection) {
+        //        the._lastSavedSelection.select();
+        //    }
+        //},
 
 
         /**
@@ -201,7 +202,8 @@ define(function (require, exports, module) {
             // handle saved selection
             if (selectionDestroyed) {
                 the._collapseSelectionEnd();
-                the._lastSavedSelection = null; // selection destroyed
+                // selection destroyed
+                the._lastSavedSelection = null;
             } else {
                 the.restoreSelection();
             }
@@ -220,7 +222,7 @@ define(function (require, exports, module) {
             var the = this;
 
             // give selection to contenteditable element
-            the._restoreSelection();
+            the.restoreSelection();
 
             // tried to avoid forcing focus(), but ... - https://github.com/wysiwygjs/wysiwyg.js/issues/51
             the._eWysiwyg.focus();
@@ -484,7 +486,7 @@ define(function (require, exports, module) {
          */
         getSelectedHTML: function () {
             var the = this;
-            the._restoreSelection();
+            the.restoreSelection();
 
             if (!the._selectionInside()) {
                 return null;
@@ -596,16 +598,16 @@ define(function (require, exports, module) {
         },
 
 
-        /**
-         * 释放选区
-         * @returns {Wysiwyg}
-         */
-        collapseSelection: function () {
-            var the = this;
-            the._collapseSelectionEnd();
-            the._lastSavedSelection = null; // selection destroyed
-            return the;
-        },
+        ///**
+        // * 释放选区
+        // * @returns {Wysiwyg}
+        // */
+        //collapseSelection: function () {
+        //    var the = this;
+        //    the._collapseSelectionEnd();
+        //    the._lastSavedSelection = null; // selection destroyed
+        //    return the;
+        //},
 
 
         ///**
@@ -617,7 +619,7 @@ define(function (require, exports, module) {
         //expandSelection: function (preceding, following) {
         //    var the = this;
         //
-        //    the._restoreSelection();
+        //    the.restoreSelection();
         //    if (!the._selectionInside()) {
         //        return the;
         //    }
@@ -630,46 +632,54 @@ define(function (require, exports, module) {
 
         /**
          * 保存选区
-         * @link http://stackoverflow.com/questions/13949059/persisting-the-changes-of-range-objects-after-selection-in-html/13950376#13950376
          * @returns {*}
          */
         saveSelection: function () {
             var the = this;
-            var sel;
-
-            if (supportWindowGetSelection) {
-                sel = w.getSelection();
-                if (sel.rangeCount > 0) {
-                    the._lastSavedSelection = sel.getRangeAt(0);
-                }
-            } else if (supportDocumentSelection) {
-                sel = document.selection;
-                the._lastSavedSelection = sel.createRange();
-            } else {
-                the._lastSavedSelection = null;
-            }
+            //var sel;
+            //
+            //if (supportWindowGetSelection) {
+            //    sel = w.getSelection();
+            //    if (sel.rangeCount > 0) {
+            //        the._lastSavedSelection = sel.getRangeAt(0);
+            //    }
+            //} else if (supportDocumentSelection) {
+            //    sel = document.selection;
+            //    the._lastSavedSelection = sel.createRange();
+            //} else {
+            //    the._lastSavedSelection = null;
+            //}
+            the._lastSavedSelection = rangy.saveSelection();
+            return the;
         },
 
 
         /**
          * 恢复选区
+         * @params [preserveDirection] {String} 方向
          * @returns {Wysiwyg}
          */
-        restoreSelection: function () {
+        restoreSelection: function (preserveDirection) {
             var the = this;
-            var range = the._lastSavedSelection;
+            //var range = the._lastSavedSelection;
+            //
+            //if (!range) {
+            //    return the;
+            //}
+            //
+            //if (supportWindowGetSelection) {
+            //    var sel = w.getSelection();
+            //    sel.removeAllRanges();
+            //    sel.addRange(range);
+            //} else if (supportDocumentSelection && range.select) { // IE
+            //    range.select();
+            //}
 
-            if (!range) {
-                return the;
+            if (the._lastSavedSelection) {
+                rangy.restoreSelection(the._lastSavedSelection, preserveDirection);
             }
 
-            if (supportWindowGetSelection) {
-                var sel = w.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-            } else if (supportDocumentSelection && range.select) { // IE
-                range.select();
-            }
+            return the;
         },
 
 
@@ -682,7 +692,7 @@ define(function (require, exports, module) {
             var focusNode = the.isFocus();
 
             if (!focusNode) {
-                return;
+                return null;
             }
 
             var checkNode = focusNode;
@@ -693,6 +703,8 @@ define(function (require, exports, module) {
                 }
                 checkNode = checkNode.parentNode;
             }
+
+            return null;
         },
 
 
@@ -1036,7 +1048,7 @@ define(function (require, exports, module) {
 
             if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'
-                the._restoreSelection();
+                the.restoreSelection();
                 the._selectionInside(true);
                 the._pasteHtmlAtCaret(html);
             }

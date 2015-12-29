@@ -16,6 +16,7 @@ define(function (require, exports, module) {
     var ui = require('../index.js');
     var Wysiwyg = require('../wysiwyg/index.js');
     var dato = require('../../utils/dato.js');
+    var klass = require('../../utils/class.js');
     var modification = require('../../core/dom/modification.js');
     var event = require('../../core/event/base.js');
     var Template = require('../../libs/Template.js');
@@ -186,7 +187,7 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            the.wysiwyg = new Wysiwyg(the._$content[0]);
+            the._wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
                 var command = $(this).data('command');
                 var type = $(this).data('type') || '';
@@ -196,14 +197,13 @@ define(function (require, exports, module) {
                 }
 
                 var action = command + type;
-                the.wysiwyg.saveSelection();
                 if (action && actions[command]) {
                     the._commands[action] = the._commands[action] || new actions[command](the, {
                             type: type
                         });
                     the._commands[action].open(this);
-                } else if (command && the.wysiwyg[command]) {
-                    the.wysiwyg[command]();
+                } else if (command && the._wysiwyg[command]) {
+                    the._wysiwyg[command]();
                 }
 
                 eve.preventDefault();
@@ -211,13 +211,14 @@ define(function (require, exports, module) {
 
             // 选中图片
             event.on(the._$content[0], 'click', 'img', function (eve) {
-                the.wysiwyg.select(this);
+                the._wysiwyg.select(this);
             });
 
-            the.wysiwyg.on('selectionChange contentChange', function () {
+            the._wysiwyg.on('selectionChange contentChange', function () {
+                the._wysiwyg.saveSelection();
                 dato.each(the._buttons, function (index, btn) {
                     var command = btn.command;
-                    var isState = the.wysiwyg.isState(command);
+                    var isState = the._wysiwyg.isState(command);
                     var className = namespace + '-icon-active';
 
                     if (isState) {
@@ -246,5 +247,6 @@ define(function (require, exports, module) {
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);
     Editor.defaults = defaults;
+    klass.transfer(Wysiwyg, Editor, '_wysiwyg');
     module.exports = Editor;
 });
