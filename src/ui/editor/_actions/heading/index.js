@@ -20,7 +20,7 @@ define(function (require, exports, module) {
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
 
-    var namespace = 'alien-ui-editor_action-heading';
+    var namespace = 'donkey-ui-editor_action-heading';
     var defaults = {
         headings: [
             '段落',

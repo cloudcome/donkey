@@ -1,23 +1,23 @@
-.alien-ui-editor_action-link {
+.donkey-ui-editor_action-link {
   font-size: 14px; }
-  .alien-ui-editor_action-link-item {
+  .donkey-ui-editor_action-link-item {
     position: relative;
     padding-left: 75px;
     line-height: 30px;
     margin-bottom: 10px; }
-  .alien-ui-editor_action-link-key {
+  .donkey-ui-editor_action-link-key {
     position: absolute;
     top: 0;
     left: 0; }
-  .alien-ui-editor_action-link-ipt {
+  .donkey-ui-editor_action-link-ipt {
     display: block;
     border: 1px solid #ccc;
     width: 100%;
     padding: 6px; }
-    .alien-ui-editor_action-link-ipt:focus {
+    .donkey-ui-editor_action-link-ipt:focus {
       border-color: #03A9F4;
       outline: 0; }
-  .alien-ui-editor_action-link-action {
+  .donkey-ui-editor_action-link-action {
     border-top: 1px solid #EAEAEA;
     padding-top: 10px;
     margin-left: -10px;
@@ -26,7 +26,7 @@
     background: #F9F9F9;
     margin-bottom: -15px;
     padding-bottom: 15px; }
-  .alien-ui-editor_action-link-btn {
+  .donkey-ui-editor_action-link-btn {
     display: inline-block;
     border: 1px solid #ddd;
     padding: 6px 18px;
@@ -34,5 +34,5 @@
     cursor: pointer;
     border-radius: 3px;
     margin: 0 20px; }
-    .alien-ui-editor_action-link-btn:hover {
+    .donkey-ui-editor_action-link-btn:hover {
       background: #ECECEC; }

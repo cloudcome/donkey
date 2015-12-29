@@ -56,8 +56,6 @@ define(function (require, exports, module) {
             the._eUrl = nodes[0];
             the._eTitle = nodes[1];
             the._eTarget = nodes[2];
-            the._eSure = nodes[3];
-            the._eCancel = nodes[4];
         },
 
 
@@ -68,25 +66,29 @@ define(function (require, exports, module) {
                 the._eUrl.focus();
             });
 
-            event.on(the._eSure, 'click', function () {
-                var url = the._eUrl.value;
+            the.on('action', function (index) {
+                switch (index) {
+                    case 0:
+                        var url = the._eUrl.value;
 
-                if (!url) {
-                    the.close();
-                    return;
+                        if (!url) {
+                            the.close();
+                            return;
+                        }
+
+                        the.editor.wrap('a', {
+                            href: url,
+                            target: the._eTarget.checked ? '_blank' : '_self',
+                            title: the._eTitle.value
+                        });
+                        the.reset();
+                        the.close();
+                        break;
+
+                    case 1:
+                        the.close();
+                        break;
                 }
-
-                the.editor.wrap('a', {
-                    href: url,
-                    target: the._eTarget.checked ? '_blank' : '_self',
-                    title: the._eTitle.value
-                });
-                the.reset();
-                the.close();
-            });
-
-            event.on(the._eCancel, 'click', function () {
-                the.close();
             });
         },
 

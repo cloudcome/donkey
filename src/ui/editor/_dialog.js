@@ -12,11 +12,12 @@ define(function (require, exports, module) {
     var Dialog = require('../dialog/index.js');
     var klass = require('../../utils/class.js');
     var dato = require('../../utils/dato.js');
+    var number = require('../../utils/number.js');
     var event = require('../../core/event/base.js');
     var modification = require('../../core/dom/modification.js');
     var style = require('./dialog.css', 'css');
 
-    var namespace = 'alien-ui-editor_dialog';
+    var namespace = 'donkey-ui-editor_dialog';
     ui.importStyle(style);
     module.exports = klass.extend(Dialog, {
         'static': true,
@@ -37,11 +38,19 @@ define(function (require, exports, module) {
         dato.each(the._options.buttons, function (index, button) {
             button['class'] = button['class'] || '';
             button['class'] += ' ' + namespace + '-btn';
-            var eBtn = modification.create('button', button);
+            button['data-index'] = index;
+            var eBtn = modification.create('div', button);
 
             eBtn.innerHTML = button.text;
             eContainer.appendChild(eBtn);
         });
         the._$window.addClass(namespace);
+
+        event.on(eContainer, 'click', '.' + namespace + '-btn', function () {
+            var index = $(this).data('index');
+
+            index = number.parseInt(index);
+            the.emit('action', index);
+        });
     });
 });
