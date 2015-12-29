@@ -25,7 +25,7 @@ define(function (require, exports, module) {
     var REG_BLOCK_TAG = /^h[1-6]|div|p$/i;
     var supportWindowGetSelection = !!w.getSelection;
     var supportDocumentSelection = !!d.selection;
-    var namespace = 'alien-ui-wysiwyg';
+    var namespace = 'donkey-ui-wysiwyg';
     var defaults = {};
     var Wysiwyg = ui.create({
         constructor: function ($wysiwyg, options) {
