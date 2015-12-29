@@ -241,11 +241,15 @@ define(function (require, exports, module) {
         actions[command] = commander;
     };
 
+    // import actions
     Editor.action('color', require('./_actions/color/index.js'));
     Editor.action('heading', require('./_actions/heading/index.js'));
 
+    // style
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
     ui.importStyle(style);
+
+    // exports
     Editor.defaults = defaults;
     klass.transfer(Wysiwyg, Editor, '_wysiwyg');
     module.exports = Editor;
