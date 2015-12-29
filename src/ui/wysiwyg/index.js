@@ -765,7 +765,7 @@ define(function (require, exports, module) {
             var rng = sel.getRangeAt(0);
             the.saveSelection();
             var collapsed = rng.collapsed;
-            var url = namespace + random.guid();
+            var url = genId();
 
             tagName = tagName.toUpperCase();
             the.createLink(url);
@@ -796,6 +796,7 @@ define(function (require, exports, module) {
                 the.emit('selectionChange');
             }
 
+            eLink.id = url;
             $(eLink).attr(attributes || {});
 
             return the;
@@ -815,6 +816,7 @@ define(function (require, exports, module) {
 
             if (blockEle) {
                 the._saveRange();
+                attributes.id = attributes.id || genId();
                 modification.replace(blockEle, tagName, attributes);
                 the._restoreRange();
             }
@@ -831,7 +833,7 @@ define(function (require, exports, module) {
          */
         insert: function (tagName, attributes) {
             var the = this;
-            var id = namespace + random.guid();
+            var id = genId();
             var html = '<' + tagName + ' id="' + id + '">';
 
             the.insertHTML(html);
@@ -1233,6 +1235,14 @@ define(function (require, exports, module) {
             }
         }
     });
+
+    /**
+     * 生成随机 ID
+     * @returns {string}
+     */
+    function genId() {
+        return namespace + random.guid();
+    }
 
     Wysiwyg.defaults = defaults;
     module.exports = Wysiwyg;
