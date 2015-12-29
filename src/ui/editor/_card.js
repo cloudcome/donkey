@@ -75,9 +75,11 @@ define(function (require, exports, module) {
             });
 
             event.on(the._eDiv, 'mouseout', function () {
-                timeid = setTimeout(function () {
-                    the.close();
-                }, 400);
+                if (the._options.autoClose) {
+                    timeid = setTimeout(function () {
+                        the.close();
+                    }, 400);
+                }
             });
         },
 

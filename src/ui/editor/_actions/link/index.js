@@ -59,7 +59,8 @@ define(function (require, exports, module) {
 
             the._card = new Card({
                 style: options.style,
-                template: tpl.render(options)
+                template: tpl.render(options),
+                autoClose: false
             });
         },
 
