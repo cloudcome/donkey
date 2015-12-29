@@ -215,7 +215,7 @@ define(function (require, exports, module) {
         var replacement = exports.create(tagName, attributes, properties);
 
         if (node.tagName === tagName.toUpperCase()) {
-            return;
+            return node;
         }
 
         while (node && node.firstChild) {
@@ -224,5 +224,7 @@ define(function (require, exports, module) {
 
         exports.insert(replacement, node, 'afterend');
         exports.remove(node);
+
+        return replacement;
     };
 });

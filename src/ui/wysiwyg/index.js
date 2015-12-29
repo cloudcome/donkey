@@ -19,7 +19,7 @@ define(function (require, exports, module) {
     var rangy = require('../../3rd/rangy/core.js');
     window.rangy = rangy;
 
-    var blockTags = 'DIV P'.split(' ');
+    var REG_BLOCK_TAG = /^h[1-6]|div|p$/i;
     var supportWindowGetSelection = !!w.getSelection;
     var supportDocumentSelection = !!d.selection;
     var defaults = {};
@@ -686,9 +686,9 @@ define(function (require, exports, module) {
             }
 
             var checkNode = focusNode;
-            while (checkNode) {
+            while (checkNode !== the._eWysiwyg) {
                 var tagName = checkNode.tagName;
-                if (blockTags.indexOf(tagName) > -1) {
+                if (REG_BLOCK_TAG.test(tagName)) {
                     return checkNode;
                 }
                 checkNode = checkNode.parentNode;
