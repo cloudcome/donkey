@@ -19,7 +19,6 @@ define(function (require, exports, module) {
     var template = require('./template.html', 'html');
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
-    var rangy = require('../../../../3rd/rangy/core.js');
 
     var namespace = 'alien-ui-editor_action-heading';
     var defaults = {
@@ -65,24 +64,9 @@ define(function (require, exports, module) {
             event.on(the._card.getNode(), 'click', '.' + namespace + '-item', function () {
                 the.editor.restoreSelection();
                 var index = $(this).data('index');
-                var blockEle = the.editor.getClosestBlock();
                 index = number.parseInt(index);
-
-                if (blockEle) {
-                    var sel = rangy.getSelection();
-                    var rng = rangy.createRange();
-                    // 缓存下这些变量，因为 replace 之后 selection 会变化
-                    var anchorNode = sel.anchorNode;
-                    var anchorOffset = sel.anchorOffset;
-                    var focusNode = sel.focusNode;
-                    var focusOffset = sel.focusOffset;
-
-                    modification.replace(blockEle, index ? 'h' + index : 'p');
-                    rng.setStart(anchorNode, anchorOffset);
-                    rng.setEnd(focusNode, focusOffset);
-                    sel.setSingleRange(rng);
-                }
-
+                var tagName = index ? 'h' + index : 'p';
+                the.editor.replace(tagName);
                 the._card.close();
             });
         }

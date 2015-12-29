@@ -736,6 +736,36 @@ define(function (require, exports, module) {
 
 
         /**
+         * 替换块级标签
+         * @param tagName
+         * @param attributes
+         * @returns {Wysiwyg}
+         */
+        replace: function (tagName, attributes) {
+            var the = this;
+            var blockEle = the.getClosestBlock();
+
+            the.restoreSelection();
+            if (blockEle) {
+                var sel = rangy.getSelection();
+                var rng = rangy.createRange();
+                // 缓存下这些变量，因为 replace 之后 selection 会变化
+                var anchorNode = sel.anchorNode;
+                var anchorOffset = sel.anchorOffset;
+                var focusNode = sel.focusNode;
+                var focusOffset = sel.focusOffset;
+
+                modification.replace(blockEle, tagName, attributes);
+                rng.setStart(anchorNode, anchorOffset);
+                rng.setEnd(focusNode, focusOffset);
+                sel.setSingleRange(rng);
+            }
+
+            return the;
+        },
+
+
+        /**
          * 加粗
          * @returns {Wysiwyg}
          */
