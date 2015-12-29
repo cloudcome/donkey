@@ -15,6 +15,7 @@ define(function (require, exports, module) {
     var ui = require('../index.js');
     var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
+    var random = require('../../utils/random.js');
     var event = require('../../core/event/base.js');
     var modification = require('../../core/dom/modification.js');
     var rangy = require('../../3rd/rangy/core.js');
@@ -24,6 +25,7 @@ define(function (require, exports, module) {
     var REG_BLOCK_TAG = /^h[1-6]|div|p$/i;
     var supportWindowGetSelection = !!w.getSelection;
     var supportDocumentSelection = !!d.selection;
+    var namespace = 'alien-ui-wysiwyg';
     var defaults = {};
     var Wysiwyg = ui.create({
         constructor: function ($wysiwyg, options) {
@@ -553,6 +555,8 @@ define(function (require, exports, module) {
                     rng.selectNodeContents(the._eWysiwyg);
                     rng.collapse(false);
                     sel.setSingleRange(rng);
+                    the.saveSelection();
+                    the.emit('selectionChange');
                 });
             }
             the.emit('selectionChange');
@@ -712,24 +716,86 @@ define(function (require, exports, module) {
 
 
         /**
+         * 保存选区
+         * @returns {{an: *, ao: *, fn: (*|null), fo: (*|number)}}
+         * @private
+         */
+        _saveRange: function () {
+            var sel = rangy.getSelection();
+            // 缓存下这些变量，因为 replace 之后 selection 会变化
+            var anchorNode = sel.anchorNode;
+            var anchorOffset = sel.anchorOffset;
+            var focusNode = sel.focusNode;
+            var focusOffset = sel.focusOffset;
+
+            return {
+                an: anchorNode,
+                ao: anchorOffset,
+                fn: focusNode,
+                fo: focusOffset
+            };
+        },
+
+
+        /**
+         * 恢复选区
+         * @param lastRng
+         * @private
+         */
+        _restoreRange: function (lastRng) {
+            var rng = rangy.createRange();
+            rng.setStart(lastRng.an, lastRng.ao);
+            rng.setEnd(lastRng.fn, lastRng.fo);
+
+            var sel = rangy.getSelection();
+            sel.setSingleRange(rng);
+        },
+
+
+        /**
          * 包裹当前选区
+         * @link http://stackoverflow.com/a/19987884
          * @param tagName
          * @param attributes
          * @returns {Wysiwyg}
          */
         wrap: function (tagName, attributes) {
             var the = this;
-            var surroundNode = modification.create(tagName, attributes);
-            var sel = rangy.getSelection();
-            var rng = sel.getAllRanges()[0];
-
             the.restoreSelection();
+            var sel = rangy.getSelection();
+            var rng = sel.getRangeAt(0);
+            the.saveSelection();
+            var collapsed = rng.collapsed;
+            var url = namespace + random.guid();
 
-            if (rng) {
-                rng.surroundContents(surroundNode);
-            } else {
-                modification.insert(surroundNode, the._eWysiwyg);
+            tagName = tagName.toUpperCase();
+            the.createLink(url);
+
+            var eLink = $('a', the._eWysiwyg).filter(function () {
+                return $(this).attr('href') === url;
+            })[0];
+
+            if (!eLink) {
+                return the;
             }
+
+            if (tagName !== 'A') {
+                eLink = modification.replace(eLink, tagName, attributes);
+            }
+
+            if (collapsed) {
+                if (tagName === 'A') {
+                    $(eLink).html(attributes.href);
+                }
+
+                rng = rangy.createRange();
+                rng.setStartAfter(eLink);
+                sel.setSingleRange(rng);
+                the.saveSelection();
+                the.emit('selectionChange');
+            }
+
+            $(eLink).attr(attributes);
 
             return the;
         },
@@ -743,22 +809,15 @@ define(function (require, exports, module) {
          */
         replace: function (tagName, attributes) {
             var the = this;
+            the.restoreSelection();
             var blockEle = the.getClosestBlock();
 
-            the.restoreSelection();
             if (blockEle) {
-                var sel = rangy.getSelection();
-                var rng = rangy.createRange();
-                // 缓存下这些变量，因为 replace 之后 selection 会变化
-                var anchorNode = sel.anchorNode;
-                var anchorOffset = sel.anchorOffset;
-                var focusNode = sel.focusNode;
-                var focusOffset = sel.focusOffset;
+                var lastRng = the._saveRange();
 
                 modification.replace(blockEle, tagName, attributes);
-                rng.setStart(anchorNode, anchorOffset);
-                rng.setEnd(focusNode, focusOffset);
-                sel.setSingleRange(rng);
+
+                the._restoreRange(lastRng);
             }
 
             return the;

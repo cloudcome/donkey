@@ -85,15 +85,20 @@ define(function (require, exports, module) {
                     target: the._eTarget.checked ? '_blank' : '_self',
                     title: the._eTitle.value
                 });
+                the.reset();
                 the.close();
             });
 
             event.on(the._eCancel, 'click', function () {
-                console.log('cancel');
                 the.close();
             });
         },
 
+
+        /**
+         * 重置
+         * @returns {Color}
+         */
         reset: function () {
             var the = this;
 
