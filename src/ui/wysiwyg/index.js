@@ -796,7 +796,7 @@ define(function (require, exports, module) {
                 the.emit('selectionChange');
             }
 
-            $(eLink).attr(attributes);
+            $(eLink).attr(attributes || {});
 
             return the;
         },
@@ -820,6 +820,28 @@ define(function (require, exports, module) {
             }
 
             return the;
+        },
+
+
+        /**
+         * 插入元素
+         * @param tagName
+         * @param attributes
+         * @returns {Wysiwyg}
+         */
+        insert: function (tagName, attributes) {
+            var the = this;
+            var id = namespace + random.guid();
+            var html = '<' + tagName + ' id="' + id + '">';
+
+            the.insertHTML(html);
+            var ele = $('#' + id)[0];
+
+            if (!ele) {
+                return the;
+            }
+
+            $(ele).attr(attributes || {});
         },
 
 
@@ -1104,8 +1126,8 @@ define(function (require, exports, module) {
          */
         insertHTML: function (html, select) {
             var the = this;
-            var sel;
-            var range;
+            //var sel;
+            //var range;
             //
             //if (supportWindowGetSelection) {
             //    sel = w.getSelection();

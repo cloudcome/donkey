@@ -1,0 +1,54 @@
+.alien-ui-editor_action-link {
+  padding: 10px;
+  font-size: 14px;
+
+  &-item {
+    position: relative;
+    padding-left: 75px;
+    line-height: 30px;
+    margin-bottom: 10px;
+  }
+
+  &-key {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &-val {
+    width: 250px;
+  }
+
+  &-ipt {
+    display: block;
+    border: 1px solid #ccc;
+    width: 100%;
+    padding: 6px;
+
+    &:focus {
+      border-color: #03A9F4;
+      outline: 0;
+    }
+  }
+
+  &-action {
+    border-top: 1px solid #EAEAEA;
+    padding-top: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    text-align: center;
+  }
+
+  &-btn {
+    display: inline-block;
+    border: 1px solid #ddd;
+    padding: 6px 18px;
+    background: #f7f7f7;
+    cursor: pointer;
+    border-radius: 3px;
+
+    &:hover{
+      background: #ECECEC;
+    }
+  }
+}

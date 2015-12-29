@@ -88,24 +88,21 @@ define(function (require, exports, module) {
         },
         line: {
             text: '分割线',
-            command: ''
+            command: 'line'
         },
         image: {
             text: '图片',
-            command: ''
+            command: 'image'
         },
         undo: {
             text: '撤销',
-            command: ''
+            command: 'undo'
         },
         redo: {
             text: '重做',
-            command: ''
+            command: 'redo'
         },
-        '|': {
-            text: '',
-            command: ''
-        }
+        '|': {}
     };
     var actions = {};
     var defaults = {
@@ -204,7 +201,15 @@ define(function (require, exports, module) {
                     the._commands[action] = the._commands[action] || new actions[command](the, {
                             type: type
                         });
-                    the._commands[action].open(this);
+
+                    // open popup
+                    if (the._commands[action].open) {
+                        the._commands[action].open(this);
+                    }
+                    // direct execute
+                    else if (the._commands[action].exec) {
+                        the._commands[action].exec();
+                    }
                 } else if (command && the._wysiwyg[command]) {
                     the._wysiwyg[command]();
                 }
@@ -247,6 +252,7 @@ define(function (require, exports, module) {
     Editor.action('color', require('./_actions/color/index.js'));
     Editor.action('heading', require('./_actions/heading/index.js'));
     Editor.action('link', require('./_actions/link/index.js'));
+    Editor.action('line', require('./_actions/line/index.js'));
 
     // style
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
