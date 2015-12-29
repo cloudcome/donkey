@@ -1,5 +1,4 @@
 .alien-ui-editor_action-link {
-  padding: 10px;
   font-size: 14px;
 
   &-item {
@@ -13,10 +12,6 @@
     position: absolute;
     top: 0;
     left: 0;
-  }
-
-  &-val {
-    width: 250px;
   }
 
   &-ipt {
@@ -37,17 +32,21 @@
     margin-left: -10px;
     margin-right: -10px;
     text-align: center;
+    background: #F9F9F9;
+    margin-bottom: -15px;
+    padding-bottom: 15px;
   }
 
   &-btn {
     display: inline-block;
     border: 1px solid #ddd;
     padding: 6px 18px;
-    background: #f7f7f7;
+    background: #fff;
     cursor: pointer;
     border-radius: 3px;
+    margin: 0 20px;
 
-    &:hover{
+    &:hover {
       background: #ECECEC;
     }
   }

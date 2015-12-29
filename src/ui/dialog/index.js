@@ -1,4 +1,4 @@
-/*!
+/**
  * dialog
  * @author ydr.me
  * @create 2015-08-18 12:07

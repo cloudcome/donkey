@@ -9,8 +9,8 @@ define(function (require, exports, module) {
     'use strict';
 
     var $ = window.jQuery;
-    var Card = require('../../_card.js');
     var ui = require('../../../index.js');
+    var Dialog = require('../../_dialog.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
     var event = require('../../../../core/event/base.js');
@@ -21,12 +21,11 @@ define(function (require, exports, module) {
     var tpl = new Template(template);
 
     var defaults = {
-        style: {
-            width: 'auto'
-        }
+        width: 400,
+        title: '链接'
     };
 
-    var Color = ui.create({
+    var Link = ui.create({
         constructor: function (editor, options) {
             var the = this;
 
@@ -41,13 +40,12 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            the._card = new Card({
-                style: options.style,
-                template: tpl.render(options),
-                autoClose: -1,
-                mask: true
+            the._dialog = new Dialog({
+                width: options.width,
+                title: options.title,
+                template: tpl.render(options)
             });
-            var nodes = $('.j-flag', the._card.getNode());
+            var nodes = $('.j-flag', the._dialog.getNode());
             the._eUrl = nodes[0];
             the._eTitle = nodes[1];
             the._eTarget = nodes[2];
@@ -88,7 +86,7 @@ define(function (require, exports, module) {
 
         /**
          * 重置
-         * @returns {Color}
+         * @returns {Link}
          */
         reset: function () {
             var the = this;
@@ -102,7 +100,7 @@ define(function (require, exports, module) {
     });
 
     ui.importStyle(style);
-    klass.transfer(Card, Color, '_card');
-    Color.defaults = defaults;
-    module.exports = Color;
+    klass.transfer(Dialog, Link, '_dialog');
+    Link.defaults = defaults;
+    module.exports = Link;
 });
