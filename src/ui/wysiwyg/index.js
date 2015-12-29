@@ -16,6 +16,7 @@ define(function (require, exports, module) {
     var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
     var event = require('../../core/event/base.js');
+    var modification = require('../../core/dom/modification.js');
     var rangy = require('../../3rd/rangy/core.js');
     require('../../3rd/rangy/save-restore-selection.js')(rangy);
     window.rangy = rangy;
@@ -707,6 +708,30 @@ define(function (require, exports, module) {
             }
 
             return null;
+        },
+
+
+        /**
+         * 包裹当前选区
+         * @param tagName
+         * @param attributes
+         * @returns {Wysiwyg}
+         */
+        wrap: function (tagName, attributes) {
+            var the = this;
+            var surroundNode = modification.create(tagName, attributes);
+            var sel = rangy.getSelection();
+            var rng = sel.getAllRanges()[0];
+
+            the.restoreSelection();
+
+            if (rng) {
+                rng.surroundContents(surroundNode);
+            } else {
+                modification.insert(surroundNode, the._eWysiwyg);
+            }
+
+            return the;
         },
 
 

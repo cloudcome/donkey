@@ -94,7 +94,7 @@ define(function (require, exports, module) {
          * @returns {Object}
          */
         getNode: function () {
-            return this._$popup[0];
+            return this._$html[0];
         },
 
 

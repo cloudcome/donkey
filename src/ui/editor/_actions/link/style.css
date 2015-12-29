@@ -1,0 +1,37 @@
+.alien-ui-editor_action-link {
+  padding: 10px;
+  font-size: 14px; }
+  .alien-ui-editor_action-link-item {
+    position: relative;
+    padding-left: 75px;
+    line-height: 30px;
+    margin-bottom: 10px; }
+  .alien-ui-editor_action-link-key {
+    position: absolute;
+    top: 0;
+    left: 0; }
+  .alien-ui-editor_action-link-val {
+    width: 250px; }
+  .alien-ui-editor_action-link-ipt {
+    display: block;
+    border: 1px solid #ccc;
+    width: 100%;
+    padding: 6px; }
+    .alien-ui-editor_action-link-ipt:focus {
+      border-color: #03A9F4;
+      outline: 0; }
+  .alien-ui-editor_action-link-action {
+    border-top: 1px solid #EAEAEA;
+    padding-top: 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+    text-align: center; }
+  .alien-ui-editor_action-link-btn {
+    display: inline-block;
+    border: 1px solid #ddd;
+    padding: 6px 18px;
+    background: #f7f7f7;
+    cursor: pointer;
+    border-radius: 3px; }
+    .alien-ui-editor_action-link-btn:hover {
+      background: #ECECEC; }

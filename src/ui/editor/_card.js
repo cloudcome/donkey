@@ -22,7 +22,9 @@ define(function (require, exports, module) {
         style: {
             width: 400,
             height: 'auto',
-            background: '#fff'
+            background: '#fff',
+            minWidth: 'none',
+            maxWidth: 'none'
         },
         template: '',
         autoClose: 500,
@@ -69,12 +71,13 @@ define(function (require, exports, module) {
             var the = this;
             var timeid = 0;
             var options = the._options;
+            var node = the._popup.getNode();
 
-            event.on(the._eDiv, 'mouseover', function () {
+            event.on(node, 'mouseover', function () {
                 clearTimeout(timeid);
             });
 
-            event.on(the._eDiv, 'mouseout', function () {
+            event.on(node, 'mouseout', function () {
                 if (options.autoClose > -1) {
                     timeid = setTimeout(function () {
                         the.close();

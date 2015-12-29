@@ -8,11 +8,11 @@
 define(function (require, exports, module) {
     'use strict';
 
+    var $ = window.jQuery;
     var Card = require('../../_card.js');
     var ui = require('../../../index.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
-    var number = require('../../../../utils/number.js');
     var event = require('../../../../core/event/base.js');
     var modification = require('../../../../core/dom/modification.js');
     var Template = require('../../../../libs/template.js');
@@ -60,22 +60,48 @@ define(function (require, exports, module) {
             the._card = new Card({
                 style: options.style,
                 template: tpl.render(options),
-                autoClose: false,
+                autoClose: -1,
                 mask: true
             });
+            var nodes = $('.j-flag', the._card.getNode());
+            the._eUrl = nodes[0];
+            the._eTitle = nodes[1];
+            the._eTarget = nodes[2];
+            the._eSure = nodes[3];
+            the._eCancel = nodes[4];
         },
 
 
         _initEvent: function () {
             var the = this;
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-1', function () {
-                console.log('sure');
+            the.on('open', function () {
+                the._eUrl.focus();
             });
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-2', function () {
-                console.log('cancel');
+            event.on(the._eSure, 'click', function () {
+                the.editor.wrap('a', {
+                    href: the._eUrl.value,
+                    target: the._eTarget.checked ? '_blank' : '_self',
+                    title: the._eTitle.value
+                });
+                the.close();
             });
+
+            event.on(the._eCancel, 'click', function () {
+                console.log('cancel');
+                the.close();
+            });
+        },
+
+        reset: function () {
+            var the = this;
+
+            the._eUrl.value = '';
+            the._eTitle.value = '';
+            the._eTarget.checked = false;
+
+            return the;
         }
     });
 

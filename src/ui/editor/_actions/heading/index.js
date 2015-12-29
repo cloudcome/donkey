@@ -81,8 +81,6 @@ define(function (require, exports, module) {
                     rng.setStart(anchorNode, anchorOffset);
                     rng.setEnd(focusNode, focusOffset);
                     sel.setSingleRange(rng);
-                } else {
-                    the.editor.restoreSelection();
                 }
 
                 the._card.close();
