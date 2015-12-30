@@ -208,7 +208,7 @@ define(function (require, exports, module) {
     /**
      * 替换
      * @param node {Object} 原节点
-     * @param tagName {String} 目标标签名
+     * @param tagName {String|Object} 目标标签名
      * @param [attributes] {Object} 属性
      * @param [properties] {Object} 属性
      */
