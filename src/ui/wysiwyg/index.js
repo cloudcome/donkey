@@ -42,14 +42,17 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._eWysiwyg, 'focus blur mousedown selectstart selectchange selectend', controller.debounce(function (eve) {
+            event.on(the._eWysiwyg, the._event1 = 'focus blur mousedown selectstart selectchange selectend', the._on1 = controller.debounce(function (eve) {
                 the.emit('selectionChange');
             }));
 
-            event.on(the._eWysiwyg, 'input change', function (eve) {
+            event.on(the._eWysiwyg, the._event2 = 'input change', the._on2 = function (eve) {
                 the.emit('contentChange');
             });
         },
+
+
+
 
         _IEtrailingDIV: function () {
             var the = this;
@@ -1228,6 +1231,17 @@ define(function (require, exports, module) {
             } catch (err) {
                 return false;
             }
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+
+            event.un(the._eWysiwyg, the._event1, the._on1);
+            event.un(the._eWysiwyg, the._event2, the._on2);
         }
     });
 
