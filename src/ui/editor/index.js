@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * rich editor
  * @author ydr.me
  * @create 2015-12-24 11:45
  */
@@ -7,7 +7,14 @@
 
 define(function (require, exports, module) {
     /**
-     * @module parent/index
+     * @module ui/editor
+     * @requires ui/
+     * @requires ui/wysiwyg/
+     * @requires utils/dato
+     * @requires utils/class
+     * @requires core/dom/modification
+     * @requires core/event/base
+     * @requires libs/template
      */
 
     'use strict';
