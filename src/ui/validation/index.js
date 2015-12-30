@@ -166,7 +166,7 @@ define(function (require, exports, module) {
 
             if (ele) {
                 if (typeis.String(ele)) {
-                    ele = the._pathMap[ele];
+                    list = [the._pathMap[ele]];
                 } else if ('length' in ele) {
                     dato.each(ele, function (index, item) {
                         if (typeis.Element(item)) {
