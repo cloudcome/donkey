@@ -133,7 +133,7 @@ define(function (require, exports, module) {
         whiteList: [
             'p', 'div', 'hr', 'ul', 'ol', 'li', 'pre',
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'img', 'span', 'a', 'i', 'em', 's', 'b', 'br', 'small', 'strong', 'code',
+            'img', 'span', 'a', 'i', 'em', 's', 'u', 'b', 'br', 'small', 'strong', 'code', 'font',
             'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td'
         ]
     };
