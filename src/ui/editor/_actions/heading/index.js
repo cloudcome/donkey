@@ -14,6 +14,7 @@ define(function (require, exports, module) {
     var dato = require('../../../../utils/dato.js');
     var number = require('../../../../utils/number.js');
     var event = require('../../../../core/event/base.js');
+    var attribute = require('../../../../core/dom/attribute.js');
     var modification = require('../../../../core/dom/modification.js');
     var Template = require('../../../../libs/template.js');
     var template = require('./template.html', 'html');
@@ -63,7 +64,7 @@ define(function (require, exports, module) {
 
             event.on(the._card.getNode(), 'click', '.' + namespace + '-item', the._onclick = function () {
                 the.editor.restoreSelection();
-                var index = $(this).data('index');
+                var index = attribute.data(this, 'index');
                 index = number.parseInt(index);
                 var tagName = index ? 'h' + index : 'p';
                 the.editor.replace(tagName);
@@ -75,7 +76,7 @@ define(function (require, exports, module) {
         destroy: function () {
             var the = this;
 
-            event.un(the._card.getNode(), 'click', the._onclick)
+            event.un(the._card.getNode(), 'click', the._onclick);
             the._card.destroy();
         }
     });

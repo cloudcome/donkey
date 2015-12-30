@@ -12,6 +12,7 @@ define(function (require, exports, module) {
     var ui = require('../../../index.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
+    var attribute = require('../../../../core/dom/attribute.js');
     var event = require('../../../../core/event/base.js');
     var Template = require('../../../../libs/template.js');
     var template = require('./template.html', 'html');
@@ -62,7 +63,7 @@ define(function (require, exports, module) {
             var the = this;
 
             event.on(the._card.getNode(), 'click', '.' + namespace + '-item', the._onclick = function () {
-                var color = $(this).data('color');
+                var color = attribute.data(this, 'color');
                 var command = commandTypeMap[the._options.type];
 
                 the.editor.restoreSelection();
