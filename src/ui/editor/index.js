@@ -115,8 +115,7 @@ define(function (require, exports, module) {
             'justifyleft', 'justifycenter', 'justifyright', 'justifyboth', '|',
             'orderlist', 'unorderlist', '|',
             'link', 'unlink', '|',
-            'line', 'image', '|',
-            'undo', 'redo'
+            'line', 'image'
         ],
         placeholder: '输入，从这里开始',
         addClass: ''
