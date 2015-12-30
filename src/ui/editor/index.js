@@ -120,7 +120,8 @@ define(function (require, exports, module) {
             height: 500
         },
         buttons: [
-            'bold', 'italic', 'underline', 'forecolor', 'backcolor', 'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'forecolor', 'backcolor', 'heading', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyboth', '|',
             'orderlist', 'unorderlist', '|',
             'link', 'unlink', '|',

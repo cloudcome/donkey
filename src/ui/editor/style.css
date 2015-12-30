@@ -3,14 +3,10 @@
   border: 1px solid #ddd;
   box-shadow: 0 0 4px #eee;
   border-radius: 3px; }
-  .donkey-ui-editor * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box; }
   .donkey-ui-editor-header {
     border-bottom: 1px solid #ddd;
-    padding: 6px;
-    box-shadow: 0 2px 5px #eee; }
+    box-shadow: 0 2px 5px #eee;
+    background: #FBFBFB; }
   .donkey-ui-editor-icon {
     position: relative;
     display: inline-block;
@@ -79,9 +75,10 @@
       background-position: 0 -420px; }
   .donkey-ui-editor-separator {
     display: inline-block;
-    margin: 0 2px 0 3px;
-    border-right: 1px solid #ddd;
-    height: 20px;
+    margin: 0 4px;
+    border-right: 1px solid #efefef;
+    border-left: 1px solid #fff;
+    height: 30px;
     vertical-align: middle; }
   .donkey-ui-editor-body {
     overflow: auto; }
