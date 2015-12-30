@@ -60,6 +60,7 @@ define(function (require, exports, module) {
                 style: options.style
             });
             the._popup.html(options.template);
+            the._eCard = the._popup.getNode();
         },
 
 
@@ -71,13 +72,13 @@ define(function (require, exports, module) {
             var the = this;
             var timeid = 0;
             var options = the._options;
-            var node = the._popup.getNode();
+            var node = the._eCard;
 
-            event.on(node, 'mouseover', function () {
+            event.on(node, 'mouseover', the._onmouseover = function () {
                 clearTimeout(timeid);
             });
 
-            event.on(node, 'mouseout', function () {
+            event.on(node, 'mouseout', the._onmouseout = function () {
                 if (options.autoClose > -1) {
                     timeid = setTimeout(function () {
                         the.close();
@@ -143,6 +144,19 @@ define(function (require, exports, module) {
                 the.emit('close');
             });
             return the;
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+            var node = the._eCard;
+
+            event.un(node, 'mouseover', the._onmouseover);
+            event.un(node, 'mouseout', the._onmouseout);
+            the._popup.destroy();
         }
     });
 

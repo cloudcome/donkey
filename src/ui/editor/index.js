@@ -330,6 +330,14 @@ define(function (require, exports, module) {
             the._clean();
 
             return the._wysiwyg.getText();
+        },
+
+        destroy: function () {
+            var the  = this;
+
+            dato.each(the._commands, function (action, commander) {
+                commander.destroy();
+            });
         }
     });
 

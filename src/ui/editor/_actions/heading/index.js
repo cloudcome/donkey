@@ -61,7 +61,7 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', function () {
+            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', the._onclick = function () {
                 the.editor.restoreSelection();
                 var index = $(this).data('index');
                 index = number.parseInt(index);
@@ -69,6 +69,14 @@ define(function (require, exports, module) {
                 the.editor.replace(tagName);
                 the._card.close();
             });
+        },
+
+
+        destroy: function () {
+            var the = this;
+
+            event.un(the._card.getNode(), 'click', the._onclick)
+            the._card.destroy();
         }
     });
 

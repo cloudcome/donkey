@@ -61,7 +61,7 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', function () {
+            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', the._onclick = function () {
                 var color = $(this).data('color');
                 var command = commandTypeMap[the._options.type];
 
@@ -69,6 +69,17 @@ define(function (require, exports, module) {
                 the.editor[command](color);
                 the._card.close();
             });
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+
+            event.un(the._card.getNode(), 'click', the._onclick);
+            the._card.destroy();
         }
     });
 
