@@ -118,7 +118,13 @@ define(function (require, exports, module) {
             'line', 'image'
         ],
         placeholder: '输入，从这里开始',
-        addClass: ''
+        addClass: '',
+        whiteList: [
+            'p', 'div', 'hr', 'ul', 'ol', 'li', 'pre',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'img', 'span', 'a', 'i', 'em', 's', 'b', 'br', 'small', 'strong', 'code',
+            'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td'
+        ]
     };
     var Editor = ui.create({
         constructor: function ($textarea, options) {
@@ -128,8 +134,20 @@ define(function (require, exports, module) {
             the._index = donkeyIndex++;
             the._options = dato.extend({}, defaults, options);
             the._commands = {};
+            the._initData();
             the._initNode();
             the._initEvent();
+        },
+
+
+        _initData: function () {
+            var the = this;
+            var options = the._options;
+
+            the._whiteMap = {};
+            dato.each(options.whiteList, function (index, tagName) {
+                the._whiteMap[tagName] = 1;
+            });
         },
 
 
@@ -234,6 +252,52 @@ define(function (require, exports, module) {
                     }
                 });
             });
+        },
+
+
+        /**
+         * 清理 HTML
+         * @private
+         */
+        _clean: function () {
+            var the = this;
+
+            var $nodes = $('*', the._$content);
+
+            dato.each($nodes, function (index, node) {
+                var tagName = node.tagName.toLowerCase();
+                var isWhite = the._whiteMap[tagName];
+
+                if (!isWhite) {
+                    modification.remove(node);
+                }
+            }, true);
+        },
+
+
+        /**
+         * 获取 HTML 内容
+         * @returns {string}
+         */
+        getHTML: function () {
+            var the = this;
+
+            the._clean();
+
+            return the._wysiwyg.getHTML();
+        },
+
+
+        /**
+         * 获取 Text
+         * @returns {string}
+         */
+        getText: function () {
+            var the = this;
+
+            the._clean();
+
+            return the._wysiwyg.getText();
         }
     });
 
