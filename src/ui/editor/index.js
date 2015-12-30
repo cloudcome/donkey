@@ -20,12 +20,13 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    var $ = window.jQuery;
     var ui = require('../index.js');
     var Wysiwyg = require('../wysiwyg/index.js');
     var Tooltip = require('../tooltip/index.js');
     var dato = require('../../utils/dato.js');
     var klass = require('../../utils/class.js');
+    var selector = require('../../core/dom/selector.js');
+    var attribute = require('../../core/dom/attribute.js');
     var modification = require('../../core/dom/modification.js');
     var event = require('../../core/event/base.js');
     var Template = require('../../libs/Template.js');
@@ -137,10 +138,10 @@ define(function (require, exports, module) {
         ]
     };
     var Editor = ui.create({
-        constructor: function ($textarea, options) {
+        constructor: function (eTextarea, options) {
             var the = this;
 
-            the._$textarea = $($textarea);
+            the._eTextarea = selector.query(eTextarea)[0];
             the._index = donkeyIndex++;
             the._options = dato.extend({}, defaults, options);
             the._commands = {};
@@ -184,21 +185,26 @@ define(function (require, exports, module) {
             });
 
             the._buttons = buttons;
-            the._$editor = $(html).insertAfter(the._$textarea).addClass(options.addClass);
-            $('.' + namespace + '-icon', the._$editor).each(function (index, ele) {
-                var buttonIndex = $(ele).data('index');
+            var eEditor = modification.parse(html)[0];
+
+            modification.insert(eEditor, the._eTextarea, 'afterend');
+            attribute.addClass(eEditor, options.addClass);
+            var eIcons = selector.query('.' + namespace + '-icon', eEditor);
+
+            dato.each(eIcons, function (index, ele) {
+                var buttonIndex = attribute.data(ele, 'index');
                 var btn = buttons[buttonIndex];
 
                 if (btn) {
                     btn.ele = ele;
                 }
             });
-            var nodes = $('.j-flag', the._$editor);
-            var content = the._$textarea.val();
-            the._$textarea.hide();
-            the._$header = $(nodes[0]);
-            the._$content = $(nodes[1]);
-            the._$footer = $(nodes[2]);
+            var nodes = selector.query('.j-flag', eEditor);
+            var content = the._eTextarea.value;
+            attribute.hide(the._eTextarea);
+            the._eHeader = nodes[0];
+            the._eContent = nodes[1];
+            the._eFooter = nodes[2];
             the._placeholder = false;
 
             if (!content && options.placeholder) {
@@ -206,8 +212,9 @@ define(function (require, exports, module) {
                 the._placeholder = true;
             }
 
-            the._$content.css(options.style).html(content);
-            the._wysiwyg = new Wysiwyg(the._$content[0]);
+            attribute.css(the._eContent, options.style);
+            attribute.html(the._eContent, content);
+            the._wysiwyg = new Wysiwyg(the._eContent);
             the._tooltip = new Tooltip({
                 selector: '.' + namespace + '-icon',
                 timeout: 100,
@@ -226,15 +233,14 @@ define(function (require, exports, module) {
          */
         _initEvent: function () {
             var the = this;
-            var eHeader = the._$header[0];
 
-            event.on(eHeader, 'mousedown', '.' + namespace + '-icon', the._onmousedown = function (eve) {
+            event.on(the._eHeader, 'mousedown', '.' + namespace + '-icon', the._onmousedown = function (eve) {
                 the._wysiwyg.saveSelection();
             });
 
-            event.on(eHeader, 'click', '.' + namespace + '-icon', the._onclick1 = function (eve) {
-                var command = $(this).data('command');
-                var type = $(this).data('type') || '';
+            event.on(the._eHeader, 'click', '.' + namespace + '-icon', the._onclick1 = function (eve) {
+                var command = attribute.data(this, 'command');
+                var type = attribute.data(this, 'type') || '';
 
                 if (!command) {
                     return;
@@ -262,7 +268,7 @@ define(function (require, exports, module) {
             });
 
             // 选中图片
-            event.on(the._$content[0], 'click', 'img', the._onclick2 = function (eve) {
+            event.on(the._eContent, 'click', 'img', the._onclick2 = function (eve) {
                 the._wysiwyg.select(this);
             });
 
@@ -278,9 +284,9 @@ define(function (require, exports, module) {
                     var className = namespace + '-icon-active';
 
                     if (isState) {
-                        $(btn.ele).addClass(className);
+                        attribute.addClass(btn.ele, className);
                     } else {
-                        $(btn.ele).removeClass(className);
+                        attribute.removeClass(btn.ele, className);
                     }
                 });
 
@@ -296,9 +302,9 @@ define(function (require, exports, module) {
         _clean: function () {
             var the = this;
 
-            var $nodes = $('*', the._$content);
+            var eNodes = selector.query('*', the._eContent);
 
-            dato.each($nodes, function (index, node) {
+            dato.each(eNodes, function (index, node) {
                 var tagName = node.tagName.toLowerCase();
                 var isWhite = the._whiteMap[tagName];
 
@@ -330,7 +336,7 @@ define(function (require, exports, module) {
             var the = this;
             var html = the.getHTML();
 
-            the._$textarea.val(html);
+            the._eTextarea.value = html;
 
             return html;
         },
@@ -364,14 +370,13 @@ define(function (require, exports, module) {
             the._wysiwyg.destroy();
 
             // 移除事件
-            var eHeader = the._$header[0];
-            event.un(eHeader, 'mousedown', the._onmousedown);
-            event.un(eHeader, 'click', the._onclick1);
-            event.un(the._$content[0], 'click', the._onclick2);
+            event.un(the._eHeader, 'mousedown', the._onmousedown);
+            event.un(the._eHeader, 'click', the._onclick1);
+            event.un(the._eContent, 'click', the._onclick2);
 
             // 恢复 DOM
-            the._$editor.remove();
-            the._$textarea.show();
+            modification.remove(the._eEditor);
+            attribute.show(the._eTextarea);
         }
     });
 

@@ -11,13 +11,14 @@ define(function (require, exports, module) {
 
     var w = window;
     var d = document;
-    var $ = w.jQuery;
     var ui = require('../index.js');
     var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
     var random = require('../../utils/random.js');
     var event = require('../../core/event/base.js');
+    var selector = require('../../core/dom/selector.js');
     var modification = require('../../core/dom/modification.js');
+    var attribute = require('../../core/dom/attribute.js');
     var rangy = require('../../3rd/rangy/core.js');
     require('../../3rd/rangy/save-restore-selection.js')(rangy);
 
@@ -30,8 +31,7 @@ define(function (require, exports, module) {
         constructor: function ($wysiwyg, options) {
             var the = this;
 
-            the._$wysiwyg = $($wysiwyg);
-            the._eWysiwyg = the._$wysiwyg[0];
+            the._eWysiwyg = selector.query($wysiwyg)[0];
             the._options = dato.extend({}, defaults, options);
             the._lastSavedSelection = null;
             the._trailingDiv = null;
@@ -768,8 +768,9 @@ define(function (require, exports, module) {
             tagName = tagName.toUpperCase();
             the.createLink(url);
 
-            var eLink = $('a', the._eWysiwyg).filter(function () {
-                return $(this).attr('href') === url;
+            var eLinks = selector.query('a', the._eWysiwyg);
+            var eLink = selector.filter(eLinks, function () {
+                return attribute.attr(this, 'href') === url;
             })[0];
 
             if (!eLink) {
@@ -784,7 +785,7 @@ define(function (require, exports, module) {
 
             if (collapsed) {
                 if (tagName === 'A') {
-                    $(eLink).html(attributes.href);
+                    attribute.html(eLink, attributes.href);
                 }
 
                 rng = rangy.createRange();
@@ -795,7 +796,7 @@ define(function (require, exports, module) {
             }
 
             eLink.id = url;
-            $(eLink).attr(attributes || {});
+            attribute.attr(eLink, attributes);
 
             return the;
         },
@@ -835,13 +836,13 @@ define(function (require, exports, module) {
             var html = '<' + tagName + ' id="' + id + '">';
 
             the.insertHTML(html);
-            var ele = $('#' + id)[0];
+            var ele = selector.query('#' + id)[0];
 
             if (!ele) {
                 return the;
             }
 
-            $(ele).attr(attributes || {});
+            attribute.attr(ele, attributes);
         },
 
 

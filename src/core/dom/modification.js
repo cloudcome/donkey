@@ -32,7 +32,7 @@ define(function (require, exports, module) {
      * // => HTMLDIVElement
      */
     exports.parse = function (htmlString) {
-        return $(htmlString)[0];
+        return $(htmlString);
     };
 
 
