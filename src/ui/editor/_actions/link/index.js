@@ -70,33 +70,21 @@ define(function (require, exports, module) {
                     case 0:
                         var url = the._eUrl.value;
 
-                        if (!url) {
-                            the.close();
-                            return;
+                        if (url) {
+                            the.editor.wrap('a', {
+                                href: url,
+                                target: the._eTarget.checked ? '_blank' : '_self',
+                                title: the._eTitle.value
+                            });
+                            the.reset();
                         }
-
-                        the.editor.wrap('a', {
-                            href: url,
-                            target: the._eTarget.checked ? '_blank' : '_self',
-                            title: the._eTitle.value
-                        });
-                        the.reset();
-                        the.close();
-                        break;
-
-                    case 1:
-                        the.close();
                         break;
                 }
+
+                the._dialog.close();
             });
         },
 
-
-        //open: function () {
-        //    var the = this;
-        //    the._dialog.open();
-        //    return the;
-        //},
 
         /**
          * 重置
@@ -110,6 +98,16 @@ define(function (require, exports, module) {
             the._eTarget.checked = false;
 
             return the;
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+
+            the._dialog.destroy();
         }
     });
 

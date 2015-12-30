@@ -26,6 +26,9 @@ define(function (require, exports, module) {
             this.editor.insertHTML('<p><br></p>');
         },
 
+        /**
+         * 销毁实例
+         */
         destroy: function () {
             // ignore
         }
