@@ -6,7 +6,8 @@
   .donkey-ui-editor-header {
     border-bottom: 1px solid #ddd;
     box-shadow: 0 2px 5px #eee;
-    background: #FBFBFB; }
+    background: #FBFBFB;
+    padding: 5px; }
   .donkey-ui-editor-icon {
     position: relative;
     display: inline-block;

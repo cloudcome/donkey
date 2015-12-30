@@ -813,6 +813,7 @@ define(function (require, exports, module) {
 
             if (blockEle) {
                 the._saveRange();
+                attributes = attributes || {};
                 attributes.id = attributes.id || genId();
                 modification.replace(blockEle, tagName, attributes);
                 the._restoreRange();
