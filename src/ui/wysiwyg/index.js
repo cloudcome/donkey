@@ -52,8 +52,6 @@ define(function (require, exports, module) {
         },
 
 
-
-
         _IEtrailingDIV: function () {
             var the = this;
             var node_wysiwyg = the._eWysiwyg;
@@ -818,6 +816,8 @@ define(function (require, exports, module) {
                 attributes.id = attributes.id || genId();
                 modification.replace(blockEle, tagName, attributes);
                 the._restoreRange();
+            } else {
+                the.wrap(tagName, attributes);
             }
 
             return the;
