@@ -94,7 +94,7 @@ define(function (require, exports, module) {
                 the._dialog.close();
             };
 
-            event.on(the._eDialog, 'change', '.' + the._fileClass, function (eve) {
+            event.on(the._eDialog, 'change', '.' + the._fileClass, the._onchange = function (eve) {
                 var val = this.value;
 
                 if (!val) {
@@ -183,6 +183,17 @@ define(function (require, exports, module) {
             });
 
             return the;
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the  = this;
+
+            event.un(the._eDialog, 'change', the._onchange);
+            the._dialog.destroy();
         }
     });
 

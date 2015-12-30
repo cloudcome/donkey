@@ -24,6 +24,10 @@ define(function (require, exports, module) {
         exec: function () {
             this.editor.insert('hr');
             this.editor.insertHTML('<p><br></p>');
+        },
+
+        destroy: function () {
+            // ignore
         }
     });
 });
