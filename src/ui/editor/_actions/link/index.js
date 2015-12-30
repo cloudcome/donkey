@@ -8,12 +8,12 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var $ = window.jQuery;
     var ui = require('../../../index.js');
     var Dialog = require('../../_dialog.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
     var event = require('../../../../core/event/base.js');
+    var selector = require('../../../../core/dom/selector.js');
     var modification = require('../../../../core/dom/modification.js');
     var Template = require('../../../../libs/template.js');
     var template = require('./template.html', 'html');
@@ -51,7 +51,7 @@ define(function (require, exports, module) {
                 template: tpl.render(options),
                 buttons: options.buttons
             });
-            var nodes = $('.j-flag', the._dialog.getNode());
+            var nodes = selector.query('.j-flag', the._dialog.getNode());
             the._eUrl = nodes[0];
             the._eTitle = nodes[1];
             the._eTarget = nodes[2];
