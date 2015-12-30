@@ -168,7 +168,6 @@ define(function (require, exports, module) {
         _initNode: function () {
             var the = this;
             var options = the._options;
-            var eflag = modification.create('#comment', namespace + '-' + the._index);
             var buttons = [];
 
             dato.each(options.buttons, function (index, button) {
@@ -185,7 +184,6 @@ define(function (require, exports, module) {
             });
 
             the._buttons = buttons;
-            modification.insert(eflag, the._$textarea[0], 'afterend');
             the._$editor = $(html).insertAfter(the._$textarea).addClass(options.addClass);
             $('.' + namespace + '-icon', the._$editor).each(function (index, ele) {
                 var buttonIndex = $(ele).data('index');
@@ -228,11 +226,13 @@ define(function (require, exports, module) {
          */
         _initEvent: function () {
             var the = this;
+            var eHeader = the._$header[0];
 
-            event.on(the._$header[0], 'mousedown', '.' + namespace + '-icon', function (eve) {
+            event.on(eHeader, 'mousedown', '.' + namespace + '-icon', the._onmousedown = function (eve) {
                 the._wysiwyg.saveSelection();
             });
-            event.on(the._$header[0], 'click', '.' + namespace + '-icon', function (eve) {
+
+            event.on(eHeader, 'click', '.' + namespace + '-icon', the._onclick1 = function (eve) {
                 var command = $(this).data('command');
                 var type = $(this).data('type') || '';
 
@@ -262,7 +262,7 @@ define(function (require, exports, module) {
             });
 
             // 选中图片
-            event.on(the._$content[0], 'click', 'img', function (eve) {
+            event.on(the._$content[0], 'click', 'img', the._onclick2 = function (eve) {
                 the._wysiwyg.select(this);
             });
 
@@ -333,11 +333,25 @@ define(function (require, exports, module) {
         },
 
         destroy: function () {
-            var the  = this;
+            var the = this;
 
+            // 销毁命令
             dato.each(the._commands, function (action, commander) {
                 commander.destroy();
             });
+
+            // 销毁 wysywyg
+            the._wysiwyg.destroy();
+
+            // 移除事件
+            var eHeader = the._$header[0];
+            event.un(eHeader, 'mousedown', the._onmousedown);
+            event.un(eHeader, 'click', the._onclick1);
+            event.un(the._$content[0], 'click', the._onclick2);
+
+            // 恢复 DOM
+            the._$editor.remove();
+            the._$textarea.show();
         }
     });
 
