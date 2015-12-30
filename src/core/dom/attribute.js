@@ -21,6 +21,7 @@ define(function (require, exports, module) {
 
     var selector = require('./selector.js');
     var typeis = require('../../utils/typeis.js');
+    var allocation = require('../../utils/allocation.js');
     var compatible = require('../navigator/compatible.js');
     var REG_PX = /margin|width|height|padding|top|right|bottom|left|translate|font/i;
     var REG_DEG = /rotate|skew/i;
@@ -58,11 +59,13 @@ define(function (require, exports, module) {
      * attribute.attr(ele, ['href', 'title']);
      */
     exports.attr = function (ele, key, val) {
-        if (arguments.length === 2) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 2) {
             return $(ele).attr(key);
         }
 
-        $(ele).attr(key, val);
+        $(ele).attr(key, val || {});
         //return _getSet(arguments, {
         //    get: function (ele, key) {
         //        if (!typeis.element(ele)) {
@@ -147,7 +150,9 @@ define(function (require, exports, module) {
      * attribute.prop(ele, ['hi', 'ha']);
      */
     exports.prop = function (ele, key, val) {
-        if (arguments.length === 2) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 2) {
             return $(ele).prop(key);
         }
 
@@ -235,7 +240,9 @@ define(function (require, exports, module) {
      * attribute.css(ele, ['width','height']);
      */
     exports.css = exports.style = function (ele, key, val) {
-        if (arguments.length === 2) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 2) {
             return $(ele).css(key);
         }
 
@@ -434,7 +441,9 @@ define(function (require, exports, module) {
      * // => {a: 1, b: 2}
      */
     exports.data = function (ele, key, val) {
-        if (arguments.length === 2) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 2) {
             return $(ele).attr('data-' + key);
         }
 
@@ -644,7 +653,9 @@ define(function (require, exports, module) {
      * position.top($ele);
      */
     exports.top = function ($ele, val) {
-        if (arguments.length === 1) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 1) {
             return $($ele).offset().top;
         }
 
@@ -669,7 +680,9 @@ define(function (require, exports, module) {
      * position.left($ele);
      */
     exports.left = function ($ele, val) {
-        if (arguments.length === 1) {
+        var args = allocation.args(arguments);
+
+        if (args.length === 1) {
             return $($ele).offset().left;
         }
 
