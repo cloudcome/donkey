@@ -1,6 +1,7 @@
 .donkey-ui-editor_action-image * {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  font-size: 14px; }
 
 .donkey-ui-editor_action-image-tab {
   margin-bottom: 15px;
@@ -49,13 +50,13 @@
     display: block; }
 
 .donkey-ui-editor_action-image-file {
-  border: 2px dashed #eee;
-  height: 150px;
-  line-height: 150px;
+  height: 70px;
+  line-height: 70px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  color: #999; }
+  color: #CCC;
+  font-size: 24px; }
   .donkey-ui-editor_action-image-file input {
     position: absolute;
     font-size: 200em;
@@ -63,3 +64,23 @@
     right: 0;
     opacity: 0;
     cursor: pointer; }
+
+.donkey-ui-editor_action-image-item {
+  position: relative;
+  padding-left: 75px;
+  line-height: 30px;
+  margin-bottom: 10px; }
+
+.donkey-ui-editor_action-image-key {
+  position: absolute;
+  top: 0;
+  left: 0; }
+
+.donkey-ui-editor_action-image-ipt {
+  display: block;
+  border: 1px solid #ccc;
+  width: 100%;
+  padding: 6px; }
+  .donkey-ui-editor_action-image-ipt:focus {
+    border-color: #03A9F4;
+    outline: 0; }
