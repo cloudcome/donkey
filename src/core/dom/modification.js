@@ -213,10 +213,13 @@ define(function (require, exports, module) {
      * @param [properties] {Object} 属性
      */
     exports.replace = function (node, tagName, attributes, properties) {
-        var replacement = exports.create(tagName, attributes, properties);
+        var replacement;
 
-        if (node.tagName === tagName.toUpperCase()) {
-            return node;
+        if (typeis.Element(tagName)) {
+            replacement = tagName;
+            tagName = replacement.tagName;
+        } else {
+            replacement = exports.create(tagName, attributes, properties);
         }
 
         if (!REG_SINGLE_TAG.test(tagName)) {
