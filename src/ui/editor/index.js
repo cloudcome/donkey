@@ -283,6 +283,8 @@ define(function (require, exports, module) {
                         $(btn.ele).removeClass(className);
                     }
                 });
+
+                the.sync();
             });
         },
 
@@ -321,6 +323,20 @@ define(function (require, exports, module) {
 
 
         /**
+         * 同步内容
+         * @returns {String}
+         */
+        sync: function () {
+            var the = this;
+            var html = the.getHTML();
+
+            the._$textarea.val(html);
+
+            return html;
+        },
+
+
+        /**
          * 获取 Text
          * @returns {string}
          */
@@ -332,6 +348,10 @@ define(function (require, exports, module) {
             return the._wysiwyg.getText();
         },
 
+
+        /**
+         * 销毁实例
+         */
         destroy: function () {
             var the = this;
 

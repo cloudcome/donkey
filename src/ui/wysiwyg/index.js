@@ -46,9 +46,9 @@ define(function (require, exports, module) {
                 the.emit('selectionChange');
             }));
 
-            event.on(the._eWysiwyg, the._event2 = 'input change', the._on2 = function (eve) {
+            event.on(the._eWysiwyg, the._event2 = 'input change', the._on2 = controller.debounce(function (eve) {
                 the.emit('contentChange');
-            });
+            }));
         },
 
 
