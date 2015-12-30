@@ -1,5 +1,5 @@
-/*!
- * data-traveller.js
+/**
+ * 数据转换器
  * @author ydr.me
  * 2014-09-14 17:26
  */
