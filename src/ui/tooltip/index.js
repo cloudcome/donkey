@@ -1,4 +1,4 @@
-/*!
+/**
  * 提示UI
  * @author ydr.me
  * @create 2014-10-16 21:41
@@ -31,7 +31,10 @@ define(function (require, exports, module) {
         openEvent: 'mouseover',
         closeEvent: 'mouseout',
         // 超时消失时间
-        timeout: 300
+        timeout: 300,
+        style: {
+            //
+        }
     };
     var Tooltip = ui.create({
         constructor: function (options) {
@@ -78,9 +81,7 @@ define(function (require, exports, module) {
                             left: 5,
                             top: 5
                         },
-                        style: {
-                            maxWidth: 300
-                        }
+                        style: options.style
                     });
                 }
 

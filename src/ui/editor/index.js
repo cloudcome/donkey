@@ -10,6 +10,7 @@ define(function (require, exports, module) {
      * @module ui/editor
      * @requires ui/
      * @requires ui/wysiwyg/
+     * @requires ui/tooltip/
      * @requires utils/dato
      * @requires utils/class
      * @requires core/dom/modification
@@ -22,6 +23,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var Wysiwyg = require('../wysiwyg/index.js');
+    var Tooltip = require('../tooltip/index.js');
     var dato = require('../../utils/dato.js');
     var klass = require('../../utils/class.js');
     var modification = require('../../core/dom/modification.js');
@@ -193,11 +195,29 @@ define(function (require, exports, module) {
                 }
             });
             var nodes = $('.j-flag', the._$editor);
+            var content = the._$textarea.val();
             the._$textarea.hide();
             the._$header = $(nodes[0]);
             the._$content = $(nodes[1]);
             the._$footer = $(nodes[2]);
-            the._$content.css(options.style).html(the._$textarea.val());
+            the._placeholder = false;
+
+            if (!content && options.placeholder) {
+                content = options.placeholder;
+                the._placeholder = true;
+            }
+
+            the._$content.css(options.style).html(content);
+            the._wysiwyg = new Wysiwyg(the._$content[0]);
+            the._tooltip = new Tooltip({
+                selector: '.' + namespace + '-icon',
+                timeout: 100,
+                style: {
+                    maxWidth: 'none',
+                    minWidth: 'none',
+                    textAlign: 'center'
+                }
+            });
         },
 
 
@@ -208,7 +228,6 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            the._wysiwyg = new Wysiwyg(the._$content[0]);
             event.on(the._$header[0], 'mousedown', '.' + namespace + '-icon', function (eve) {
                 the._wysiwyg.saveSelection();
             });
@@ -247,6 +266,11 @@ define(function (require, exports, module) {
             });
 
             the._wysiwyg.on('selectionChange contentChange', function () {
+                if (the._placeholder) {
+                    the._placeholder = false;
+                    the._wysiwyg.setHTML('');
+                }
+
                 dato.each(the._buttons, function (index, btn) {
                     var command = btn.command;
                     var isState = the._wysiwyg.isState(command);

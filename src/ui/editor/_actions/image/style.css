@@ -4,9 +4,9 @@
   font-size: 14px; }
 
 .donkey-ui-editor_action-image-tab {
-  margin-bottom: 15px;
   list-style: none;
-  border-bottom: 1px solid #ccc; }
+  border-bottom: 1px solid #EAEAEA;
+  margin: -15px -15px 15px; }
   .donkey-ui-editor_action-image-tab:after {
     display: block;
     content: "";
@@ -31,7 +31,7 @@
     text-decoration: none;
     color: #000; }
   .donkey-ui-editor_action-image-nav a {
-    padding: 6px 20px;
+    padding: 10px 20px;
     display: block; }
     .donkey-ui-editor_action-image-nav a,
     .donkey-ui-editor_action-image-nav a:active,

@@ -6,9 +6,9 @@
   }
 
   &-tab {
-    margin-bottom: 15px;
     list-style: none;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #EAEAEA;
+    margin: -15px -15px 15px;
 
     &:after {
       display: block;
@@ -43,7 +43,7 @@
     }
 
     a {
-      padding: 6px 20px;
+      padding: 10px 20px;
       display: block;
 
       &,

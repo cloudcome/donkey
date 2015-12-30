@@ -20,7 +20,6 @@ define(function (require, exports, module) {
     var modification = require('../../core/dom/modification.js');
     var rangy = require('../../3rd/rangy/core.js');
     require('../../3rd/rangy/save-restore-selection.js')(rangy);
-    window.rangy = rangy;
 
     var REG_BLOCK_TAG = /^h[1-6]|div|p$/i;
     var supportWindowGetSelection = !!w.getSelection;
@@ -49,10 +48,6 @@ define(function (require, exports, module) {
 
             event.on(the._eWysiwyg, 'input change', function (eve) {
                 the.emit('contentChange');
-            });
-
-            controller.nextTick(function () {
-                the.focus();
             });
         },
 
