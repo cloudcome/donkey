@@ -1,5 +1,5 @@
 /**
- * 链接选择器
+ * 图片选择器
  * @author ydr.me
  * @create 2015-12-28 17:36
  */
@@ -9,7 +9,7 @@ define(function (require, exports, module) {
     'use strict';
 
     var $ = window.jQuery;
-    var Card = require('../../_card.js');
+    var Dialog = require('../../_dialog.js');
     var ui = require('../../../index.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
@@ -21,12 +21,16 @@ define(function (require, exports, module) {
     var tpl = new Template(template);
 
     var defaults = {
-        style: {
-            width: 'auto'
-        }
+        width: 'auto',
+        title: '图片',
+        buttons: [{
+            text: '确定'
+        }, {
+            text: '取消'
+        }]
     };
 
-    var Color = ui.create({
+    var Image = ui.create({
         constructor: function (editor, options) {
             var the = this;
 
@@ -41,11 +45,11 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
 
-            the._card = new Card({
-                style: options.style,
+            the._dialog = new Dialog({
+                width: options.width,
+                title: options.title,
                 template: tpl.render(options),
-                autoClose: -1,
-                mask: true
+                buttons: options.buttons
             });
             var nodes = $('.j-flag', the._card.getNode());
             the._eUrl = nodes[0];
@@ -59,36 +63,13 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            the.on('open', function () {
-                the._eUrl.focus();
-            });
 
-            event.on(the._eSure, 'click', function () {
-                var url = the._eUrl.value;
-
-                if (!url) {
-                    the.close();
-                    return;
-                }
-
-                the.editor.wrap('a', {
-                    href: url,
-                    target: the._eTarget.checked ? '_blank' : '_self',
-                    title: the._eTitle.value
-                });
-                the.reset();
-                the.close();
-            });
-
-            event.on(the._eCancel, 'click', function () {
-                the.close();
-            });
         },
 
 
         /**
          * 重置
-         * @returns {Color}
+         * @returns {Image}
          */
         reset: function () {
             var the = this;
@@ -102,7 +83,8 @@ define(function (require, exports, module) {
     });
 
     ui.importStyle(style);
-    klass.transfer(Card, Color, '_card');
-    Color.defaults = defaults;
-    module.exports = Color;
+    klass.transfer(Dialog, Image, '_dialog');
+    klass.transfer(Dialog.super_, Image, '_dialog');
+    Image.defaults = defaults;
+    module.exports = Image;
 });

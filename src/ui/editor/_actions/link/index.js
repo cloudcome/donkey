@@ -24,8 +24,7 @@ define(function (require, exports, module) {
         width: 400,
         title: '链接',
         buttons: [{
-            text: '确定',
-            'class': 'aaa'
+            text: '确定'
         }, {
             text: '取消'
         }]

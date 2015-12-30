@@ -253,6 +253,7 @@ define(function (require, exports, module) {
     Editor.action('heading', require('./_actions/heading/index.js'));
     Editor.action('link', require('./_actions/link/index.js'));
     Editor.action('line', require('./_actions/line/index.js'));
+    Editor.action('image', require('./_actions/image/index.js'));
 
     // style
     style += '.' + namespace + '-icon::after{background-image:url(' + icons + ')}';
