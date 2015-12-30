@@ -9,7 +9,6 @@ define(function (require, exports, module) {
     'use strict';
 
     var w = window;
-    var $ = w.jQuery;
     var d = w.document;
     var b = d.body;
     var Dialog = require('../../_dialog.js');
@@ -18,7 +17,9 @@ define(function (require, exports, module) {
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
     var event = require('../../../../core/event/base.js');
+    var selector = require('../../../../core/dom/selector.js');
     var modification = require('../../../../core/dom/modification.js');
+    var attribute = require('../../../../core/dom/attribute.js');
     var compatible = require('../../../../core/navigator/compatible.js');
     var Template = require('../../../../libs/template.js');
     var template = require('./template.html', 'html');
@@ -70,13 +71,13 @@ define(function (require, exports, module) {
                 buttons: options.buttons
             });
             the._eDialog = the._dialog.getNode();
-            var nodes = $('.j-flag', the._eDialog);
+            var nodes = selector.query('.j-flag', the._eDialog);
             the._eTab = nodes[0];
             the._eFile = nodes[1];
             the._eUrl = nodes[2];
             the._eTitle = nodes[3];
             the._tab = new Tab(the._eTab);
-            $(the._eFile).addClass(the._fileClass = namespace + '-file-' + the._id);
+            attribute.addClass(the._eFile, the._fileClass = namespace + '-file-' + the._id);
         },
 
 
@@ -190,7 +191,7 @@ define(function (require, exports, module) {
          * 销毁实例
          */
         destroy: function () {
-            var the  = this;
+            var the = this;
 
             event.un(the._eDialog, 'change', the._onchange);
             the._dialog.destroy();
