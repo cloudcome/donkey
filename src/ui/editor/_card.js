@@ -8,7 +8,6 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var $ = window.jQuery;
     var ui = require('../index.js');
     var Mask = require('../mask/index.js');
     var Popup = require('../popup/index.js');
@@ -99,11 +98,11 @@ define(function (require, exports, module) {
 
         /**
          * 打开卡片
-         * @param $target {*} 参考目标
+         * @param target {*} 参考目标
          * @param [callback] {Function} 回调
          * @returns {Card}
          */
-        open: function ($target, callback) {
+        open: function (target, callback) {
             var the = this;
 
             the.emit('beforeopen');
@@ -111,7 +110,7 @@ define(function (require, exports, module) {
                 the._mask.open();
             }
 
-            the._popup.open($target, function () {
+            the._popup.open(target, function () {
                 if (typeis.Function(callback)) {
                     callback.call(the);
                 }

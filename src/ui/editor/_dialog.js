@@ -14,6 +14,7 @@ define(function (require, exports, module) {
     var dato = require('../../utils/dato.js');
     var number = require('../../utils/number.js');
     var event = require('../../core/event/base.js');
+    var attribute = require('../../core/dom/attribute.js');
     var modification = require('../../core/dom/modification.js');
     var style = require('./dialog.css', 'css');
 
@@ -41,10 +42,10 @@ define(function (require, exports, module) {
             eBtn.innerHTML = button.text;
             eContainer.appendChild(eBtn);
         });
-        the._$window.addClass(namespace);
 
+        attribute.addClass(the._$window, namespace);
         event.on(eContainer, 'click', '.' + namespace + '-btn', function () {
-            var index = $(this).data('index');
+            var index = attribute.data(this, 'index');
 
             index = number.parseInt(index);
             the.emit('action', index);
