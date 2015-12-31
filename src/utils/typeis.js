@@ -303,20 +303,7 @@ define(function (require, exports, module) {
 
 
     /**
-     * @name string
-     * @name number
-     * @name function
-     * @name object
-     * @name undefined
-     * @name null
-     * @name nan
-     * @name element
-     * @name regexp
-     * @name boolean
-     * @name array
-     * @name window
-     * @name document
-     * @name global
+     * @name typeis
      * @type {Function}
      */
     module.exports = typeis;
