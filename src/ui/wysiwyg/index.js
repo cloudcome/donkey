@@ -783,7 +783,7 @@ define(function (require, exports, module) {
 
             if (collapsed) {
                 if (tagName === 'A') {
-                    attribute.html(eLink, attributes.href);
+                    attribute.html(eLink, attributes.title || attributes.href);
                 }
 
                 rng = rangy.createRange();
