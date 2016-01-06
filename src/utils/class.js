@@ -1,4 +1,4 @@
-/*!
+/**
  * 类的创建与继承
  * @author ydr.me
  * @create 2014-10-04 15:09
@@ -91,13 +91,13 @@ define(function (require, exports, module) {
      * @returns {Function}
      */
     var create = function (prototypes, superConstructor, isInheritStatic) {
-        if (typeis.isFunction(prototypes)) {
+        if (typeis.Function(prototypes)) {
             prototypes = {
                 constructor: prototypes
             };
         }
 
-        if (!typeis.isFunction(prototypes.constructor)) {
+        if (!typeis.Function(prototypes.constructor)) {
             throw Error('propertypes.constructor must be a function');
         }
 
@@ -105,7 +105,7 @@ define(function (require, exports, module) {
 
         prototypes.constructor = null;
 
-        var superConstructorIsAFn = typeis.isFunction(superConstructor);
+        var superConstructorIsAFn = typeis.Function(superConstructor);
         var Class = function () {
             var the = this;
             var args = arguments;
@@ -183,7 +183,7 @@ define(function (require, exports, module) {
      * @param isInheritStatic
      * @returns {Class}
      */
-    exports.extend = exports.inherit = function (superConstructor, isInheritStatic) {
+    exports['extends'] = exports.extend = function (superConstructor, isInheritStatic) {
         return new Class(null, superConstructor, isInheritStatic);
     };
 
@@ -224,7 +224,6 @@ define(function (require, exports, module) {
     };
 
 
-
     /**
      * 原型转让，将父级的原型复制到子类，
      * 比如写好的一个 Dialog 类有 A、B、C 三个原型方法，
@@ -245,18 +244,15 @@ define(function (require, exports, module) {
      */
     exports.transfer = function (parentClass, childClass, parentInstanceNameInChild, filter) {
         dato.each(parentClass.prototype, function (property) {
-            if(!childClass.prototype[property] && _matches(property, filter)){
+            if (!childClass.prototype[property] && _matches(property, filter)) {
                 childClass.prototype[property] = function () {
                     var the = this;
-
-                    the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
-
-                    return the;
+                    var ret = the[parentInstanceNameInChild][property].apply(the[parentInstanceNameInChild], arguments);
+                    return ret instanceof parentClass ? the : ret;
                 };
             }
         });
     };
-
 
 
     var REG_PRIVATE = /^_/;

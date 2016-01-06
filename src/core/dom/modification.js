@@ -18,6 +18,7 @@ define(function (require, exports, module) {
     var typeis = require('../../utils/typeis.js');
     var doc = window.document;
     var head = $('head')[0] || doc.documentElement;
+    var REG_SINGLE_TAG = /^hr|br|input|img|video|audio$/i;
 
 
     /**
@@ -31,7 +32,7 @@ define(function (require, exports, module) {
      * // => HTMLDIVElement
      */
     exports.parse = function (htmlString) {
-        return $(htmlString)[0];
+        return $(htmlString);
     };
 
 
@@ -201,5 +202,35 @@ define(function (require, exports, module) {
      */
     exports.remove = function (node) {
         $(node).remove();
+    };
+
+
+    /**
+     * 替换
+     * @param node {Object} 原节点
+     * @param tagName {String|Object} 目标标签名
+     * @param [attributes] {Object} 属性
+     * @param [properties] {Object} 属性
+     */
+    exports.replace = function (node, tagName, attributes, properties) {
+        var replacement;
+
+        if (typeis.Element(tagName)) {
+            replacement = tagName;
+            tagName = replacement.tagName;
+        } else {
+            replacement = exports.create(tagName, attributes, properties);
+        }
+
+        if (!REG_SINGLE_TAG.test(tagName)) {
+            while (node && node.firstChild) {
+                replacement.appendChild(node.firstChild);
+            }
+        }
+
+        exports.insert(replacement, node, 'afterend');
+        exports.remove(node);
+
+        return replacement;
     };
 });

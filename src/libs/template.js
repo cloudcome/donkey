@@ -68,9 +68,11 @@ define(function (require, exports, module) {
 
     var Template = klass.create({
         constructor: function (template, options) {
-            this._options = dato.extend(true, {}, configs, options);
-            this._init(String(template));
-            this.className = 'template';
+            var the = this;
+
+            the.className = 'template';
+            the._options = dato.extend(true, {}, configs, options);
+            the._init(String(template));
         },
 
 
@@ -225,7 +227,7 @@ define(function (require, exports, module) {
                     }
                     // /list
                     else if ($0 === '/list') {
-                        output.push('}, this);\n' + _var + '+=' + $1 + ';');
+                        output.push('});\n' + _var + '+=' + $1 + ';');
                     }
                     // var
                     else if (the._hasPrefix($0, 'var')) {
@@ -273,7 +275,7 @@ define(function (require, exports, module) {
                 fn = new Function(dataVarible, 'try{\n\n' +
                     fnStr +
                     '\n\n}catch(err){\n' +
-                    'return this.options.debug?err.message:"";\n' +
+                    'return '+the._selfVarible+'.options.debug?err.message:"";\n' +
                     '}\n');
             } catch (err) {
                 fn = function () {
@@ -319,7 +321,7 @@ define(function (require, exports, module) {
                 each: function (obj) {
                     var args = allocation.args(arguments);
 
-                    if (typeis(obj) === 'string') {
+                    if (typeis.String(obj)) {
                         args[0] = [];
                     }
 
@@ -374,7 +376,7 @@ define(function (require, exports, module) {
         filter: function (name, callback, isOverride) {
             var instanceFilters = this._template.filters;
 
-            if (typeis(name) !== 'string') {
+            if (!typeis.String(name)) {
                 throw new Error('filter name must be a string');
             }
 
@@ -383,7 +385,7 @@ define(function (require, exports, module) {
                 throw new Error('override a exist instance filter');
             }
 
-            if (typeis(callback) !== 'function') {
+            if (!typeis.Function(name)) {
                 throw new Error('filter callback must be a function');
             }
 
@@ -404,7 +406,7 @@ define(function (require, exports, module) {
          * // => return test filter function
          */
         getFilter: function (name) {
-            return typeis(name) === 'string' ?
+            return typeis.String(name) ?
                 this._template.filters[name] :
                 this._template.filters;
         },
@@ -474,7 +476,7 @@ define(function (require, exports, module) {
             }
 
             exp = this._wrapSafe(exp);
-            return (unEscape ? '(' : 'this.escape(') + exp + ')';
+            return (unEscape ? '(' : the._selfVarible + '.escape(') + exp + ')';
         },
 
 
@@ -519,7 +521,7 @@ define(function (require, exports, module) {
                 val: matches[4] ? matches[4] : matches[2]
             };
 
-            return 'this.each(' + the._wrapSafe(parse.list) + ', function(' + randomKey1 + ', ' + randomVal + '){' +
+            return the._selfVarible +'.each(' + the._wrapSafe(parse.list) + ', function(' + randomKey1 + ', ' + randomVal + '){' +
                 'var ' + parse.key + ' = ' + randomKey1 + ';\n' +
                 'var ' + parse.val + '=' + randomVal + ';\n';
         },
@@ -622,7 +624,7 @@ define(function (require, exports, module) {
      * @static
      */
     Template.filter = function (name, callback, isOverride) {
-        if (typeis(name) !== 'string') {
+        if (!typeis.String(name)) {
             throw new Error('filter name must be a string');
         }
 
@@ -631,7 +633,7 @@ define(function (require, exports, module) {
             throw new Error('override a exist filter');
         }
 
-        if (typeis(callback) !== 'function') {
+        if (!typeis.Function(callback)) {
             throw new Error('filter callback must be a function');
         }
 

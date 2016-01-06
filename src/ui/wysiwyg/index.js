@@ -11,21 +11,27 @@ define(function (require, exports, module) {
 
     var w = window;
     var d = document;
-    var $ = w.jQuery;
     var ui = require('../index.js');
     var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
+    var random = require('../../utils/random.js');
     var event = require('../../core/event/base.js');
+    var selector = require('../../core/dom/selector.js');
+    var modification = require('../../core/dom/modification.js');
+    var attribute = require('../../core/dom/attribute.js');
+    var rangy = require('../../3rd/rangy/core.js');
+    require('../../3rd/rangy/save-restore-selection.js')(rangy);
 
+    var REG_BLOCK_TAG = /^h[1-6]|div|p$/i;
     var supportWindowGetSelection = !!w.getSelection;
     var supportDocumentSelection = !!d.selection;
+    var namespace = 'donkey-ui-wysiwyg';
     var defaults = {};
     var Wysiwyg = ui.create({
         constructor: function ($wysiwyg, options) {
             var the = this;
 
-            the._$wysiwyg = $($wysiwyg);
-            the._eWysiwyg = the._$wysiwyg[0];
+            the._eWysiwyg = selector.query($wysiwyg)[0];
             the._options = dato.extend({}, defaults, options);
             the._lastSavedSelection = null;
             the._trailingDiv = null;
@@ -36,20 +42,15 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._eWysiwyg, 'focus blur mousedown selectstart selectchange selectend', controller.debounce(function (eve) {
-                console.log(eve);
+            event.on(the._eWysiwyg, the._event1 = 'focus blur mousedown selectstart selectchange selectend', the._on1 = controller.debounce(function (eve) {
                 the.emit('selectionChange');
             }));
 
-            event.on(the._eWysiwyg, 'input change', function (eve) {
-                console.log(eve);
+            event.on(the._eWysiwyg, the._event2 = 'input change', the._on2 = controller.debounce(function (eve) {
                 the.emit('contentChange');
-            });
-
-            controller.nextTick(function () {
-                the.focus();
-            });
+            }));
         },
+
 
         _IEtrailingDIV: function () {
             var the = this;
@@ -63,21 +64,21 @@ define(function (require, exports, module) {
         },
 
 
-        _restoreSelection: function () {
-            var the = this;
-
-            if (!the._lastSavedSelection) {
-                return;
-            }
-
-            if (supportWindowGetSelection) {
-                var sel = w.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(the._lastSavedSelection);
-            } else if (supportDocumentSelection) {
-                the._lastSavedSelection.select();
-            }
-        },
+        //_restoreSelection: function () {
+        //    var the = this;
+        //
+        //    if (!the._lastSavedSelection) {
+        //        return;
+        //    }
+        //
+        //    if (supportWindowGetSelection) {
+        //        var sel = w.getSelection();
+        //        sel.removeAllRanges();
+        //        sel.addRange(the._lastSavedSelection);
+        //    } else if (supportDocumentSelection) {
+        //        the._lastSavedSelection.select();
+        //    }
+        //},
 
 
         /**
@@ -200,12 +201,11 @@ define(function (require, exports, module) {
             // handle saved selection
             if (selectionDestroyed) {
                 the._collapseSelectionEnd();
-                the._lastSavedSelection = null; // selection destroyed
+                // selection destroyed
+                the._lastSavedSelection = null;
             } else {
                 the.restoreSelection();
             }
-
-            the.focus();
         },
 
 
@@ -221,7 +221,7 @@ define(function (require, exports, module) {
             var the = this;
 
             // give selection to contenteditable element
-            the._restoreSelection();
+            the.restoreSelection();
 
             // tried to avoid forcing focus(), but ... - https://github.com/wysiwygjs/wysiwyg.js/issues/51
             the._eWysiwyg.focus();
@@ -442,6 +442,67 @@ define(function (require, exports, module) {
         //},
 
 
+        /**
+         * 保存选区
+         * @private
+         */
+        _saveRange: function () {
+            var sel = rangy.getSelection();
+            // 缓存下这些变量，因为 replace 之后 selection 会变化
+            var anchorNode = sel.anchorNode;
+            var anchorOffset = sel.anchorOffset;
+            var focusNode = sel.focusNode;
+            var focusOffset = sel.focusOffset;
+
+            this._lastRange = {
+                an: anchorNode,
+                ao: anchorOffset,
+                fn: focusNode,
+                fo: focusOffset
+            };
+        },
+
+
+        /**
+         * 恢复选区
+         * @private
+         */
+        _restoreRange: function () {
+            var lastRng = this._lastRange;
+            var rng = rangy.createRange();
+            rng.setStart(lastRng.an, lastRng.ao);
+            rng.setEnd(lastRng.fn, lastRng.fo);
+
+            var sel = rangy.getSelection();
+            sel.setSingleRange(rng);
+        },
+
+
+        /**
+         * 获取最近的父级块状元素
+         * @returns {Object}
+         */
+        _getClosestBlock: function () {
+            var the = this;
+            var focusNode = the.isFocus();
+
+            if (!focusNode) {
+                return null;
+            }
+
+            var checkNode = focusNode;
+            while (checkNode !== the._eWysiwyg) {
+                var tagName = checkNode.tagName;
+                if (REG_BLOCK_TAG.test(tagName)) {
+                    return checkNode;
+                }
+                checkNode = checkNode.parentNode;
+            }
+
+            return null;
+        },
+
+
         // ====================================
         // =============[ public ]=============
         // ====================================
@@ -485,13 +546,29 @@ define(function (require, exports, module) {
          */
         getSelectedHTML: function () {
             var the = this;
-            the._restoreSelection();
+            the.restoreSelection();
 
             if (!the._selectionInside()) {
                 return null;
             }
 
             return the._getSelectionHtml();
+        },
+
+
+        /**
+         * 选择节点
+         * @param node
+         * @returns {Wysiwyg}
+         */
+        select: function (node) {
+            var the = this;
+            var sel = rangy.getSelection();
+            var rng = rangy.createRange();
+
+            rng.selectNode(node);
+            sel.setSingleRange(rng);
+            return the;
         },
 
 
@@ -521,13 +598,53 @@ define(function (require, exports, module) {
 
         /**
          * 聚焦
+         * @param [end=true] {Boolean} 是否聚焦的末尾
          * @returns {Wysiwyg}
          */
-        focus: function () {
+        focus: function (end) {
             var the = this;
             the._eWysiwyg.focus();
+            if (end !== false) {
+                controller.nextFrame(function () {
+                    var sel = rangy.getSelection();
+                    var rng = rangy.createRange();
+
+                    rng.selectNodeContents(the._eWysiwyg);
+                    rng.collapse(false);
+                    sel.setSingleRange(rng);
+                    the.saveSelection();
+                    the.emit('selectionChange');
+                });
+            }
             the.emit('selectionChange');
             return the;
+        },
+
+
+        /**
+         * 是否聚焦
+         * @returns {boolean}
+         */
+        isFocus: function () {
+            var the = this;
+            var sel = rangy.getSelection();
+
+            if (!sel.rangeCount) {
+                return false;
+            }
+
+            var focusNode = sel.focusNode;
+            var checkNode = focusNode;
+
+            while (checkNode && checkNode !== d) {
+                if (checkNode === the._eWysiwyg) {
+                    return focusNode;
+                }
+
+                checkNode = checkNode.parentNode;
+            }
+
+            return false;
         },
 
 
@@ -543,16 +660,16 @@ define(function (require, exports, module) {
         },
 
 
-        /**
-         * 释放选区
-         * @returns {Wysiwyg}
-         */
-        collapseSelection: function () {
-            var the = this;
-            the._collapseSelectionEnd();
-            the._lastSavedSelection = null; // selection destroyed
-            return the;
-        },
+        ///**
+        // * 释放选区
+        // * @returns {Wysiwyg}
+        // */
+        //collapseSelection: function () {
+        //    var the = this;
+        //    the._collapseSelectionEnd();
+        //    the._lastSavedSelection = null; // selection destroyed
+        //    return the;
+        //},
 
 
         ///**
@@ -564,7 +681,7 @@ define(function (require, exports, module) {
         //expandSelection: function (preceding, following) {
         //    var the = this;
         //
-        //    the._restoreSelection();
+        //    the.restoreSelection();
         //    if (!the._selectionInside()) {
         //        return the;
         //    }
@@ -577,46 +694,156 @@ define(function (require, exports, module) {
 
         /**
          * 保存选区
-         * @link http://stackoverflow.com/questions/13949059/persisting-the-changes-of-range-objects-after-selection-in-html/13950376#13950376
          * @returns {*}
          */
         saveSelection: function () {
             var the = this;
-            var sel;
+            //var sel;
+            //
+            //if (supportWindowGetSelection) {
+            //    sel = w.getSelection();
+            //    if (sel.rangeCount > 0) {
+            //        the._lastSavedSelection = sel.getRangeAt(0);
+            //    }
+            //} else if (supportDocumentSelection) {
+            //    sel = document.selection;
+            //    the._lastSavedSelection = sel.createRange();
+            //} else {
+            //    the._lastSavedSelection = null;
+            //}
 
-            if (supportWindowGetSelection) {
-                sel = w.getSelection();
-                if (sel.rangeCount > 0) {
-                    the._lastSavedSelection = sel.getRangeAt(0);
-                }
-            } else if (supportDocumentSelection) {
-                sel = document.selection;
-                the._lastSavedSelection = sel.createRange();
-            } else {
-                the._lastSavedSelection = null;
-            }
+            the._lastSavedSelection = rangy.saveSelection();
+            return the;
         },
 
 
         /**
          * 恢复选区
+         * @param [preserveDirection=true] {Boolean} 保留方向
          * @returns {Wysiwyg}
          */
-        restoreSelection: function () {
+        restoreSelection: function (preserveDirection) {
             var the = this;
-            var range = the._lastSavedSelection;
+            //var range = the._lastSavedSelection;
+            //
+            //if (!range) {
+            //    return the;
+            //}
+            //
+            //if (supportWindowGetSelection) {
+            //    var sel = w.getSelection();
+            //    sel.removeAllRanges();
+            //    sel.addRange(range);
+            //} else if (supportDocumentSelection && range.select) { // IE
+            //    range.select();
+            //}
 
-            if (!range) {
+            if (the._lastSavedSelection) {
+                rangy.restoreSelection(the._lastSavedSelection, preserveDirection !== false);
+                the._lastSavedSelection = null;
+            }
+
+            return the;
+        },
+
+
+        /**
+         * 包裹当前选区
+         * @link http://stackoverflow.com/a/19987884
+         * @param tagName
+         * @param attributes
+         * @returns {Wysiwyg}
+         */
+        wrap: function (tagName, attributes) {
+            var the = this;
+            the.restoreSelection();
+            var sel = rangy.getSelection();
+            var rng = sel.getRangeAt(0);
+            the.saveSelection();
+            var collapsed = rng.collapsed;
+            var url = genId();
+
+            tagName = tagName.toUpperCase();
+            the.createLink(url);
+
+            var eLinks = selector.query('a', the._eWysiwyg);
+            var eLink = selector.filter(eLinks, function () {
+                return attribute.attr(this, 'href') === url;
+            })[0];
+
+            if (!eLink) {
                 return the;
             }
 
-            if (supportWindowGetSelection) {
-                var sel = w.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-            } else if (supportDocumentSelection && range.select) { // IE
-                range.select();
+            if (tagName !== 'A') {
+                the._saveRange();
+                eLink = modification.replace(eLink, tagName, attributes);
+                the._restoreRange();
             }
+
+            if (collapsed) {
+                if (tagName === 'A') {
+                    attribute.html(eLink, attributes.title || attributes.href);
+                }
+
+                rng = rangy.createRange();
+                rng.setStartAfter(eLink);
+                sel.setSingleRange(rng);
+                the.saveSelection();
+                the.emit('selectionChange');
+            }
+
+            eLink.id = url;
+            attribute.attr(eLink, attributes);
+
+            return the;
+        },
+
+
+        /**
+         * 替换块级标签
+         * @param tagName
+         * @param attributes
+         * @returns {Wysiwyg}
+         */
+        replace: function (tagName, attributes) {
+            var the = this;
+            the.restoreSelection();
+            var blockEle = the._getClosestBlock();
+
+            if (blockEle) {
+                the._saveRange();
+                attributes = attributes || {};
+                attributes.id = attributes.id || genId();
+                modification.replace(blockEle, tagName, attributes);
+                the._restoreRange();
+            } else {
+                the.wrap(tagName, attributes);
+            }
+
+            return the;
+        },
+
+
+        /**
+         * 插入元素
+         * @param tagName
+         * @param attributes
+         * @returns {Wysiwyg}
+         */
+        insert: function (tagName, attributes) {
+            var the = this;
+            var id = genId();
+            var html = '<' + tagName + ' id="' + id + '">';
+
+            the.insertHTML(html);
+            var ele = selector.query('#' + id)[0];
+
+            if (!ele) {
+                return the;
+            }
+
+            attribute.attr(ele, attributes);
         },
 
 
@@ -626,6 +853,7 @@ define(function (require, exports, module) {
          */
         bold: function () {
             var the = this;
+
             the._exec('bold');
             the._callUpdates();
             return the;
@@ -900,8 +1128,8 @@ define(function (require, exports, module) {
          */
         insertHTML: function (html, select) {
             var the = this;
-            var sel;
-            var range;
+            //var sel;
+            //var range;
             //
             //if (supportWindowGetSelection) {
             //    sel = w.getSelection();
@@ -950,16 +1178,16 @@ define(function (require, exports, module) {
             //    }
             //}
 
-            if(supportWindowGetSelection){
-                sel = w.getSelection();
-                if (sel.getRangeAt && sel.rangeCount) {
-
-                }
-            }
+            //if(supportWindowGetSelection){
+            //    sel = w.getSelection();
+            //    if (sel.getRangeAt && sel.rangeCount) {
+            //
+            //    }
+            //}
 
             if (!the._exec('insertHTML', html, true)) {
                 // IE 11 still does not support 'insertHTML'
-                the._restoreSelection();
+                the.restoreSelection();
                 the._selectionInside(true);
                 the._pasteHtmlAtCaret(html);
             }
@@ -1005,8 +1233,27 @@ define(function (require, exports, module) {
             } catch (err) {
                 return false;
             }
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+
+            event.un(the._eWysiwyg, the._event1, the._on1);
+            event.un(the._eWysiwyg, the._event2, the._on2);
         }
     });
+
+    /**
+     * 生成随机 ID
+     * @returns {string}
+     */
+    function genId() {
+        return namespace + random.guid();
+    }
 
     Wysiwyg.defaults = defaults;
     module.exports = Wysiwyg;

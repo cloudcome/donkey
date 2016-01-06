@@ -1,4 +1,4 @@
-/*!
+/**
  * 弹出层
  * @author ydr.me
  * @create 2015-05-16 11:36
@@ -94,7 +94,7 @@ define(function (require, exports, module) {
          * @returns {Object}
          */
         getNode: function () {
-            return this._$popup[0];
+            return this._$html[0];
         },
 
 
@@ -109,6 +109,16 @@ define(function (require, exports, module) {
             the._$html.html(html);
 
             return the;
+        },
+
+
+        /**
+         * 设置弹出层的内容
+         * @param html {String} 内容
+         * @returns {Popup}
+         */
+        html: function (html) {
+            return this.setContent(html);
         },
 
 
@@ -144,11 +154,17 @@ define(function (require, exports, module) {
             var args = allocation.args(arguments);
             var $target2 = the._$target;
 
-            if (typeis.element(args[0])) {
+            // ele
+            // [ele]
+            if (typeis.element(args[0]) || typeis.Array(args[0]) && typeis.element(args[0][0])) {
                 $target2 = $(args[0]);
-            } else if (typeis.object(args[0])) {
+            }
+            // {}
+            else if (typeis.object(args[0])) {
                 the._target = $(args[0]);
-            } else {
+            }
+            // undefined
+            else {
                 callback = args[0];
             }
 

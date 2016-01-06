@@ -171,6 +171,8 @@ define(function (require, exports, module) {
                     $(the._$actions[0]).removeClass(disabledClass);
                     $(the._$actions[1]).removeClass(disabledClass);
                 }
+
+                $(the._$actions[3]).hide();
             } else {
                 if (pager.maxPage < 2) {
                     $(the._$actions).addClass(disabledClass);
@@ -184,11 +186,15 @@ define(function (require, exports, module) {
                     }
 
                     if (pager.page === pager.maxPage) {
+                        $(the._$actions[2]).addClass(disabledClass);
                         $(the._$actions[3]).addClass(disabledClass);
                     } else {
+                        $(the._$actions[2]).removeClass(disabledClass);
                         $(the._$actions[3]).removeClass(disabledClass);
                     }
                 }
+
+                $(the._$actions[3]).show();
             }
         },
 

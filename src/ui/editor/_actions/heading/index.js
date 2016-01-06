@@ -1,41 +1,43 @@
 /**
- * 文件描述
+ * 标题选择器
  * @author ydr.me
- * @create 2015-12-24 15:37
+ * @create 2015-12-28 17:36
  */
 
 
 define(function (require, exports, module) {
-    /**
-     * @module parent/bold
-     */
-
     'use strict';
 
     var Card = require('../../_card.js');
     var ui = require('../../../index.js');
     var klass = require('../../../../utils/class.js');
     var dato = require('../../../../utils/dato.js');
+    var number = require('../../../../utils/number.js');
     var event = require('../../../../core/event/base.js');
+    var attribute = require('../../../../core/dom/attribute.js');
+    var modification = require('../../../../core/dom/modification.js');
     var Template = require('../../../../libs/template.js');
     var template = require('./template.html', 'html');
     var style = require('./style.css', 'css');
     var tpl = new Template(template);
 
-    var namespace = 'alien-ui-editor_action-backcolor';
+    var namespace = 'donkey-ui-editor_action-heading';
     var defaults = {
-        colors: [
-            '880000', '800080', 'ff0000', 'ff00ff',
-            '000080', '0000ff', '00ffff', '008080',
-            '008000', '808000', '00ff00', 'ffcc00',
-            '808080', 'c0c0c0', '000000', 'ffffff'
+        headings: [
+            '段落',
+            '一级标题',
+            '二级标题',
+            '三级标题',
+            '四级标题',
+            '五级标题',
+            '六级标题'
         ],
         style: {
-            width: 122
+            width: 'auto'
         }
     };
 
-    var BackColor2 = ui.create({
+    var Color = ui.create({
         constructor: function (editor, options) {
             var the = this;
 
@@ -60,16 +62,27 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
 
-            event.on(the._card.getNode(), 'click', '.' + namespace + '-color', function () {
-                var color = $(this).data('color');
-                the.editor.wysiwyg.backColor(color);
+            event.on(the._card.getNode(), 'click', '.' + namespace + '-item', the._onclick = function () {
+                the.editor.restoreSelection();
+                var index = attribute.data(this, 'index');
+                index = number.parseInt(index);
+                var tagName = index ? 'h' + index : 'p';
+                the.editor.replace(tagName);
                 the._card.close();
             });
+        },
+
+
+        destroy: function () {
+            var the = this;
+
+            event.un(the._card.getNode(), 'click', the._onclick);
+            the._card.destroy();
         }
     });
 
     ui.importStyle(style);
-    klass.transfer(Card, BackColor2, '_card');
-    BackColor2.defaults = defaults;
-    module.exports = BackColor2;
+    klass.transfer(Card, Color, '_card');
+    Color.defaults = defaults;
+    module.exports = Color;
 });

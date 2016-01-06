@@ -1,5 +1,5 @@
-/*!
- * data-traveller.js
+/**
+ * 数据转换器
  * @author ydr.me
  * 2014-09-14 17:26
  */
@@ -14,7 +14,9 @@ define(function (require, exports, module) {
     'use strict';
 
     require('../polyfill/array.js');
-    var $ = window.jQuery;
+
+    var w = window;
+    var $ = w.jQuery;
     var typeis = require('./typeis.js');
     var udf;
     var canListTypeArr = 'array object nodelist htmlcollection arguments namednodemap filelist'.split(' ');
@@ -24,23 +26,30 @@ define(function (require, exports, module) {
      * 遍历元素
      * @param {Array/Object} list  数组、可枚举对象
      * @param {Function} callback  回调，返回false时停止遍历
-     * @param {*} [context] 上下文
+     * @param {Boolean} [reverse=false] 数组倒序
      *
      * @example
      * // 与 jQuery.each 一样
      * // 返回 false 时将退出当前遍历
      * data.each(list, function(key, val){});
      */
-    exports.each = function (list, callback, context) {
+    exports.each = function (list, callback, reverse) {
         var i;
         var j;
 
         // 数组 或 类似数组
         if (list && typeis.number(list.length)) {
-            for (i = 0, j = list.length; i < j; i++) {
-                context = context || window;
-                if (callback.call(context, i, list[i]) === false) {
-                    break;
+            if (reverse) {
+                for (i = list.length - 1, j = 0; i >= 0; i--) {
+                    if (callback.call(w, i, list[i]) === false) {
+                        break;
+                    }
+                }
+            } else {
+                for (i = 0, j = list.length; i < j; i++) {
+                    if (callback.call(w, i, list[i]) === false) {
+                        break;
+                    }
                 }
             }
         }
@@ -48,8 +57,7 @@ define(function (require, exports, module) {
         else if (list !== null && list !== udf) {
             for (i in list) {
                 if (list.hasOwnProperty(i)) {
-                    context = context || window;
-                    if (callback.call(context, i, list[i]) === false) {
+                    if (callback.call(w, i, list[i]) === false) {
                         break;
                     }
                 }

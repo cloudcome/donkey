@@ -8,32 +8,30 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var $ = window.jQuery;
     var ui = require('../index.js');
+    var Mask = require('../mask/index.js');
+    var Popup = require('../popup/index.js');
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var modification = require('../../core/dom/modification.js');
     var animation = require('../../core/dom/animation.js');
     var event = require('../../core/event/base.js');
 
-    var namespace = 'alien-ui-editor--card';
-    var alienIdex = 0;
     var defaults = {
         style: {
-            display: 'none',
-            position: 'absolute',
             width: 400,
             height: 'auto',
             background: '#fff',
-            border: '1px solid #ccc',
-            boxShadow: '0 0 10px #BBB',
-            boxSizing: 'border-box'
+            minWidth: 'none',
+            maxWidth: 'none'
         },
         template: '',
-        autoClose: true,
+        autoClose: 500,
         animation: {
             duration: 123
-        }
+        },
+        mask: false,
+        arrowPriority: 'center'
     };
     var Card = ui.create({
         constructor: function (options) {
@@ -51,14 +49,17 @@ define(function (require, exports, module) {
         _initNode: function () {
             var the = this;
             var options = the._options;
-            var eDiv = the._eDiv = modification.create('div', {
-                'class': namespace,
-                id: namespace + '-' + alienIdex++,
+
+            if (options.mask) {
+                the._mask = new Mask(window);
+            }
+
+            the._popup = new Popup(window, {
+                priority: options.arrowPriority,
                 style: options.style
             });
-
-            eDiv.innerHTML = options.template;
-            $(eDiv).appendTo(document.body);
+            the._popup.html(options.template);
+            the._eCard = the._popup.getNode();
         },
 
 
@@ -69,15 +70,19 @@ define(function (require, exports, module) {
         _initEvent: function () {
             var the = this;
             var timeid = 0;
+            var options = the._options;
+            var node = the._eCard;
 
-            event.on(the._eDiv, 'mouseover', function () {
+            event.on(node, 'mouseover', the._onmouseover = function () {
                 clearTimeout(timeid);
             });
 
-            event.on(the._eDiv, 'mouseout', function () {
-                timeid = setTimeout(function () {
-                    the.close();
-                }, 400);
+            event.on(node, 'mouseout', the._onmouseout = function () {
+                if (options.autoClose > -1) {
+                    timeid = setTimeout(function () {
+                        the.close();
+                    }, options.autoClose);
+                }
             });
         },
 
@@ -87,31 +92,25 @@ define(function (require, exports, module) {
          * @returns {Node|*}
          */
         getNode: function () {
-            return this._eDiv;
+            return this._popup.getNode();
         },
 
 
         /**
          * 打开卡片
-         * @param $target {*} 参考目标
+         * @param target {*} 参考目标
          * @param [callback] {Function} 回调
          * @returns {Card}
          */
-        open: function ($target, callback) {
+        open: function (target, callback) {
             var the = this;
-            $target = $($target);
-            var offset = $target.offset();
-
-            offset.display = 'block';
-            offset.opacity = 0;
-            offset.top += $target.height();
-            offset.zIndex = ui.getZindex();
-            $(the._eDiv).css(offset);
 
             the.emit('beforeopen');
-            animation.animate(the._eDiv, {
-                opacity: 1
-            }, the._options.animation, function () {
+            if (the._mask) {
+                the._mask.open();
+            }
+
+            the._popup.open(target, function () {
                 if (typeis.Function(callback)) {
                     callback.call(the);
                 }
@@ -130,17 +129,33 @@ define(function (require, exports, module) {
          */
         close: function (callback) {
             var the = this;
+
             the.emit('beforeclose');
-            animation.animate(the._eDiv, {
-                opacity: 0
-            }, the._options.animation, function () {
-                the._eDiv.style.display = 'none';
+            the._popup.close(function () {
+                if (the._mask) {
+                    the._mask.close();
+                }
+
                 if (typeis.Function(callback)) {
                     callback.call(the);
                 }
+
                 the.emit('close');
             });
             return the;
+        },
+
+
+        /**
+         * 销毁实例
+         */
+        destroy: function () {
+            var the = this;
+            var node = the._eCard;
+
+            event.un(node, 'mouseover', the._onmouseover);
+            event.un(node, 'mouseout', the._onmouseout);
+            the._popup.destroy();
         }
     });
 

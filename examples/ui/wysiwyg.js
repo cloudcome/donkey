@@ -16,6 +16,7 @@ define(function (require, exports, module) {
     var random = require('../../src/utils/random.js');
     var wy = new Wysiwyg('#wysiwyg');
 
+    window.wy = wy;
     $('#bold').click(function () {
         wy.bold();
     });
