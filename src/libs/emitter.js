@@ -80,6 +80,7 @@ define(function (require, exports, module) {
 
                 if (typeis.isFunction(listener)) {
                     the._emitterListener[et].push(listener);
+                    the.emit('newListener', eventType);
                 }
             });
 
@@ -137,6 +138,7 @@ define(function (require, exports, module) {
                     dato.each(the._emitterListener, function (index, _listener) {
                         if (listener === _listener) {
                             the._emitterListener.splice(index, 1);
+                            the.emit('removeListener', eventType);
                             return false;
                         }
                     });
