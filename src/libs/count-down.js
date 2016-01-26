@@ -50,7 +50,7 @@ define(function (require, exports, module) {
                     var remain = the._remain = count - pastTime;
                     var steps = Math.round(remain / options.interval);
 
-                    if (steps) {
+                    if (steps >= 0) {
                         the.emit('change', remain);
                         return doStep();
                     }
