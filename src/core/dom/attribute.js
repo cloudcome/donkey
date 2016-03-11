@@ -27,8 +27,8 @@ define(function (require, exports, module) {
     var REG_DEG = /rotate|skew/i;
     var REG_TRANSFORM_WORD = /translate|scale|skew|rotate|matrix|perspective/i;
     var REG_IMPORTANT = /\s!important$/i;
-    var REG_TRANSFORM_KEY = /transform/i;
-    var REG_PERCENT = /%/;
+    //var REG_TRANSFORM_KEY = /transform/i;
+    //var REG_PERCENT = /%/;
     // +123.456
     // -123.456
     var regNum = /^[+\-]?\d+(\.\d*)?$/;
@@ -36,7 +36,21 @@ define(function (require, exports, module) {
     var regHump = /-(\w)/g;
     var regSep = /^-+|-+$/g;
     var regSplit = /[A-Z]/g;
-    var regSpace = /\s+/;
+    //var regSpace = /\s+/;
+
+    var makeJqueryGetSet = function (jqueryPro) {
+        return function (ele, key) {
+            var args = allocation.args(arguments);
+
+            if (args.length === 2) {
+                $(ele)[jqueryPro](key);
+                return;
+            }
+
+            return $(ele)[jqueryPro]();
+        };
+    };
+
 
 
     /**
@@ -149,23 +163,7 @@ define(function (require, exports, module) {
      * attribute.prop(ele, 'hi');
      * attribute.prop(ele, ['hi', 'ha']);
      */
-    exports.prop = function (ele, key, val) {
-        var args = allocation.args(arguments);
-
-        if (args.length === 2) {
-            return $(ele).prop(key);
-        }
-
-        $(ele).prop(key, val);
-        //return _getSet(arguments, {
-        //    get: function (ele, key) {
-        //        return ele[key];
-        //    },
-        //    set: function (ele, key, val) {
-        //        ele[key] = val;
-        //    }
-        //});
-    };
+    exports.prop = makeJqueryGetSet('prop');
 
 
     /**
@@ -341,20 +339,7 @@ define(function (require, exports, module) {
      * // set
      * attribute.scrollTop(ele, 100);
      */
-    exports.scrollTop = function (ele, top) {
-        ele = selector.query(ele)[0];
-
-        if (typeis.undefined(top)) {
-            return _isDispute(ele) ? Math.max(b.scrollTop, h.scrollTop) : ele.scrollTop;
-        }
-
-        if (_isDispute(ele)) {
-            b.scrollTop = top;
-            h.scrollTop = top;
-        } else {
-            ele.scrollTop = top;
-        }
-    };
+    exports.scrollTop = makeJqueryGetSet('scrollTop');
 
 
     /**
@@ -370,20 +355,7 @@ define(function (require, exports, module) {
      * // set
      * attribute.scrollLeft(ele, 100);
      */
-    exports.scrollLeft = function (ele, left) {
-        ele = selector.query(ele)[0];
-
-        if (typeis.undefined(left)) {
-            return _isDispute(ele) ? Math.max(b.scrollLeft, h.scrollLeft) : ele.scrollLeft;
-        }
-
-        if (_isDispute(ele)) {
-            b.scrollLeft = left;
-            h.scrollLeft = left;
-        } else {
-            ele.scrollLeft = left;
-        }
-    };
+    exports.scrollLeft = makeJqueryGetSet('scrollLeft');
 
 
     /**
@@ -395,10 +367,7 @@ define(function (require, exports, module) {
      * // get
      * attribute.scrollHeight(ele);
      */
-    exports.scrollHeight = function (ele) {
-        ele = selector.query(ele)[0];
-        return _isDispute(ele) ? Math.max(b.scrollHeight, h.scrollHeight) : ele.scrollHeight;
-    };
+    exports.scrollHeight = makeJqueryGetSet('scrollHeight');
 
 
     /**
@@ -410,10 +379,7 @@ define(function (require, exports, module) {
      * // get
      * attribute.scrollWidth(ele);
      */
-    exports.scrollWidth = function (ele) {
-        ele = selector.query(ele)[0];
-        return _isDispute(ele) ? Math.max(b.scrollWidth, h.scrollWidth) : ele.scrollWidth;
-    };
+    exports.scrollWidth = makeJqueryGetSet('scrollWidth');
 
 
     /**
@@ -523,25 +489,7 @@ define(function (require, exports, module) {
      * // get
      * attribute.html(ele);
      */
-    exports.html = function ($ele, html) {
-        return $($ele).html(html);
-        //return _getSet(arguments, {
-        //    get: function ($ele) {
-        //        if (!typeis.element($ele)) {
-        //            return;
-        //        }
-        //
-        //        return $ele.innerHTML;
-        //    },
-        //    set: function (ele, html) {
-        //        if (!typeis.element(ele)) {
-        //            return;
-        //        }
-        //
-        //        ele.innerHTML = html;
-        //    }
-        //}, 1);
-    };
+    exports.html = makeJqueryGetSet('html');
 
 
     /**
@@ -557,29 +505,7 @@ define(function (require, exports, module) {
      * // get
      * attribute.text(ele);
      */
-    exports.text = function ($ele, text) {
-        return $($ele).text(text);
-        //return _getSet(arguments, {
-        //    get: function ($ele) {
-        //        if (!typeis.element($ele)) {
-        //            return null;
-        //        }
-        //
-        //        return $ele.innerText || $ele.textContent;
-        //    },
-        //    set: function (ele, text) {
-        //        if (!typeis.element(ele)) {
-        //            return;
-        //        }
-        //
-        //        if ('innerText' in ele) {
-        //            ele.innerText = text;
-        //        } else {
-        //            ele.textContent = text;
-        //        }
-        //    }
-        //}, 1);
-    };
+    exports.text = makeJqueryGetSet('text');
 
 
     /**
@@ -707,10 +633,7 @@ define(function (require, exports, module) {
      * // get
      * position.width($ele);
      */
-    exports.outerWidth = function ($ele, val) {
-        return $($ele).outerWidth(val);
-        //return _middleware('width', arguments, []);
-    };
+    exports.outerWidth = makeJqueryGetSet('outerWidth');
 
 
     /**
@@ -727,10 +650,7 @@ define(function (require, exports, module) {
      * // get
      * position.width($ele);
      */
-    exports.innerWidth = function ($ele, val) {
-        //return _middleware('width', arguments, innerWidth);
-        return $($ele).innerWidth(val);
-    };
+    exports.innerWidth = makeJqueryGetSet('innerWidth');
 
 
     /**
@@ -747,10 +667,7 @@ define(function (require, exports, module) {
      * // get
      * position.width($ele);
      */
-    exports.width = function ($ele, val) {
-        return $($ele).width(val);
-        //return _middleware('width', arguments, width);
-    };
+    exports.width = makeJqueryGetSet('width');
 
 
     /**
@@ -767,10 +684,7 @@ define(function (require, exports, module) {
      * // get
      * position.height(ele);
      */
-    exports.outerHeight = function ($ele, val) {
-        return $($ele).outerHeight(val);
-        //return _middleware('height', arguments, []);
-    };
+    exports.outerHeight = makeJqueryGetSet('outerHeight');
 
 
     /**
@@ -787,10 +701,7 @@ define(function (require, exports, module) {
      * // get
      * position.height(ele);
      */
-    exports.innerHeight = function ($ele, val) {
-        return $($ele).innerHeight(val);
-        //return _middleware('height', arguments, innerHeight);
-    };
+    exports.innerHeight = makeJqueryGetSet('innerHeight');
 
 
     /**
@@ -807,10 +718,7 @@ define(function (require, exports, module) {
      * // get
      * position.height(ele);
      */
-    exports.height = function ($ele, val) {
-        return $($ele).height(val);
-        //return _middleware('height', arguments, height);
-    };
+    exports.height = makeJqueryGetSet('height');
 
 
     ///**
@@ -869,13 +777,13 @@ define(function (require, exports, module) {
     }
 
 
-    /**
-     * 是否为有争议的 ele
-     * @param ele
-     * @returns {boolean}
-     * @private
-     */
-    function _isDispute(ele) {
-        return ele === w || ele === d || ele === b || ele === h;
-    }
+    ///**
+    // * 是否为有争议的 ele
+    // * @param ele
+    // * @returns {boolean}
+    // * @private
+    // */
+    //function _isDispute(ele) {
+    //    return ele === w || ele === d || ele === b || ele === h;
+    //}
 });
