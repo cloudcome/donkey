@@ -1,7 +1,7 @@
-/*!
+/**
  * coolie 苦力
  * @author seajs.org ydr.me
- * @version 1.2.6
+ * @version 1.3.2
  * @license MIT
  */
 
@@ -19,7 +19,8 @@
 (function (global, undefined) {
     'use strict';
 
-    var VERSION = '1.2.6';
+    var VERSION = '1.3.2';
+    var COOLIE = 'coolie';
 
     if (global.coolie) {
         return;
@@ -31,19 +32,17 @@
 
 
     // Avoid conflicting when `sea.js` is loaded multiple times
-    //if (global.seajs) {
-    //    return;
-    //}
+    if (global.seajs) {
+        return;
+    }
 
     //var seajs = global.seajs = {
     var seajs = {};
 
     var data = seajs.data = {};
-
-
-    /**
-     * util-lang.js - The minimal language enhancement
-     */
+    var win = window;
+    var doc = win.document;
+    var head = doc.head || doc.getElementsByTagName("head")[0] || doc.documentElement;
 
     function isType(type) {
         return function (obj) {
@@ -121,6 +120,18 @@
 
 
     /**
+     * 全局 ID
+     * @returns {Number}
+     */
+    var gid = (function () {
+        var id = 0;
+        return function () {
+            return id++;
+        };
+    }());
+
+
+    /**
      * 解析字符串为 JSON 对象
      * @param url {String} url 地址
      * @param text {String} JSON 字符串
@@ -156,12 +167,11 @@
      */
     var ajaxText = function (url, callback) {
         var xhr = XMLHttpRequest ? new XMLHttpRequest() : new global.ActiveXObject("Microsoft.XMLHTTP");
-        var hasComplete;
         var onready = function () {
-            if (xhr.readyState === 4 && !hasComplete) {
-                hasComplete = true;
+            if (xhr && xhr.readyState === 4) {
                 if (xhr.status === 200 || xhr.status === 304) {
                     callback(xhr.responseText);
+                    xhr = null;
                 } else {
                     throw 'ajax error\n' + url;
                 }
@@ -182,6 +192,28 @@
         setTimeout(function () {
             callback();
         }, 1);
+    };
+
+
+    var styleEle = doc.createElement('style');
+    styleEle.setAttribute('type', 'text/css');
+    styleEle.setAttribute('id', COOLIE + '-' + VERSION + '-style');
+    head.appendChild(styleEle);
+    var stylesheet = styleEle.stylesheet;
+
+
+    /**
+     * 导入 style 样式
+     * @param cssText
+     */
+    var importStyle = function (cssText) {
+        if (stylesheet) {
+            stylesheet.cssText += cssText;
+        } else {
+            styleEle.innerHTML += cssText;
+        }
+
+        return styleEle;
     };
 
 
@@ -358,9 +390,6 @@
     var loaderPath;
     // Location is read-only from web worker, should be ok though
     var cwd = (!location.href || IGNORE_LOCATION_RE.test(location.href)) ? '' : dirname(location.href);
-
-
-    var doc = document;
     var scripts = doc.scripts;
 
     // Recommend to add `seajsnode` id for the `sea.js` script element
@@ -383,9 +412,6 @@
      * util-request.js - The utilities for requesting script and style files
      * ref: tests/research/load-js-css/test.html
      */
-
-    var head = doc.head || doc.getElementsByTagName("head")[0] || doc.documentElement;
-    var baseElement = head.getElementsByTagName("base")[0];
 
     var currentlyAddingScript;
 
@@ -410,10 +436,7 @@
         // hold current node, for deriving url in `define` call
         currentlyAddingScript = node;
 
-        // ref: #185 & http://dev.jquery.com/ticket/2709
-        baseElement ?
-            head.insertBefore(node, baseElement) :
-            head.appendChild(node);
+        head.appendChild(node);
 
         currentlyAddingScript = null;
 
@@ -511,11 +534,12 @@
 
     /**
      * 模块类型别名
-     * @type {{js: string, image: string, text: string, html: string, css: string}}
+     * @type {{js: string, image: string, file: string, text: string, html: string, json: string, style: string, css: string}}
      */
     var moduleTypeMap = {
         js: 'js',
-        image: 'image',
+        image: 'file',
+        file: 'file',
         text: 'text',
         html: 'text',
         json: 'json',
@@ -768,7 +792,7 @@
                 fetchingList = {};
                 fetchedList = {};
                 callbackList = {};
-                Module.use(Module.cmd ? id2Uri(mainId, require.url) : mainId, callback, Module.asyncBase + now(), true);
+                Module.use(Module.cmd ? id2Uri(mainId, require.url) : mainId, callback, Module.asyncBase + gid(), true);
             });
 
             return require;
@@ -1050,12 +1074,12 @@
     // Public API
 
     seajs.use = function (id, callback) {
-        Module.use(id, callback, data.cwd + now());
+        Module.use(id, callback, data.cwd + gid());
         return seajs;
     };
 
     /*兼容 1.10 以下版本的 jQuery*/
-    Module.define.amd = {jQuery:true};
+    Module.define.amd = {jQuery: true};
     Module.define.cmd = {};
     global.define = Module.define;
 
@@ -1150,7 +1174,7 @@
         var mainCallbackList = [];
         var mainModule;
         var coolieConfig;
-        var CONST_COOLIE_MODULES = 'coolie modules [' + VERSION + ']';
+        var CONST_COOLIE_MODULES = COOLIE + ' modules [' + VERSION + ']';
         var REG_EXT = /\.[^.]*$/;
         var REG_DIRNAME = /\/$/;
         var buldVersion = function (url) {
@@ -1160,7 +1184,7 @@
         };
         var buildCache = function (url) {
             if (coolieConfig.cache === false) {
-                return url + (url.indexOf('?') > 0 ? '&' : '?') + '_=' + now();
+                return url + (url.indexOf('?') > 0 ? '&' : '?') + '_=' + gid();
             }
 
             return url;
@@ -1217,7 +1241,13 @@
                                     outTypes: [],
                                     deps: [],
                                     factory: function () {
-                                        return meta.type === 'json' && meta.outType === 'json' ? parseJSON(url, text) : text;
+                                        if (meta.type === 'json' && meta.outType === 'json') {
+                                            return parseJSON(url, text);
+                                        } else if (meta.outType === 'style') {
+                                            return importStyle(text);
+                                        }
+
+                                        return text;
                                     }
                                 });
                                 meta.onRequest();
@@ -1226,7 +1256,7 @@
                     }
                     break;
 
-                case 'image':
+                case 'file':
                     // url
                     // text
                     // base64
@@ -1251,7 +1281,10 @@
         global.coolie = {
             modules: cachedMods,
             version: VERSION,
-            path: loaderPath,
+            url: loaderPath,
+            configURL: configURL,
+            styleEle: styleEle,
+            importStyle: importStyle,
             dirname: dirname(loaderPath),
             /**
              * 路径合并
@@ -1279,10 +1312,10 @@
                 config.base = fixDirname(config.base || './');
                 config.async = fixDirname(config.async || './');
                 config.chunk = fixDirname(config.chunk || './');
-                Module.mainBase = baseURL = dirname(id2Uri(config.base, configURL));
-                Module.asyncBase = dirname(id2Uri(config.async, baseURL));
-                Module.chunkBase = dirname(id2Uri(config.chunk, baseURL));
-                mainURL = id2Uri(mainURL, baseURL);
+                coolie.mainBaseURL = Module.mainBase = baseURL = dirname(id2Uri(config.base, configURL));
+                coolie.asyncBaseURL = Module.asyncBase = dirname(id2Uri(config.async, baseURL));
+                coolie.chunkBaseURL = Module.chunkBase = dirname(id2Uri(config.chunk, baseURL));
+                coolie.mainURL = mainURL = id2Uri(mainURL, baseURL);
 
                 if (config.debug !== false) {
                     config.debug = true;
@@ -1292,6 +1325,10 @@
                     config.cache = true;
                 }
 
+                /**
+                 * @global DEBUG
+                 * @type {boolean}
+                 */
                 global.DEBUG = !!config.debug;
 
                 seajs.config({
@@ -1324,7 +1361,7 @@
                     config._v[id2Uri(key, baseURL, true)] = val;
                 });
 
-                coolieConfig = config;
+                coolie.configs = coolieConfig = config;
                 return this;
             },
 

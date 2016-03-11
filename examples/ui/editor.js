@@ -14,9 +14,10 @@ define(function (require, exports, module) {
 
     var Editor = require('../../src/ui/editor/index.js');
 
-    var ed = window.ed = new Editor('#textarea');
+    var ed1 = window.ed1 = new Editor('#textarea1');
+    var ed2 = window.ed2 = new Editor('#textarea2');
 
-    ed.on('upload', function (eve, file, done) {
+    ed1.on('upload', function (eve, file, done) {
         setTimeout(function () {
             done('http://p18.qhimg.com/t0144d6a0802f22be4f.jpg');
         });
