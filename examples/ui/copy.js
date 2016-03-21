@@ -13,9 +13,13 @@ define(function (require, exports, module) {
     'use strict';
 
     var Copy = require('../../src/ui/copy/index.js');
+    var hrEl = document.getElementById('hr');
 
-    var copy = new Copy('#copy', {
-        text: Date.now()
+    var copy = new Copy('.copy', {
+        text: function (e) {
+            console.log(e);
+            return Math.random() + '' + Date.now();
+        }
     });
 
     copy.on('ready', function (e) {
@@ -24,12 +28,21 @@ define(function (require, exports, module) {
 
     copy.on('copy', function (e) {
         console.log('copy... ', e);
-        copy.setText('呵呵匹配' + Math.random());
+        //copy.setText('呵呵匹配' + Math.random());
     });
 
     copy.on('copied', function (e) {
         console.log('copy ', e);
     });
+
+    document.getElementById('add').onclick = function () {
+        var aEl = document.createElement('a');
+
+        aEl.innerHTML = '复制我';
+        copy.unclip('.copy');
+        copy.clip(aEl);
+        document.body.insertBefore(aEl, hrEl);
+    };
 
     window.cp = copy;
 });

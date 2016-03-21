@@ -16,6 +16,7 @@ define(function (require, exports, module) {
 
     var dato = require('../../utils/dato.js');
     var ur = require('../../utils/url.js');
+    var typeis = require('../../utils/typeis.js');
     var selector = require('../../core/dom/selector.js');
     // @docs https://github.com/zeroclipboard/zeroclipboard/blob/v2.0.2/docs/api/ZeroClipboard.md
     var ZeroClipboard = require('./zero-clipboard.js');
@@ -37,7 +38,14 @@ define(function (require, exports, module) {
     });
 
     var defaults = {
-        text: ''
+        /**
+         * 待复制的文本
+         * @param el
+         * @returns {string}
+         */
+        text: function (el) {
+            return '';
+        }
     };
 
     /**
@@ -47,12 +55,17 @@ define(function (require, exports, module) {
         constructor: function (copyEl, options) {
             var the = this;
 
-            the._copyEl = selector.query(copyEl)[0];
-            the._client = new ZeroClipboard(the._copyEl);
+            the._copyEls = selector.query(copyEl);
+            the._client = new ZeroClipboard(the._copyEls);
             the._options = dato.extend({}, defaults, options);
             the._initEvent();
         },
 
+
+        /**
+         * 初始化事件
+         * @private
+         */
         _initEvent: function () {
             var the = this;
             var options = the._options;
@@ -69,7 +82,15 @@ define(function (require, exports, module) {
             });
 
             the._client.on('copy', function (e) {
-                the.setText(options.text);
+                var text = '';
+
+                if (typeis.Function(options.text)) {
+                    text = options.text(e);
+                } else {
+                    text = String(options.text);
+                }
+
+                the.setText(text);
                 the.emit('copy', e);
             });
 
@@ -88,6 +109,26 @@ define(function (require, exports, module) {
             var the = this;
 
             the._client.setText(String(text));
+            return the;
+        },
+
+
+        /**
+         * 包含元素
+         */
+        clip: function (el) {
+            var the = this;
+            the._client.clip(selector.query(el));
+            return the;
+        },
+
+
+        /**
+         * 舍弃元素
+         */
+        unclip: function (el) {
+            var the = this;
+            the._client.unclip(selector.query(el));
             return the;
         },
 

@@ -18,11 +18,24 @@
     <meta name="description" content="描述语句">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <title>copy.html</title>
+    <style>
+        a{
+            display: inline-block;
+            border:  4px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body ontouchstart="">
 
 
-<a href="javascript:;" id="copy">复制我</a>
+<a href="javascript:;" class="copy">复制我</a>
+<a href="javascript:;" class="copy">复制我</a>
+
+<hr id="hr">
+<button id="add">末尾新增一个</button>
+<button id="remove">移除第一个</button>
 
 
 <script src="/examples/jquery/1.11.3/jquery.min.js"></script>
