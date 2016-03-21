@@ -32,7 +32,7 @@ define(function (require, exports, module) {
     });
 
     copy.on('copied', function (e) {
-        console.log('copy ', e);
+        console.log('copied ', e);
     });
 
     document.getElementById('add').onclick = function () {
