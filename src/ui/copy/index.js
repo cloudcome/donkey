@@ -96,8 +96,12 @@ define(function (require, exports, module) {
                 the.emit('copy', e);
             });
 
+            the._client.on('beforecopy', function (e) {
+                the.emit('beforecopy', e);
+            });
+
             the._client.on('aftercopy', function (e) {
-                the.emit('copied', e);
+                the.emit('aftercopy', e);
             });
         },
 
