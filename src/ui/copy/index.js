@@ -34,7 +34,9 @@ define(function (require, exports, module) {
             ur.parse(coolie.mainURL).host,
             // 信任模块配置文件
             ur.parse(coolie.configURL).host
-        ]
+        ],
+        hoverClass: 'hover',
+        activeClass: 'active'
     });
 
     var defaults = {
