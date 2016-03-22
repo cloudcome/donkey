@@ -58,11 +58,11 @@ define(function (require, exports, module) {
             }
         };
 
-        event.on(win, 'scroll resize', controller.debounce(resize, 30));
-        event.on(doc, 'scroll', controller.debounce(resize, 30));
+        event.on(win, 'scroll resize', controller.debounce(resize, 10));
+        event.on(doc, 'scroll', controller.debounce(resize, 10));
 
         // Add appropriate listeners for resizing content area
-        editor.on("nodechange setcontent keyup FullscreenStateChanged", controller.debounce(resize, 30));
+        editor.on("nodechange setcontent keyup FullscreenStateChanged", controller.debounce(resize, 10));
 
         if (editor.getParam('auto_fixed_toolbar_on_init', true)) {
             editor.on('init', controller.once(resize));
