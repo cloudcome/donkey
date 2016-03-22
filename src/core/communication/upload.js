@@ -67,7 +67,7 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var fd = new FormData();
-            var filename = the._$file[0].value.match(/[^\/]*$/)[0];
+            var filename = the._$file[0].value.match(/[^\/]*$/)[0] || 'untitle';
 
             fd.append(the._$file[0].name, options.blob || the._$file[0].files[0], filename);
 
