@@ -57,7 +57,6 @@ define(function (require, exports, module) {
                 return;
             }
 
-            fileEl.value = eve.type + '-image.png';
             editor.fire('upload', [fileEl, imgs, resolve]);
         });
     });
