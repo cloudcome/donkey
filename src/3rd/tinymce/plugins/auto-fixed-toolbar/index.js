@@ -32,15 +32,18 @@ define(function (require, exports, module) {
             var containerEle = editor.getContainer();
             var scrollTop = attribute.scrollTop(win);
             var containerTop = attribute.top(containerEle);
+            var winScrollLeft = attribute.scrollLeft(win);
             var toolbarHeight = attribute.height(toolbarEle);
             var containerHeight = attribute.height(containerEle);
+            var containerLeft = attribute.left(containerEle);
 
             if (scrollTop > containerTop && scrollTop < containerTop + containerHeight - toolbarHeight) {
                 attribute.css(toolbarEle, {
                     position: 'fixed',
                     width: attribute.innerWidth(containerEle),
                     top: 0,
-                    zIndex: ui.getZindex()
+                    zIndex: ui.getZindex(),
+                    left: containerLeft - winScrollLeft
                 });
                 attribute.css(containerEle, 'padding-top', attribute.outerHeight(toolbarEle));
             } else {
@@ -48,7 +51,8 @@ define(function (require, exports, module) {
                     position: 'static',
                     width: 'auto',
                     top: 'auto',
-                    zIndex: 'auto'
+                    zIndex: 'auto',
+                    left: 'auto'
                 });
                 attribute.css(containerEle, 'padding-top', 0);
             }
