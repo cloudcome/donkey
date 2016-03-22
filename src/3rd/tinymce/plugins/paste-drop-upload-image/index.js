@@ -12,10 +12,18 @@ define(function (require, exports, module) {
     var event = require('../../../../utils/event.js');
     var typeis = require('../../../../utils/typeis.js');
     var controller = require('../../../../utils/controller.js');
+    var modification = require('../../../../core/dom/modification.js');
 
     PluginManager.add('paste-drop-upload-image', function (editor) {
         var self = this;
         var settings = editor.settings;
+        var fileEl = modification.create('input', {
+            type: 'file',
+            name: settings.uploadFileName,
+            style: {
+                display: 'none'
+            }
+        });
         var resolve = function (img) {
             if (typeis.String(img)) {
                 img = {
@@ -49,7 +57,7 @@ define(function (require, exports, module) {
                 return;
             }
 
-            editor.fire('upload', [eve, imgs, resolve]);
+            editor.fire('upload', [fileEl, imgs, resolve]);
         });
     });
 });

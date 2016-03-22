@@ -33,7 +33,8 @@ define(function (require, exports, module) {
         contentStyle: require('./content-style.css', 'css'),
         height: 300,
         maxHeight: 800,
-        placeholder: '<p style="color:#888">点击开始输入</p>'
+        placeholder: '<p style="color:#888">点击开始输入</p>',
+        fileName: 'file'
     };
     var Editor = ui.create({
         constructor: function (textareaEl, options) {
@@ -54,12 +55,23 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var textareaEl = the._textareaEl;
+            var createFileEl = function () {
+                return modification.create('input', {
+                    type: 'file',
+                    name: options.fileName,
+                    style: {
+                        display: 'none'
+                    }
+                });
+            };
             var fileEl = modification.create('input', {
                 type: 'file',
-                name: 'file'
+                name: options.fileName,
+                style: {
+                    display: 'none'
+                }
             });
 
-            the._fileEl = fileEl;
             the._editor = tinymce.init({
                 ele: textareaEl,
                 content_style: options.contentStyle,
@@ -71,16 +83,19 @@ define(function (require, exports, module) {
                 min_height: options.minHeight,
                 max_height: options.maxHeight,
                 placeholder: options.placeholder,
+                uploadFileName: options.fileName,
                 file_picker_callback: function (callback, value, meta) {
+                    var fileEl = the._fileEl = createFileEl();
                     fileEl.click();
                     fileEl.onchange = function (eve) {
                         var imgs = eventUtil.parseFiles(eve, fileEl);
 
                         if (!imgs.length) {
+                            the._removeFileEl();
                             return;
                         }
 
-                        the.emit('upload', eve, imgs, function (img) {
+                        the.emit('upload', fileEl, imgs, function (img) {
                             if (typeis.String(img)) {
                                 img = {
                                     src: img
@@ -90,6 +105,7 @@ define(function (require, exports, module) {
                             img.src = img.src || img.url;
                             dato.extend(meta, img);
                             callback(img.src, meta);
+                            the._removeFileEl();
                         });
                     };
                 }
@@ -144,6 +160,19 @@ define(function (require, exports, module) {
             return this._editor.getWordCount();
         },
 
+
+        /**
+         * 移除上传图片 input:file
+         * @private
+         */
+        _removeFileEl: function () {
+            var the = this;
+
+            modification.remove(the._fileEl);
+            the._fileEl = null;
+        },
+
+
         /**
          * 销毁实例
          */
@@ -151,7 +180,7 @@ define(function (require, exports, module) {
             var the = this;
 
             the._editor.destroy(false);
-            the._fileEl = null;
+            the._removeFileEl();
         }
     });
 
