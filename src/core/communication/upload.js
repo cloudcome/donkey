@@ -67,9 +67,10 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var fd = new FormData();
-            var filename = the._$file[0].value.match(/[^\/]*$/)[0] || 'untitle';
+            var fileEl =  the._$file[0];
+            var filename = fileEl.value.match(/[^\/]*$/)[0] || 'untitle';
 
-            fd.append(the._$file[0].name, options.blob || the._$file[0].files[0], filename);
+            fd.append(fileEl.name, options.blob || the._$file[0].files[0], filename);
 
             dato.each(options.body, function (key, val) {
                 fd.append(key, val);
