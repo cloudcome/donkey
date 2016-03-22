@@ -17,6 +17,7 @@ define(function (require, exports, module) {
 
     'use strict';
 
+    var w = window;
     var $ = window.jQuery;
     var ui = require('../index.js');
     var typeis = require('../../utils/typeis.js');
@@ -26,7 +27,7 @@ define(function (require, exports, module) {
     //var canvasContent = require('../../canvas/content.js');
     //var modification = require('../../core/dom/modification.js');
     var compatible = require('../../core/navigator/compatible.js');
-    var URL = compatible.html5('URL', window);
+    var URL = w[compatible.html5('URL', w)];
     //var URL ='';
     //var eleCanvas = modification.create('canvas');
     //var supportCanvas = 'getContext' in eleCanvas;

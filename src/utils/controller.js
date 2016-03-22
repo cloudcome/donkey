@@ -18,9 +18,9 @@ define(function (require, exports, module) {
     var $link = doc.createElement('a');
     // MutationObserver 给开发者们提供了一种能在某个范围内的 DOM 树发生变化时作出适当反应的能力.
     // 该 API 设计用来替换掉在 DOM3 事件规范中引入的 Mutation 事件.
-    var MutationObserver = compatible.html5('MutationObserver', win);
-    var requestAnimationFrame = compatible.html5('requestAnimationFrame', win);
-    var cancelAnimationFrame = compatible.html5('cancelAnimationFrame', win);
+    var MutationObserver = win[compatible.html5('MutationObserver', win)];
+    var requestAnimationFrame = win[compatible.html5('requestAnimationFrame', win)];
+    var cancelAnimationFrame = win[compatible.html5('cancelAnimationFrame', win)];
 
     /**
      * 至少间隔一段时间执行

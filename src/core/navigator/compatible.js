@@ -30,7 +30,7 @@ define(function (require, exports, module) {
      * @param {String} standard 标准属性、方法名称
      * @param {Object} parent   标准方法父级
      * @param {Boolean} [isEventType=false]   是否为事件类型
-     * @returns {Object|undefined} 私有属性、方法对象
+     * @returns {String} 私有属性、方法对象
      *
      * @example
      * compatible.html5('audioContext', window);
@@ -56,8 +56,10 @@ define(function (require, exports, module) {
         });
 
         if (find) {
-            return parent[html5Key];
+            return html5Key;
         }
+
+        return '';
     };
 
     /**

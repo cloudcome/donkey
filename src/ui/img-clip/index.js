@@ -14,7 +14,8 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    var $ = window.jQuery;
+    var w = window;
+    var $ = w.jQuery;
     require('../../jquery-plugins/jquery-clip.js')($);
     var ui = require('../index.js');
     var dato = require('../../utils/dato.js');
@@ -24,7 +25,7 @@ define(function (require, exports, module) {
     var gif = require('./line.gif', 'image');
     var modification = require('../../core/dom/modification.js');
     var compatible = require('../../core/navigator/compatible.js');
-    var URL = compatible.html5('URL', window);
+    var URL = w[compatible.html5('URL', w)];
     var canvasImg = require('../../canvas/img.js');
     var canvasContent = require('../../canvas/content.js');
     var eleCanvas = modification.create('canvas', {

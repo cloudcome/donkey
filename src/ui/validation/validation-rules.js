@@ -25,7 +25,7 @@ define(function (require, exports, module) {
     var howdo = require('../../utils/howdo.js');
     var compatible = require('../../core/navigator/compatible.js');
     var win = window;
-    var URL = compatible.html5('URL', win);
+    var URL = win[compatible.html5('URL', win)];
 
     module.exports = function (Validation) {
         Validation.addRule('accept', function (val, done, param0) {

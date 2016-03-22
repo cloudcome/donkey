@@ -18,13 +18,14 @@ define(function (require, exports, module) {
 
     var w = window;
     var d = w.document;
+    var b = d.body;
     var $ = w.jQuery;
 
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');
     var random = require('../../utils/random.js');
     var compatible = require('../navigator/compatible.js');
-    var matchesSelector = compatible.html5('matchesSelector', document.body);
+    var matchesSelector = b[compatible.html5('matchesSelector', b)];
 
 
     /**
