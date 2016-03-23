@@ -47,7 +47,7 @@ define(function (require, exports, module) {
                     position: 'fixed',
                     width: attribute.innerWidth(containerEle),
                     top: 0,
-                    zIndex: ui.getZindex(),
+                    zIndex: 9,
                     left: containerLeft - winScrollLeft
                 });
                 attribute.css(containerEle, 'padding-top', attribute.outerHeight(toolbarEle));

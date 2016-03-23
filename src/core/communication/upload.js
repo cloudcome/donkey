@@ -18,7 +18,14 @@ define(function (require, exports, module) {
     var Emitter = require('../../libs/emitter.js');
     var klass = require('../../utils/class.js');
     var dato = require('../../utils/dato.js');
+    var ua = require('../../core/navigator/ua.js');
     var namespace = 'donkey-core-communication-upload';
+
+    var uar = ua.parse();
+    var isIE = /ie/i.test(uar.browser.name);
+    var browserMajor = uar.browser.major;
+    var isIE8 = isIE && browserMajor === '8';
+    var isIE9 = isIE && browserMajor === '9';
     var $ = window.jQuery;
     var supportHtml5 = 'FormData' in window;
     var defaults = {
@@ -28,6 +35,8 @@ define(function (require, exports, module) {
         url: '',
         // 上传的额外内容
         body: null,
+        // ie89 的内容
+        ie89Body: null,
         // A Binary Large OBject
         blob: null,
         dataType: 'json'
@@ -67,7 +76,7 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var fd = new FormData();
-            var fileEl =  the._$file[0];
+            var fileEl = the._$file[0];
             var filename = fileEl.value.match(/[^\/]*$/)[0] || 'untitle';
 
             fd.append(fileEl.name, options.blob || the._$file[0].files[0], filename);
@@ -135,7 +144,13 @@ define(function (require, exports, module) {
             dato.each(options.body, function (key, val) {
                 html += '<input type="text" name="' + key + '" value=' + val + '>';
             });
-            html += '<input type="text" name="_responseType" value="text">';
+
+            if (isIE8 || isIE9) {
+                dato.each(options.ie89Body, function (key, val) {
+                    html += '<input type="text" name="' + key + '" value=' + val + '>';
+                });
+            }
+
             $form.append(html);
 
             var $submit = $('<input type="submit">').appendTo($form);
