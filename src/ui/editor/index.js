@@ -55,22 +55,6 @@ define(function (require, exports, module) {
             var the = this;
             var options = the._options;
             var textareaEl = the._textareaEl;
-            var createFileEl = function () {
-                return modification.create('input', {
-                    type: 'file',
-                    name: options.fileName,
-                    style: {
-                        display: 'none'
-                    }
-                });
-            };
-            var fileEl = modification.create('input', {
-                type: 'file',
-                name: options.fileName,
-                style: {
-                    display: 'none'
-                }
-            });
 
             the._editor = tinymce.init({
                 ele: textareaEl,
@@ -84,14 +68,12 @@ define(function (require, exports, module) {
                 max_height: options.maxHeight,
                 placeholder: options.placeholder,
                 uploadFileName: options.fileName,
-                file_picker_callback: function (callback, value, meta) {
-                    var fileEl = the._fileEl = createFileEl();
-                    fileEl.click();
+                file_picker_callback: function (callback, value, meta, fileEl) {
                     fileEl.onchange = function (eve) {
+                        eve = eve || window.event;
                         var imgs = eventUtil.parseFiles(eve, fileEl);
 
                         if (!imgs.length) {
-                            the._removeFileEl();
                             return;
                         }
 
@@ -105,7 +87,6 @@ define(function (require, exports, module) {
                             img.src = img.src || img.url;
                             dato.extend(meta, img);
                             callback(img.src, meta);
-                            the._removeFileEl();
                         });
                     };
                 }
@@ -162,25 +143,12 @@ define(function (require, exports, module) {
 
 
         /**
-         * 移除上传图片 input:file
-         * @private
-         */
-        _removeFileEl: function () {
-            var the = this;
-
-            modification.remove(the._fileEl);
-            the._fileEl = null;
-        },
-
-
-        /**
          * 销毁实例
          */
         destroy: function () {
             var the = this;
 
             the._editor.destroy(false);
-            the._removeFileEl();
         }
     });
 

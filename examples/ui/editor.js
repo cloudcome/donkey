@@ -15,7 +15,7 @@ define(function (require, exports, module) {
     var Editor = require('../../src/ui/editor/index.js');
 
     var ed1 = window.ed1 = new Editor('#textarea1');
-    var ed2 = window.ed2 = new Editor('#textarea2');
+    //var ed2 = window.ed2 = new Editor('#textarea2');
 
     ed1.on('upload', function (eve, file, done) {
         setTimeout(function () {

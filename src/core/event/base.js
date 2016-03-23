@@ -10,7 +10,6 @@ define(function (require, exports, module) {
 
     var $ = window.jQuery;
 
-    require('../../polyfill/event.js');
     var allocation = require('../../utils/allocation.js');
     var dato = require('../../utils/dato.js');
     var typeis = require('../../utils/typeis.js');

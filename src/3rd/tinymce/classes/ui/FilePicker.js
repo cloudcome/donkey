@@ -17,9 +17,11 @@
  * @extends tinymce.ui.ComboBox
  */
 define(function (require, exports, module) {
+    "use strict";
+
     var ComboBox = require("./ComboBox");
     var Tools = require("../util/Tools");
-    "use strict";
+    var selector = require('../../../../core/dom/selector.js');
 
     return ComboBox.extend({
         /**
@@ -42,7 +44,13 @@ define(function (require, exports, module) {
             if (!fileBrowserCallbackTypes || fileBrowserCallbackTypes[settings.filetype]) {
                 fileBrowserCallback = editorSettings.file_picker_callback;
                 if (fileBrowserCallback && (!fileBrowserCallbackTypes || fileBrowserCallbackTypes[settings.filetype])) {
-                    actionCallback = function () {
+                    actionCallback = function (ele) {
+                        var fileEl = selector.query('input', ele)[0];
+
+                        if (!fileEl) {
+                            return;
+                        }
+
                         var meta = self.fire('beforecall').meta;
 
                         meta = Tools.extend({filetype: settings.filetype}, meta);
@@ -54,7 +62,8 @@ define(function (require, exports, module) {
                                 self.value(value).fire('change', {meta: meta});
                             },
                             self.value(),
-                            meta
+                            meta,
+                            fileEl
                         );
                     };
                 } else {

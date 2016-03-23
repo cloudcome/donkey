@@ -1,7 +1,7 @@
 /**
  * coolie 苦力
  * @author seajs.org ydr.me
- * @version 1.3.2
+ * @version 1.3.3
  * @license MIT
  */
 
@@ -19,7 +19,7 @@
 (function (global, undefined) {
     'use strict';
 
-    var VERSION = '1.3.2';
+    var VERSION = '1.3.3';
     var COOLIE = 'coolie';
 
     if (global.coolie) {
@@ -199,7 +199,8 @@
     styleEle.setAttribute('type', 'text/css');
     styleEle.setAttribute('id', COOLIE + '-' + VERSION + '-style');
     head.appendChild(styleEle);
-    var stylesheet = styleEle.stylesheet;
+    // ie
+    var stylesheet = styleEle.styleSheet;
 
 
     /**

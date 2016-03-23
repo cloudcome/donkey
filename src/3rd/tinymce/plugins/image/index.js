@@ -374,6 +374,7 @@ define(function (require) {
                         filetype: 'image',
                         label: 'Source',
                         autofocus: true,
+                        uploadFileName: editor.settings.uploadFileName,
                         onchange: srcChange
                     },
                     imageListCtrl
@@ -427,24 +428,6 @@ define(function (require) {
                 return generalFormItems;
             }
 
-
-            /**
-             * 生成上传图片项目
-             */
-            function generateUploadImageItems() {
-                var items = [];
-
-                items.push({
-                    name: 'src',
-                    type: 'filepicker',
-                    filetype: 'image',
-                    label: 'Source',
-                    autofocus: true,
-                    onchange: srcChange
-                });
-
-                return items;
-            }
 
 
             function mergeMargins(css) {

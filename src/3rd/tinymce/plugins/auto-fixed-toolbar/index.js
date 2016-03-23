@@ -30,6 +30,11 @@ define(function (require, exports, module) {
             }
 
             var containerEle = editor.getContainer();
+
+            if (!containerEle) {
+                return;
+            }
+
             var scrollTop = attribute.scrollTop(win);
             var containerTop = attribute.top(containerEle);
             var winScrollLeft = attribute.scrollLeft(win);

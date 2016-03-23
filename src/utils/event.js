@@ -78,6 +78,8 @@ define(function (require, exports, module) {
             return parseEventOfFiles(eve, eve.clipboardData && eve.clipboardData.items, filter);
         } else if (ele.files) {
             return parseEventOfFiles(eve, ele.files, filter);
+        } else if (ele.value) {
+            return [null];
         }
 
         return [];

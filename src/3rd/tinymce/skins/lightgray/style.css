@@ -891,7 +891,9 @@ body .mce-abs-layout-item, .mce-abs-end {
     border-color: #ccc
 }
 
-.mce-btn button {
+.mce-btn button ,
+.mce-btn-inner {
+    display: inline-block;
     padding: 4px 8px;
     font-size: 14px;
     line-height: 20px;
@@ -1122,7 +1124,8 @@ i.mce-i-checkbox {
     border-left: 0
 }
 
-.mce-combobox button {
+.mce-combobox button ,
+.mce-combobox .mce-btn-inner {
     padding-right: 8px;
     padding-left: 8px
 }
