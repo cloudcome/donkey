@@ -1,4 +1,4 @@
-/*!
+/**
  * 图片裁剪
  * @author ydr.me
  * @create 2015-07-28 15:36
@@ -126,7 +126,7 @@ define(function (require, exports, module) {
             img.src = the._$img[0].src;
             img.onload = onload;
 
-            if(img.complete){
+            if (img.complete) {
                 onload();
             }
         },
@@ -305,6 +305,7 @@ define(function (require, exports, module) {
                     }, blob);
                 });
             }
+
 
             return callback(the._selection, null);
         },

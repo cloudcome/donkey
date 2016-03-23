@@ -1,6 +1,5 @@
-/*!
+/**
  * 图片预览
- * @todo 提高兼容性
  * @author ydr.me
  * @create 2015-08-03 21:02
  */
@@ -21,7 +20,7 @@ define(function (require, exports, module) {
     var $ = window.jQuery;
     var ui = require('../index.js');
     var typeis = require('../../utils/typeis.js');
-    var upload = require('../../core/communication/upload.js');
+    var controller = require('../../utils/controller.js');
     var dato = require('../../utils/dato.js');
     //var canvasImg = require('../../canvas/img.js');
     //var canvasContent = require('../../canvas/content.js');
@@ -32,7 +31,6 @@ define(function (require, exports, module) {
     //var eleCanvas = modification.create('canvas');
     //var supportCanvas = 'getContext' in eleCanvas;
     var REG_IMAGE = /^image\//;
-    var REG_HTTP = /^https?:\/\//;
     var defaults = {
         width: 'auto',
         height: 'auto',
@@ -68,9 +66,7 @@ define(function (require, exports, module) {
                 the.emit('load', this.src);
             };
 
-            if (REG_HTTP.test(fileInput.value)) {
-                url = fileInput.value;
-            } else if (URL) {
+            if (URL) {
                 fileInput = $(fileInput)[0];
 
                 if (!fileInput.files) {
@@ -104,33 +100,22 @@ define(function (require, exports, module) {
                     callback.call(the, url);
                 }
             } else {
-                upload(fileInput, {
-                    url: options.uploadURL,
-                    body: {
-                        type: 'image/jpeg'
-                    }
-                }).on('success', function (json) {
-                    if (json.code !== 200) {
-                        return the.emit('erorr', new Error(json.message));
+                the.emit('upload', fileInput, function (err, ret) {
+                    if (err) {
+                        return the.emit('error', err);
                     }
 
-                    var ret = json.result;
-
-                    url = ret[0];
-                    the._eleImg.src = url;
+                    the._eleImg.src = ret.url;
 
                     if (typeis.isFunction(callback)) {
-                        callback.call(the, url);
+                        callback.call(the, ret.url);
                     }
-                }).on('error', function (err) {
-                    the.emit('error', err);
                 });
-                //the.emit('error', new Error('该浏览器不支持图片预览'));
             }
 
             the.emit('beforeload');
 
-            return url;
+            return the;
         },
 
 

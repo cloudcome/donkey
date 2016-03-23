@@ -1,5 +1,5 @@
 /**
- * 文件描述
+ * 自动固定顶部工具栏
  * @author ydr.me
  * @create 2016-02-15 10:08
  */
@@ -10,7 +10,6 @@ define(function (require, exports, module) {
 
     var win = window;
     var doc = win.document;
-    var tinymce = win.tinymce;
     var PluginManager = require("../../classes/AddOnManager").PluginManager;
     var controller = require('../../../../utils/controller.js');
     var attribute = require('../../../../core/dom/attribute.js');

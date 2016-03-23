@@ -17,11 +17,12 @@
  * @extends tinymce.ui.Widget
  */
 define(function (require, exports, module) {
+    "use strict";
+
     var Widget = require("./Widget");
     var Factory = require("./Factory");
     var DomUtils = require("./DomUtils");
     var $ = require("../dom/DomQuery");
-    "use strict";
 
     return Widget.extend({
         /**

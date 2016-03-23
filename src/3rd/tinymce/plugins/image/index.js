@@ -1,4 +1,9 @@
+/**
+ * 图片管理
+ */
 define(function (require) {
+    'use strict';
+
     var tinymce = window.tinymce;
     var PluginManager = require("../../classes/AddOnManager").PluginManager;
 

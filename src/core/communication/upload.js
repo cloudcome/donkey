@@ -116,24 +116,41 @@ define(function (require, exports, module) {
             var options = the._options;
             var name = namespace + new Date().getTime();
             var $form = $('<form action="' + options.url + '" method="post" enctype="multipart/form-data" target="' + name + '" style="display:none;"></form>').appendTo('body');
-            var $iframe = $('<iframe src="javascript:;" name="' + name + '" style="display:none"></iframe>').appendTo('body');
+            var $iframe = $('<iframe src="javascript:false;" name="' + name + '" style="display:none"></iframe>').appendTo('body');
             var iframe = $iframe[0];
             var $clone = the._$file.clone().removeAttr('id').insertAfter(the._$file);
 
             $form.append(the._$file);
             $iframe.on('load', function () {
-                var text = iframe.contentDocument.body.innerText;
+                // https://github.com/blueimp/jQuery-File-Upload/blob/9.5.6/js/jquery.iframe-transport.js#L102
+                // Fix for IE endless progress bar activity bug
+                // (happens on form submits to iframe targets):
+                $('<iframe src="javascript:false;"></iframe>')
+                    .appendTo($form);
+
+
+                var text = '';
+
+                try {
+                    text = iframe.contentDocument.body.innerText;
+                } catch (err) {
+                    // ignore
+                }
 
                 the._$file.insertAfter($clone);
                 $clone.remove();
-                $iframe.remove();
-                $form.remove();
+
+                setTimeout(function () {
+                    $iframe.remove();
+                    $form.remove();
+                }, 0);
+
                 the.emit('complete');
 
                 try {
                     the.emit('success', JSON.parse(text));
                 } catch (err) {
-                    the.emit('error', err);
+                    the.emit('error', new Error('parse upload response error: ' + err.message));
                 }
 
                 the.emit('finish');
