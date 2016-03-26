@@ -14,7 +14,7 @@ define(function () {
         "Heading 5": "五级标题",
         "Header 5": "五级标题",
         "Header 6": "六级标题",
-        "Heading 6": "五级标题",
+        "Heading 6": "六级标题",
         "Pre": "预格式文本",
         "Preformatted": "预格式文本",
         "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X/C/V keyboard shortcuts instead.": "您的浏览器不支持剪贴板操作，请使用 CTRL+C/V 来操作。",
