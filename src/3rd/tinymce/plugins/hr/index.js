@@ -1,35 +1,39 @@
-define(function (require) {
-	var tinymce = window.tinymce;
-	var PluginManager = require("../../classes/AddOnManager").PluginManager;
-
 /**
- * plugin.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
+ * 水平分割线
  */
+define(function (require) {
+    'use strict';
 
-/*global tinymce:true */
+    var PluginManager = require("../../classes/AddOnManager").PluginManager;
 
-tinymce.PluginManager.add('hr', function(editor) {
-	editor.addCommand('InsertHorizontalRule', function() {
-		editor.execCommand('mceInsertContent', false, '<hr />');
-	});
+    /**
+     * plugin.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
-	editor.addButton('hr', {
-		icon: 'hr',
-		tooltip: 'Horizontal line',
-		cmd: 'InsertHorizontalRule'
-	});
+    /*global tinymce:true */
 
-	editor.addMenuItem('hr', {
-		icon: 'hr',
-		text: 'Horizontal line',
-		cmd: 'InsertHorizontalRule',
-		context: 'insert'
-	});
-});
+    PluginManager.add('hr', function (editor) {
+        editor.addCommand('InsertHorizontalRule', function () {
+            editor.execCommand('mceInsertContent', false, '<hr />');
+        });
+
+        editor.addButton('hr', {
+            icon: 'hr',
+            tooltip: 'Horizontal line',
+            cmd: 'InsertHorizontalRule'
+        });
+
+        editor.addMenuItem('hr', {
+            icon: 'hr',
+            text: 'Horizontal line',
+            cmd: 'InsertHorizontalRule',
+            context: 'insert'
+        });
+    });
 });
