@@ -9,6 +9,7 @@ define(function (require) {
     require('../plugins/table/index.js');
     require('../plugins/textcolor/index.js');
     require('../plugins/fullscreen/index.js');
+    require('../plugins/hr/index.js');
     require('../plugins/paste-drop-upload-image/index.js');
     require('../plugins/auto-fixed-toolbar/index.js');
     require('../plugins/auto-resize/index.js');
@@ -45,9 +46,9 @@ define(function (require) {
         };
 
         var defaultToolbar = [
-            "formatselect bold italic underline strikethrough | forecolor backcolor removeformat | " +
+            "formatselect | bold italic underline strikethrough | forecolor backcolor removeformat | " +
             "bullist numlist | fullscreen undo redo",
-            "fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | " +
+            "fontselect | fontsizeselect | alignleft aligncenter alignright alignjustify | " +
             "link unlink image table hr"
         ];
 
