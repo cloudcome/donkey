@@ -45,10 +45,10 @@ define(function (require) {
         };
 
         var defaultToolbar = [
-            "bold italic underline strikethrough | forecolor backcolor removeformat | " +
+            "formatselect bold italic underline strikethrough | forecolor backcolor removeformat | " +
             "bullist numlist | fullscreen undo redo",
-            "formatselect | alignleft aligncenter alignright alignjustify | " +
-            "link unlink image table"
+            "fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | " +
+            "link unlink image table hr"
         ];
 
         function createToolbar(items, size) {

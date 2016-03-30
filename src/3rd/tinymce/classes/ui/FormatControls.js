@@ -507,7 +507,7 @@ define(function (require, exports, module) {
         });
 
         editor.addButton('fontsizeselect', function () {
-            var items = [], defaultFontsizeFormats = '8pt 10pt 12pt 14pt 18pt 24pt 36pt';
+            var items = [], defaultFontsizeFormats = '12px 16px 18px 20px 24px 32px 48px';
             var fontsize_formats = editor.settings.fontsize_formats || defaultFontsizeFormats;
 
             each(fontsize_formats.split(' '), function (item) {
