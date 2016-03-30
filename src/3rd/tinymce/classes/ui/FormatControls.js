@@ -462,24 +462,32 @@ define(function (require, exports, module) {
         });
 
         editor.addButton('fontselect', function () {
+            //var defaultFontsFormats =
+            //    'Andale Mono=andale mono,monospace;' +
+            //    'Arial=arial,helvetica,sans-serif;' +
+            //    'Arial Black=arial black,sans-serif;' +
+            //    'Book Antiqua=book antiqua,palatino,serif;' +
+            //    'Comic Sans MS=comic sans ms,sans-serif;' +
+            //    'Courier New=courier new,courier,monospace;' +
+            //    'Georgia=georgia,palatino,serif;' +
+            //    'Helvetica=helvetica,arial,sans-serif;' +
+            //    'Impact=impact,sans-serif;' +
+            //    'Symbol=symbol;' +
+            //    'Tahoma=tahoma,arial,helvetica,sans-serif;' +
+            //    'Terminal=terminal,monaco,monospace;' +
+            //    'Times New Roman=times new roman,times,serif;' +
+            //    'Trebuchet MS=trebuchet ms,geneva,sans-serif;' +
+            //    'Verdana=verdana,geneva,sans-serif;' +
+            //    'Webdings=webdings;' +
+            //    'Wingdings=wingdings,zapf dingbats';
             var defaultFontsFormats =
-                'Andale Mono=andale mono,monospace;' +
+                '宋体=宋体,SimSun;' +
+                '微软雅黑=微软雅黑,Microsoft YaHei;' +
+                '楷体=楷体,楷体_GB2312,KaiTi_GB2312,SimKai;' +
+                '黑体=黑体,SimHei;' +
+                '隶书=隶书,SimLi;' +
                 'Arial=arial,helvetica,sans-serif;' +
-                'Arial Black=arial black,sans-serif;' +
-                'Book Antiqua=book antiqua,palatino,serif;' +
-                'Comic Sans MS=comic sans ms,sans-serif;' +
-                'Courier New=courier new,courier,monospace;' +
-                'Georgia=georgia,palatino,serif;' +
-                'Helvetica=helvetica,arial,sans-serif;' +
-                'Impact=impact,sans-serif;' +
-                'Symbol=symbol;' +
-                'Tahoma=tahoma,arial,helvetica,sans-serif;' +
-                'Terminal=terminal,monaco,monospace;' +
-                'Times New Roman=times new roman,times,serif;' +
-                'Trebuchet MS=trebuchet ms,geneva,sans-serif;' +
-                'Verdana=verdana,geneva,sans-serif;' +
-                'Webdings=webdings;' +
-                'Wingdings=wingdings,zapf dingbats';
+                'Times New Roman=Times New Roman';
 
             var items = [], fonts = createFormats(editor.settings.font_formats || defaultFontsFormats);
 
@@ -487,7 +495,7 @@ define(function (require, exports, module) {
                 items.push({
                     text: {raw: font[0]},
                     value: font[1],
-                    textStyle: font[1].indexOf('dings') == -1 ? 'font-family:' + font[1] : ''
+                    textStyle: 'font-family:' + font[1]
                 });
             });
 
@@ -507,6 +515,7 @@ define(function (require, exports, module) {
         });
 
         editor.addButton('fontsizeselect', function () {
+            //var items = [], defaultFontsizeFormats = '8pt 10pt 12pt 14pt 18pt 24pt 36pt';
             var items = [], defaultFontsizeFormats = '12px 16px 18px 20px 24px 32px 48px';
             var fontsize_formats = editor.settings.fontsize_formats || defaultFontsizeFormats;
 
@@ -518,7 +527,11 @@ define(function (require, exports, module) {
                     text = values[0];
                     value = values[1];
                 }
-                items.push({text: text, value: value});
+                items.push({
+                    text: text,
+                    value: value,
+                    textStyle: 'font-size:' + value
+                });
             });
 
             return {
