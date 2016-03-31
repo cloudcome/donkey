@@ -13,17 +13,31 @@ define(function (require, exports, module) {
     'use strict';
 
     var Copy = require('../../src/ui/copy/index.js');
+    var random = require('../../src/utils/random.js');
+    var msgEl = document.getElementById('msg');
     var hrEl = document.getElementById('hr');
+    var copyEl = document.getElementById('copy');
 
     var copy = new Copy('.copy', {
         text: function (e) {
             console.log(e);
-            return Math.random() + '' + Date.now();
+            return random.string(random.number(5, 20));
         }
     });
 
+    setTimeout(function () {
+        copyEl.remove();
+        append();
+    }, 10);
+
+
+    var msg = function (text) {
+        msgEl.innerHTML = text;
+    };
+
     copy.on('ready', function (e) {
         console.log('copy ready ', e);
+        msg('ready');
     });
 
     copy.on('copy', function (e) {
@@ -33,9 +47,14 @@ define(function (require, exports, module) {
 
     copy.on('copied', function (e) {
         console.log('copied ', e);
+        msg('copied: ' + e.data['text/plain']);
     });
 
-    document.getElementById('add').onclick = function () {
+    copy.on('error', function (err) {
+        alert(err.message);
+    });
+
+    var append = function () {
         var aEl = document.createElement('a');
 
         aEl.innerHTML = '复制我';
@@ -43,6 +62,8 @@ define(function (require, exports, module) {
         copy.clip(aEl);
         document.body.insertBefore(aEl, hrEl);
     };
+
+    document.getElementById('add').onclick = append;
 
     window.cp = copy;
 });

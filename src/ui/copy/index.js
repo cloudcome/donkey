@@ -19,8 +19,8 @@ define(function (require, exports, module) {
     var typeis = require('../../utils/typeis.js');
     var selector = require('../../core/dom/selector.js');
     // @docs https://github.com/zeroclipboard/zeroclipboard/blob/v2.0.2/docs/api/ZeroClipboard.md
-    var ZeroClipboard = require('./zero-clipboard.js');
-    var swf = require('./zero-clipboard.swf', 'file|url');
+    var ZeroClipboard = require('./_zero-clipboard.js');
+    var swf = require('./_zero-clipboard.swf', 'file|url');
     var ui = require('../index.js');
 
     var coolie = window.coolie;
