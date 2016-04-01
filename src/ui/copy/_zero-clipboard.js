@@ -276,7 +276,8 @@ define(function() {
      * @private
      */
     var _eventMessages = {
-        ready: "Flash communication is established",
+        //ready: "Flash communication is established",
+        ready: "已准备完毕",
         error: {
             //"flash-disabled": "Flash is disabled or not installed",
             "flash-disabled": "flash 已被禁用或未安装",
