@@ -278,11 +278,16 @@ define(function() {
     var _eventMessages = {
         ready: "Flash communication is established",
         error: {
-            "flash-disabled": "Flash is disabled or not installed",
-            "flash-outdated": "Flash is too outdated to support ZeroClipboard",
-            "flash-unavailable": "Flash is unable to communicate bidirectionally with JavaScript",
-            "flash-deactivated": "Flash is too outdated for your browser and/or is configured as click-to-activate",
-            "flash-overdue": "Flash communication was established but NOT within the acceptable time limit"
+            //"flash-disabled": "Flash is disabled or not installed",
+            "flash-disabled": "flash 已被禁用或未安装",
+            //"flash-outdated": "Flash is too outdated to support ZeroClipboard",
+            "flash-outdated": "当前 flash 版本太低，不支持复制功能",
+            //"flash-unavailable": "Flash is unable to communicate bidirectionally with JavaScript",
+            "flash-unavailable": "当前 flash 已损坏",
+            //"flash-deactivated": "Flash is too outdated for your browser and/or is configured as click-to-activate",
+            "flash-deactivated": "请点击激活或允许 flash 运行",
+            //"flash-overdue": "Flash communication was established but NOT within the acceptable time limit"
+            "flash-overdue": "当前复制功能无法运行"
         }
     };
     /**
@@ -290,51 +295,13 @@ define(function() {
      * of the executing JavaScript file (e.g. "ZeroClipboard.js", etc.).
      * @private
      */
-    var _swfPath = function() {
-        var i, jsDir, tmpJsPath, jsPath, swfPath = "ZeroClipboard.swf";
-        if (!(_document.currentScript && (jsPath = _document.currentScript.src))) {
-            var scripts = _document.getElementsByTagName("script");
-            if ("readyState" in scripts[0]) {
-                for (i = scripts.length; i--; ) {
-                    if (scripts[i].readyState === "interactive" && (jsPath = scripts[i].src)) {
-                        break;
-                    }
-                }
-            } else if (_document.readyState === "loading") {
-                jsPath = scripts[scripts.length - 1].src;
-            } else {
-                for (i = scripts.length; i--; ) {
-                    tmpJsPath = scripts[i].src;
-                    if (!tmpJsPath) {
-                        jsDir = null;
-                        break;
-                    }
-                    tmpJsPath = tmpJsPath.split("#")[0].split("?")[0];
-                    tmpJsPath = tmpJsPath.slice(0, tmpJsPath.lastIndexOf("/") + 1);
-                    if (jsDir == null) {
-                        jsDir = tmpJsPath;
-                    } else if (jsDir !== tmpJsPath) {
-                        jsDir = null;
-                        break;
-                    }
-                }
-                if (jsDir !== null) {
-                    jsPath = jsDir;
-                }
-            }
-        }
-        if (jsPath) {
-            jsPath = jsPath.split("#")[0].split("?")[0];
-            swfPath = jsPath.slice(0, jsPath.lastIndexOf("/") + 1) + swfPath;
-        }
-        return swfPath;
-    }();
+
     /**
      * ZeroClipboard configuration defaults for the Core module.
      * @private
      */
     var _globalConfig = {
-        swfPath: _swfPath,
+        swfPath: '',
         trustedDomains: window.location.host ? [ window.location.host ] : [],
         cacheBust: true,
         forceEnhancedClipboard: false,

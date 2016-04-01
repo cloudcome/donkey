@@ -36,7 +36,8 @@ define(function (require, exports, module) {
             ur.parse(coolie.configURL).host
         ],
         hoverClass: 'hover',
-        activeClass: 'active'
+        activeClass: 'active',
+        flashLoadTimeout: -1
     });
 
     var defaults = {
